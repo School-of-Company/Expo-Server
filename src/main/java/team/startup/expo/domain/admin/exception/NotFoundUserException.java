@@ -1,4 +1,4 @@
-package team.startup.expo.domain.user.exception;
+package team.startup.expo.domain.admin.exception;
 
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
