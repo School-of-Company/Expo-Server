@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import team.startup.expo.domain.user.User;
+import team.startup.expo.domain.admin.Admin;
 import java.util.Collection;
 
 @AllArgsConstructor
 public class AuthDetails implements UserDetails {
-    private final User user;
+    private final Admin admin;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -23,7 +23,7 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return admin.getEmail();
     }
 
     @Override
