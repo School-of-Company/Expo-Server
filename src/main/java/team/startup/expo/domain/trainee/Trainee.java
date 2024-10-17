@@ -32,4 +32,19 @@ public class Trainee {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String position;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String schoolLevel;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(30)")
+    private String organization;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String name;
+
+    @Column(nullable = false)
+    private Boolean informationStatus;
 }
