@@ -33,12 +33,6 @@ public class Expo {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String finishedDay;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
-    private String startedTime;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
-    private String finishedTime;
-
     @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 

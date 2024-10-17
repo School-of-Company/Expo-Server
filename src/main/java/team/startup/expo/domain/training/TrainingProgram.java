@@ -25,6 +25,12 @@ public class TrainingProgram {
     @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     private String title;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
+    private String startedAt;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
+    private String endedAt;
+
     @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;

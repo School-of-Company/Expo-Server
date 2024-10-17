@@ -24,6 +24,12 @@ public class TrainingProgramUser {
     @Column(nullable = false)
     private Boolean status;
 
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String entryTime;
+
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String leaveTime;
+
     @ManyToOne
     @JoinColumn(name = "trainingPro_id")
     private TrainingProgram trainingProgram;

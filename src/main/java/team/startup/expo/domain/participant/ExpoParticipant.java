@@ -1,14 +1,12 @@
 package team.startup.expo.domain.participant;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import team.startup.expo.domain.admin.Authority;
 
 @Entity
 @NoArgsConstructor
@@ -29,6 +27,10 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Authority authority;
+
     @Column(nullable = false)
     private boolean status;
 
@@ -38,6 +40,6 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String position;
 
-    @Column(columnDefinition = "VARCHAR(10)")
-    private String subject;
+    @Column(nullable = false)
+    private Boolean informationStatus;
 }
