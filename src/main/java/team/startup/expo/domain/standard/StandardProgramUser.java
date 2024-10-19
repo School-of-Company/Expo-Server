@@ -1,9 +1,6 @@
 package team.startup.expo.domain.standard;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,9 +17,12 @@ public class StandardProgramUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Boolean status;
+    @Column(nullable = false)
+    private Boolean status = false;
 
+    @Column(columnDefinition = "VARCHAR(20)")
     private String entryTime;
 
+    @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 }
