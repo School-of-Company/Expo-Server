@@ -8,7 +8,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
+    // sms
     DUPLICATE_PHONE_NUMBER(409, "이미 존재하는 전화번호입니다."),
+    NOT_FOUND_SMS_AUTH(404, "찾을 수 없는 sms입니다."),
     // token
     EXPIRED_TOKEN(401, "토큰이 만료되었습니다."),
     INVALID_TOKEN(401, "유효하지 않은 토큰입니다."),
