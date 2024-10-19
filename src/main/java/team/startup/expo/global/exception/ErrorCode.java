@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorCode {
+    DUPLICATE_PHONE_NUMBER(409, "이미 존재하는 전화번호입니다."),
     // token
     EXPIRED_TOKEN(401, "토큰이 만료되었습니다."),
     INVALID_TOKEN(401, "유효하지 않은 토큰입니다."),
