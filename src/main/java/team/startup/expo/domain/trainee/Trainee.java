@@ -16,10 +16,8 @@ import team.startup.expo.domain.admin.Authority;
 public class Trainee {
 
     @Id
-    @GeneratedValue(generator = "ulidGenerator")
-    @GenericGenerator(name = "ulidGenerator", strategy = "team.startup.expo.global.common.ulid.ULIDGenerator")
-    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
-    private byte[] id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String trainingId;
