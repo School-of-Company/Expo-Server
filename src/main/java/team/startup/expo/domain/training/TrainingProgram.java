@@ -28,6 +28,10 @@ public class TrainingProgram {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String endedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Category category;
+
     @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
