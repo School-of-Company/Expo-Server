@@ -29,6 +29,9 @@ public class Admin {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 }
