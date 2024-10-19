@@ -19,7 +19,7 @@ public class TrainingProgramUser {
     private Long id;
 
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean status = false;
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String entryTime;
