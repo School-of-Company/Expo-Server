@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import team.startup.expo.domain.participant.ExpoParticipant;
 
 @Entity
 @NoArgsConstructor
@@ -16,19 +14,15 @@ import team.startup.expo.domain.participant.ExpoParticipant;
 public class StandardProgramUser {
 
     @Id
-    @GeneratedValue(generator = "ulidGenerator")
-    @GenericGenerator(name = "ulidGenerator", strategy = "team.startup.expo.global.common.ulid.ULIDGenerator")
-    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
-    private byte[] id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
-    private Boolean status;
+    private Boolean status = false;
 
-    @ManyToOne
-    @JoinColumn(name = "standardPro_id")
-    private StandardProgram standardProgram;
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String entryTime;
 
-    @ManyToOne
-    @JoinColumn(name = "expoPart_id")
-    private ExpoParticipant expoParticipant;
+    @Column(columnDefinition = "VARCHAR(20)")
+    private String leaveTime;
 }

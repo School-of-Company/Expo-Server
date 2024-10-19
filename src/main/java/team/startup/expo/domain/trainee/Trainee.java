@@ -16,10 +16,8 @@ import team.startup.expo.domain.admin.Authority;
 public class Trainee {
 
     @Id
-    @GeneratedValue(generator = "ulidGenerator")
-    @GenericGenerator(name = "ulidGenerator", strategy = "team.startup.expo.global.common.ulid.ULIDGenerator")
-    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
-    private byte[] id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String trainingId;
@@ -31,5 +29,21 @@ public class Trainee {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Authority authority;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String position;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String schoolLevel;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(30)")
+    private String organization;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String name;
+
+    @Column(nullable = false)
+    private Boolean informationStatus;
 }
