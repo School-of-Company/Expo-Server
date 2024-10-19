@@ -29,6 +29,7 @@ public class Trainee {
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Authority authority;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
