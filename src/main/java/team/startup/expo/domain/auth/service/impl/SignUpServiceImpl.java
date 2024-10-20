@@ -3,13 +3,12 @@ package team.startup.expo.domain.auth.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team.startup.expo.domain.admin.Admin;
-import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.admin.Status;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.auth.exception.DuplicateNicknameException;
 import team.startup.expo.domain.auth.exception.DuplicatePhoneNumberException;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
-import team.startup.expo.domain.auth.presentation.dto.request.SignUpRequest;
+import team.startup.expo.domain.auth.presentation.dto.request.SignUpRequestDto;
 import team.startup.expo.domain.auth.service.SignUpService;
 import team.startup.expo.domain.sms.SmsAuthEntity;
 import team.startup.expo.domain.sms.repository.SmsAuthRepository;
@@ -23,7 +22,7 @@ public class SignUpServiceImpl implements SignUpService {
     private final PasswordEncoder passwordEncoder;
     private final SmsAuthRepository smsAuthRepository;
 
-    public void execute(SignUpRequest dto) {
+    public void execute(SignUpRequestDto dto) {
         if (adminRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
             smsAuthRepository.deleteById(dto.getPhoneNumber());
             throw new DuplicatePhoneNumberException();
@@ -43,7 +42,7 @@ public class SignUpServiceImpl implements SignUpService {
         saveAdmin(dto);
     }
 
-    private void saveAdmin(SignUpRequest dto) {
+    private void saveAdmin(SignUpRequestDto dto) {
         Admin admin = Admin.builder()
                 .name(dto.getName())
                 .nickname(dto.getNickname())

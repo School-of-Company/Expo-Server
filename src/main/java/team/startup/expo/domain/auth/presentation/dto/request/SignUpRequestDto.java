@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class SignUpRequest {
+public class SignUpRequestDto {
     @NotNull
     private String name;
 
