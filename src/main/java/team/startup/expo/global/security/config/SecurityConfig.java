@@ -58,6 +58,7 @@ public class SecurityConfig {
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                                 .requestMatchers(HttpMethod.POST, "/sms").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/sms").permitAll()
 
                                 .anyRequest().denyAll()
                 )
