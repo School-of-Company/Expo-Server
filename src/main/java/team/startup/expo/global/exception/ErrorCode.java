@@ -12,6 +12,7 @@ public enum ErrorCode {
     DUPLICATE_PHONE_NUMBER(409, "이미 존재하는 전화번호입니다."),
     NOT_FOUND_SMS_AUTH(404, "찾을 수 없는 sms입니다."),
     NOT_VERIFICATION_SMS(401, "인증되지 않은 sms입니다."),
+    MANY_REQUEST_SMS_AUTH(429, "회원가입시 3번 초과로 sms 인증요청을 하였습니다."),
 
     // token
     EXPIRED_TOKEN(401, "토큰이 만료되었습니다."),

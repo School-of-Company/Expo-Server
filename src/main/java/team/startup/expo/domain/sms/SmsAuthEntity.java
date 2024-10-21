@@ -16,4 +16,6 @@ public class SmsAuthEntity {
     private String randomValue;
     private Boolean authentication;
     private Integer attemptCount;
+
+    public void plusAttemptCount() {attemptCount++;}
 }

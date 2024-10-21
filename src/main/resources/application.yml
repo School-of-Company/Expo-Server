@@ -21,3 +21,8 @@ spring:
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
   refreshSecret: ${JWT_REFRESH_SECRET}
+
+sms:
+  apiKey: ${SMS_API_KEY}
+  apiSecret: ${SMS_API_SECRET}
+  fromnumber: ${SMS_FROM_NUMBER}
