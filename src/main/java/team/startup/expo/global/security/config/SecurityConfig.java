@@ -64,6 +64,7 @@ public class SecurityConfig {
 
                                 // admin
                                 .requestMatchers(HttpMethod.PATCH, "/admin/{admin_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/admin").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // auth
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
