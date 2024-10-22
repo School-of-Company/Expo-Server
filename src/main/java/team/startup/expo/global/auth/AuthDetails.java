@@ -2,9 +2,12 @@ package team.startup.expo.global.auth;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import team.startup.expo.domain.admin.Admin;
+
+import java.util.ArrayList;
 import java.util.Collection;
 
 @AllArgsConstructor
@@ -13,7 +16,11 @@ public class AuthDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(admin.getAuthority().name());
+
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(simpleGrantedAuthority);
+        return authorities;
     }
 
     @Override
