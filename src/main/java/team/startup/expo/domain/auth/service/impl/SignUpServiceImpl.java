@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import team.startup.expo.domain.admin.Admin;
 import team.startup.expo.domain.admin.Status;
 import team.startup.expo.domain.admin.repository.AdminRepository;
+import team.startup.expo.domain.auth.exception.DuplicateEmailException;
 import team.startup.expo.domain.auth.exception.DuplicateNicknameException;
 import team.startup.expo.domain.auth.exception.DuplicatePhoneNumberException;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
@@ -27,6 +28,9 @@ public class SignUpServiceImpl implements SignUpService {
             smsAuthRepository.deleteById(dto.getPhoneNumber());
             throw new DuplicatePhoneNumberException();
         }
+
+        if (adminRepository.existsByEmail(dto.getEmail()))
+            throw new DuplicateEmailException();
 
         SmsAuthEntity smsAuthEntity = smsAuthRepository.findById(dto.getPhoneNumber())
                 .orElseThrow(NotFoundSmsAuthException::new);
