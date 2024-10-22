@@ -9,8 +9,12 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+
+import team.startup.expo.domain.auth.presentation.dto.response.TokenResponseDto;
 import team.startup.expo.global.security.exception.ExpiredTokenException;
 import team.startup.expo.global.security.exception.InvalidTokenException;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -29,6 +33,15 @@ public class JwtProvider {
 
     private Key getSignInSecretKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getRefreshSecret().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public TokenResponseDto generateTokenDto(String email) {
+        return TokenResponseDto.builder()
+                .accessToken(generateAccessToken(email))
+                .refreshToken(generateRefreshToken(email))
+                .accessTokenExpiresIn(LocalDateTime.now().plusSeconds(ACCESS_TOKEN_TIME))
+                .refreshTokenExpiresIn(LocalDateTime.now().plusSeconds(REFRESH_TOKEN_TIME))
+                .build();
     }
 
     public boolean validateToken(String token) {
