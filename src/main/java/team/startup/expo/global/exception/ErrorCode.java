@@ -22,6 +22,11 @@ public enum ErrorCode {
     // user
     NOT_FOUND_USER(404, "해당 유저를 찾을 수 없습니다."),
     DUPLICATE_NICKNAME(409, "이미 존재하는 닉네임입니다."),
+    DUPLICATE_EMAIL(409, "이미 존재하는 이메일입니다."),
+
+    // auth
+    NOT_MATCH_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
+    ADMIN_STATE_PENDING(403, "아직 관리자가 보류 중입니다"),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
