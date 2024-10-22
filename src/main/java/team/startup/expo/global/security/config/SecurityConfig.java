@@ -69,6 +69,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/signin").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/auth").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
 
                                 .anyRequest().denyAll()
                 )
