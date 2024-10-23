@@ -35,8 +35,4 @@ public class TrainingProgram {
     @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
-
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
 }

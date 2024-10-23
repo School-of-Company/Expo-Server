@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.expo.Expo;
 
 @Entity
 @NoArgsConstructor
@@ -39,4 +40,8 @@ public class ExpoParticipant {
 
     @Column(nullable = false)
     private Boolean informationStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "expo_id")
+    private Expo expo;
 }
