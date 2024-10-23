@@ -73,6 +73,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/auth").permitAll()
                                 .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
 
+                                // trainee
+                                .requestMatchers(HttpMethod.GET, "/trainee").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+
                                 .anyRequest().denyAll()
                 )
 
