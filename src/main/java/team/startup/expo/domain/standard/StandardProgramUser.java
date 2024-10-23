@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.startup.expo.domain.participant.ExpoParticipant;
 
 @Entity
 @NoArgsConstructor
@@ -25,4 +26,8 @@ public class StandardProgramUser {
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
+
+    @ManyToOne
+    @JoinColumn(name = "participant_id")
+    private ExpoParticipant expoParticipant;
 }
