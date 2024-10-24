@@ -33,6 +33,9 @@ public class Expo {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String location;
 
+    @Column(columnDefinition = "TEXT")
+    private String coverImage;
+
     @ManyToOne
     @JoinColumn(name = "admin_id")
     private Admin admin;
