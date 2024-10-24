@@ -28,6 +28,9 @@ public enum ErrorCode {
     NOT_MATCH_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
     ADMIN_STATE_PENDING(403, "아직 관리자가 보류 중입니다"),
 
+    // training
+    NOT_FOUND_TRAINING_PROGRAM(404, "연수 프로그램을 찾지 못했습니다."),
+
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
 
