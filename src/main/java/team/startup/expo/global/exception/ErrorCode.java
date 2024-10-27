@@ -23,6 +23,7 @@ public enum ErrorCode {
     NOT_FOUND_USER(404, "해당 유저를 찾을 수 없습니다."),
     DUPLICATE_NICKNAME(409, "이미 존재하는 닉네임입니다."),
     DUPLICATE_EMAIL(409, "이미 존재하는 이메일입니다."),
+    NOT_MATCH_ADMIN(403, "관리자가 일치하지 않습니다."),
 
     // auth
     NOT_MATCH_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
@@ -30,6 +31,9 @@ public enum ErrorCode {
 
     // training
     NOT_FOUND_TRAINING_PROGRAM(404, "연수 프로그램을 찾지 못했습니다."),
+
+    // expo
+    NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
