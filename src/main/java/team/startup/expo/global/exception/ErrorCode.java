@@ -31,6 +31,9 @@ public enum ErrorCode {
     // training
     NOT_FOUND_TRAINING_PROGRAM(404, "연수 프로그램을 찾지 못했습니다."),
 
+    // expo
+    NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
+
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
 
