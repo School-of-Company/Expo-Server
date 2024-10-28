@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
 import team.startup.expo.domain.sms.SmsAuthEntity;
 import team.startup.expo.domain.sms.exception.NotMatchRandomCodeException;
-import team.startup.expo.domain.sms.presentation.dto.request.VerifySmsRequestDto;
 import team.startup.expo.domain.sms.repository.SmsAuthRepository;
 import team.startup.expo.domain.sms.service.VerifySmsService;
 import team.startup.expo.global.annotation.TransactionService;
