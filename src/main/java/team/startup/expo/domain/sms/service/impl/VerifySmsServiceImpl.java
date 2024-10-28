@@ -15,11 +15,11 @@ public class VerifySmsServiceImpl implements VerifySmsService {
 
     private final SmsAuthRepository smsAuthRepository;
 
-    public void execute(VerifySmsRequestDto dto) {
-        SmsAuthEntity smsAuthEntity = smsAuthRepository.findById(dto.getPhoneNumber())
+    public void execute(String phoneNumber, String code) {
+        SmsAuthEntity smsAuthEntity = smsAuthRepository.findById(phoneNumber)
                 .orElseThrow(NotFoundSmsAuthException::new);
 
-        if (Integer.parseInt(smsAuthEntity.getRandomValue()) != Integer.parseInt(dto.getRandomCode()))
+        if (Integer.parseInt(smsAuthEntity.getRandomValue()) != Integer.parseInt(code))
             throw new NotMatchRandomCodeException();
 
         smsAuthEntity.changeAuthentication();

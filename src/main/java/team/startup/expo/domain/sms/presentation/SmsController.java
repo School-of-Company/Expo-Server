@@ -25,8 +25,8 @@ public class SmsController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> verifySms(@RequestBody VerifySmsRequestDto dto) {
-        verifySmsService.execute(dto);
+    public ResponseEntity<Void> verifySms(@RequestParam String phoneNumber, @RequestParam String code) {
+        verifySmsService.execute(phoneNumber, code);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
