@@ -15,6 +15,9 @@ public enum ErrorCode {
     MANY_REQUEST_SMS_AUTH(429, "회원가입시 3번 초과로 sms 인증요청을 하였습니다."),
     NOT_MATCH_RANDOM_CODE(401, "랜덤 코드가 일치하지 않습니다."),
 
+    // file
+    FILE_EXTENSION_INVALID(400, "파일 확장자가 유효하지 않습니다."),
+
     // token
     EXPIRED_TOKEN(401, "토큰이 만료되었습니다."),
     INVALID_TOKEN(401, "유효하지 않은 토큰입니다."),

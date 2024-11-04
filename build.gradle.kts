@@ -40,6 +40,7 @@ dependencies {
 	implementation ("io.jsonwebtoken:jjwt-jackson:0.11.5")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("net.nurigo:sdk:4.3.0")
+	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 }
 
 tasks.withType<Test> {
