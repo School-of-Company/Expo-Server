@@ -41,7 +41,13 @@ public class ExpoParticipant {
     @Column(nullable = false)
     private Boolean informationStatus;
 
-    @ManyToOne
+    private byte[] qrCode;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
     private Expo expo;
+
+    public void addQrCode(byte[] qrCode) {
+        this.qrCode = qrCode;
+    }
 }

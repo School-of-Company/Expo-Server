@@ -38,6 +38,12 @@ public enum ErrorCode {
     // expo
     NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
 
+    // participant
+    NOT_FOUND_PARTICIPANT(404, "행사 참가자를 찾지 못 했습니다."),
+
+    // trainee
+    NOT_FOUND_TRAINEE(404, "연수자를 찾지 못 했습니다."),
+
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
 

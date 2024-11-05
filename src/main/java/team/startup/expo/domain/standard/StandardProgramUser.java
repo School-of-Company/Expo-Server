@@ -27,7 +27,7 @@ public class StandardProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "standardPro_id")
     private StandardProgram standardProgram;
 

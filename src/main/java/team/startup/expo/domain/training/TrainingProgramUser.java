@@ -27,11 +27,11 @@ public class TrainingProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingPro_id")
     private TrainingProgram trainingProgram;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainee_id")
     private Trainee trainee;
 }

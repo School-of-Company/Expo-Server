@@ -41,6 +41,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("net.nurigo:sdk:4.3.0")
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+	implementation("com.google.zxing:core:3.5.0")
+	implementation("com.google.zxing:javase:3.5.0")
 }
 
 tasks.withType<Test> {
