@@ -44,4 +44,8 @@ public class ExpoParticipant {
     @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
+
+    public void addQrCode(byte[] qrCode) {
+        this.qrCode = qrCode;
+    }
 }
