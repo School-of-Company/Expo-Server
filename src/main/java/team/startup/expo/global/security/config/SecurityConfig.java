@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 // sms
                                 .requestMatchers(HttpMethod.POST, "/sms").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/sms").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/sms/qr").permitAll()
 
                                 // admin
                                 .requestMatchers(HttpMethod.PATCH, "/admin/{admin_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
