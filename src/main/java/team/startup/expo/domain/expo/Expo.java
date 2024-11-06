@@ -36,6 +36,12 @@ public class Expo {
     @Column(columnDefinition = "TEXT")
     private String coverImage;
 
+    @Column(nullable = false)
+    private Float x;
+
+    @Column(nullable = false)
+    private Float y;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private Admin admin;
