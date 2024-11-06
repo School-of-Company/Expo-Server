@@ -30,6 +30,8 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
                 .finishedDay(dto.getFinishedDay())
                 .location(dto.getLocation())
                 .coverImage(dto.getCoverImage())
+                .x(dto.getX())
+                .y(dto.getY())
                 .admin(admin)
                 .build();
 
