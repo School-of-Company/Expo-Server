@@ -18,7 +18,7 @@ public class TrainingProgramUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean status = false;
 
     @Column(columnDefinition = "VARCHAR(20)")
@@ -27,7 +27,7 @@ public class TrainingProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "trainingPro_id")
     private TrainingProgram trainingProgram;
 
