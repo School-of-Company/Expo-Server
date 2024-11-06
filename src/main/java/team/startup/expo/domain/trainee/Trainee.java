@@ -22,7 +22,7 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String trainingId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean laptopStatus;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
@@ -44,12 +44,12 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean informationStatus;
 
     private byte[] qrCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
