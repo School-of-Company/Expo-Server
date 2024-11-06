@@ -18,7 +18,7 @@ public class StandardProgramUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean status = false;
 
     @Column(columnDefinition = "VARCHAR(20)")
@@ -27,11 +27,11 @@ public class StandardProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "standardPro_id")
     private StandardProgram standardProgram;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "participant_id")
     private ExpoParticipant expoParticipant;
 }

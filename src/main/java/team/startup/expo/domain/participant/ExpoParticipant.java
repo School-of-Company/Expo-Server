@@ -29,7 +29,7 @@ public class ExpoParticipant {
     @Column(nullable = false)
     private Authority authority;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private boolean status;
 
     @Column(nullable = false, columnDefinition = "VARCHAR(50)")
@@ -38,12 +38,12 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String position;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean informationStatus;
 
     private byte[] qrCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
