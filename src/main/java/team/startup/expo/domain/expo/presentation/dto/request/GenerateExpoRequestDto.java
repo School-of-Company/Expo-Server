@@ -26,4 +26,10 @@ public class GenerateExpoRequestDto {
 
     @NotNull
     private String coverImage;
+
+    @NotNull
+    private Float x;
+
+    @NotNull
+    private Float y;
 }
