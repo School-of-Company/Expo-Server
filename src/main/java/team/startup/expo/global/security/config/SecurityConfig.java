@@ -83,6 +83,7 @@ public class SecurityConfig {
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
