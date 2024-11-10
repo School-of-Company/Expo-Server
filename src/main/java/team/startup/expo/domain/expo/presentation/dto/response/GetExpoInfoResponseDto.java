@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetExpoResponseDto {
+public class GetExpoInfoResponseDto {
     private String title;
     private String description;
     private String startedDay;
