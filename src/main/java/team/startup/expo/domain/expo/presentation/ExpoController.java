@@ -6,11 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.expo.presentation.dto.request.GenerateExpoRequestDto;
 import team.startup.expo.domain.expo.presentation.dto.request.UpdateExpoRequestDto;
+import team.startup.expo.domain.expo.presentation.dto.response.GetExpoInfoResponseDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoResponseDto;
-import team.startup.expo.domain.expo.service.DeleteExpoService;
-import team.startup.expo.domain.expo.service.GenerateExpoService;
-import team.startup.expo.domain.expo.service.GetExpoService;
-import team.startup.expo.domain.expo.service.UpdateExpoService;
+import team.startup.expo.domain.expo.service.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,7 +20,8 @@ public class ExpoController {
     private final GenerateExpoService generateExpoService;
     private final UpdateExpoService updateExpoService;
     private final DeleteExpoService deleteExpoService;
-    private final GetExpoService getExpoService;
+    private final GetExpoInfoService getExpoInfoService;
+    private final GetExpoListService getExpoListService;
 
     @PostMapping
     public ResponseEntity<Void> generateExpo(@RequestBody GenerateExpoRequestDto dto) {
@@ -41,8 +42,14 @@ public class ExpoController {
     }
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<GetExpoResponseDto> getExpo(@PathVariable("expo_id") Long expoId) {
-        GetExpoResponseDto response = getExpoService.execute(expoId);
+    public ResponseEntity<GetExpoInfoResponseDto> getExpoInfo(@PathVariable("expo_id") Long expoId) {
+        GetExpoInfoResponseDto response = getExpoInfoService.execute(expoId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetExpoResponseDto>> getExpoList() {
+        List<GetExpoResponseDto> response = getExpoListService.execute();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
