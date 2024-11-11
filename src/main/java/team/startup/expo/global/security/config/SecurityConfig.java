@@ -87,6 +87,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/expo/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/expo").permitAll()
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
