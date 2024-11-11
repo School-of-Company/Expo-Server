@@ -5,10 +5,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class GetExpoResponseDto {
+public class GetExpoInfoResponseDto {
     private String title;
     private String description;
     private String startedDay;
     private String finishedDay;
+    private String location;
     private String coverImage;
+    private Float x;
+    private Float y;
 }
