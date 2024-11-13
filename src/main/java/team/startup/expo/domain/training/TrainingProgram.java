@@ -32,7 +32,7 @@ public class TrainingProgram {
     @Column(nullable = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
 }

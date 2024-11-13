@@ -81,6 +81,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/training/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
