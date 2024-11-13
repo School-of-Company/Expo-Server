@@ -27,11 +27,11 @@ public class StandardProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "standardPro_id")
     private StandardProgram standardProgram;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "participant_id")
     private ExpoParticipant expoParticipant;
 }

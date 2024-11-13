@@ -27,7 +27,7 @@ public class TrainingProgramUser {
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "trainingPro_id")
     private TrainingProgram trainingProgram;
 

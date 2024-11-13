@@ -49,7 +49,7 @@ public class Trainee {
 
     private byte[] qrCode;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
