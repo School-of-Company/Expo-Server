@@ -17,6 +17,7 @@ public class GetExpoListServiceImpl implements GetExpoListService {
     public List<GetExpoResponseDto> execute() {
         return expoRepository.findAll().stream()
                 .map(expo -> GetExpoResponseDto.builder()
+                        .id(expo.getId())
                         .title(expo.getTitle())
                         .description(expo.getDescription())
                         .startedDay(expo.getStartedDay())
