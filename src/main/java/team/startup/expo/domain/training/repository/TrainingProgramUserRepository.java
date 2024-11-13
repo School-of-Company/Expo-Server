@@ -10,4 +10,5 @@ import java.util.List;
 public interface TrainingProgramUserRepository extends JpaRepository<TrainingProgramUser, Long> {
     List<TrainingProgramUser> findByTrainee(Trainee traine);
     List<TrainingProgramUser> findByTrainingProgram(TrainingProgram trainingProgram);
+    void deleteByTrainingProgram(TrainingProgram trainingProgram);
 }
