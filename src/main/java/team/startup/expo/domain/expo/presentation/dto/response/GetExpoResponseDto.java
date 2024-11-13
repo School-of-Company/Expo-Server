@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class GetExpoResponseDto {
+    private Long id;
     private String title;
     private String description;
     private String startedDay;
