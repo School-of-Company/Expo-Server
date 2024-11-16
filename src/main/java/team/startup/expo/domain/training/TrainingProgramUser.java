@@ -34,4 +34,8 @@ public class TrainingProgramUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainee_id")
     private Trainee trainee;
+
+    public void addLeaveTime(String leaveTime) {
+        this.leaveTime = leaveTime;
+    }
 }

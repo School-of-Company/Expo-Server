@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     Optional<Trainee> findByPhoneNumber(String phoneNumber);
+    Optional<Trainee> findByTrainingId(String trainingId);
     void deleteByExpo(Expo expo);
 }
