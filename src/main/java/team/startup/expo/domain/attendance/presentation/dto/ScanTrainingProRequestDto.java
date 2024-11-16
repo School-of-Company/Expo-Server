@@ -9,6 +9,4 @@ import lombok.NoArgsConstructor;
 public class ScanTrainingProRequestDto {
     @NotNull
     private String trainingId;
-    @NotNull
-    private String phoneNumber;
 }
