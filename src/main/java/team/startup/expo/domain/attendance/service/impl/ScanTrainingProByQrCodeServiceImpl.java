@@ -27,7 +27,7 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
     private final TraineeRepository traineeRepository;
 
     public void execute(Long trainingProId, ScanTrainingProRequestDto dto) {
-        Trainee trainee = traineeRepository.findById(trainingProId)
+        Trainee trainee = traineeRepository.findByTrainingId(dto.getTrainingId())
                 .orElseThrow(NotFoundTraineeException::new);
 
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
