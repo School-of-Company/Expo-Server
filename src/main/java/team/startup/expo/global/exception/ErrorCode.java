@@ -37,6 +37,10 @@ public enum ErrorCode {
     NOT_FOUND_TRAINING_PROGRAM(404, "연수 프로그램을 찾지 못했습니다."),
     NOT_FOUND_TRAINING_PROGRAM_USER(404, "연수 프로그램을 참가 중인 유저를 찾지 못 했습니다."),
 
+    // standard
+    NOT_FOUND_STANDARD_PROGRAM(404, "일반 프로그램을 찾지 못 했습니다."),
+    NOT_FOUND_STANDARD_PROGRAM_USER(404, "일반 프로그램을 참가 중인 유저를 찾지 못 했습니다."),
+
     // expo
     NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
 
