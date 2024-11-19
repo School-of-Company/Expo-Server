@@ -28,6 +28,12 @@ public class UpdateExpoRequestDto {
     @NotNull
     private String coverImage;
 
+    @NotNull
+    private Float x;
+
+    @NotNull
+    private Float y;
+
     public Expo toEntity(Expo expo) {
         return Expo.builder()
                 .id(expo.getId())
@@ -37,6 +43,8 @@ public class UpdateExpoRequestDto {
                 .finishedDay(finishedDay)
                 .location(location)
                 .coverImage(coverImage)
+                .x(x)
+                .y(y)
                 .admin(expo.getAdmin())
                 .build();
     }
