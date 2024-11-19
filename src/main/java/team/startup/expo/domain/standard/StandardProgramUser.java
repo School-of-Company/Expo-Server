@@ -34,4 +34,8 @@ public class StandardProgramUser {
     @ManyToOne
     @JoinColumn(name = "participant_id")
     private ExpoParticipant expoParticipant;
+
+    public void addLeaveTime(String leaveTime) {
+        this.leaveTime = leaveTime;
+    }
 }
