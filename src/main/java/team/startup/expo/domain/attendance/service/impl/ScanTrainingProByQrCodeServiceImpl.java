@@ -3,7 +3,7 @@ package team.startup.expo.domain.attendance.service.impl;
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.attendance.exception.AlreadyLeaveProgramUserException;
 import team.startup.expo.domain.attendance.exception.NotFoundTrainingProgramUserException;
-import team.startup.expo.domain.attendance.presentation.dto.ScanTrainingProRequestDto;
+import team.startup.expo.domain.attendance.presentation.dto.request.ScanTrainingProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
 import java.time.LocalTime;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
@@ -27,13 +27,13 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
     private final TraineeRepository traineeRepository;
 
     public void execute(Long trainingProId, ScanTrainingProRequestDto dto) {
-        Trainee trainee = traineeRepository.findByTrainingId(dto.getTrainingId())
+        Trainee trainee = traineeRepository.findById(dto.getTraineeId())
                 .orElseThrow(NotFoundTraineeException::new);
 
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
                 .orElseThrow(NotFoundTrainingProgramException::new);
 
-        if (trainingProgramUserRepository.existsByTrainee(trainee)) {
+        if (trainingProgramUserRepository.existsByTraineeAndTrainingProgram(trainee, trainingProgram)) {
             TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
                     .orElseThrow(NotFoundTrainingProgramUserException::new);
 
