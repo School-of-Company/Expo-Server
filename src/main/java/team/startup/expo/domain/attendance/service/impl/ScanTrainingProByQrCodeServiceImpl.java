@@ -33,7 +33,7 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
                 .orElseThrow(NotFoundTrainingProgramException::new);
 
-        if (trainingProgramUserRepository.existsByTrainee(trainee)) {
+        if (trainingProgramUserRepository.existsByTraineeAndTrainingProgram(trainee, trainingProgram)) {
             TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
                     .orElseThrow(NotFoundTrainingProgramUserException::new);
 

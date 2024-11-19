@@ -12,6 +12,6 @@ public interface TrainingProgramUserRepository extends JpaRepository<TrainingPro
     List<TrainingProgramUser> findByTrainee(Trainee traine);
     List<TrainingProgramUser> findByTrainingProgram(TrainingProgram trainingProgram);
     Optional<TrainingProgramUser> findByTraineeAndTrainingProgram(Trainee traine, TrainingProgram trainingProgram);
-    Boolean existsByTrainee(Trainee traine);
+    Boolean existsByTraineeAndTrainingProgram(Trainee traine, TrainingProgram trainingProgram);
     void deleteByTrainingProgram(TrainingProgram trainingProgram);
 }
