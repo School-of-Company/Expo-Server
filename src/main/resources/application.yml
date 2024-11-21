@@ -38,3 +38,6 @@ cloud:
       bucket: ${AWS_S3_BUCKET}
     stack:
       auto: false
+
+discord:
+  errorUrl: ${DISCORD_ERROR_URL}

@@ -2,6 +2,7 @@ package team.startup.expo.global.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final ObjectMapper objectMapper;
     private final TokenParser tokenParser;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -104,8 +106,8 @@ public class SecurityConfig {
                                 .anyRequest().denyAll()
                 )
 
-                .addFilterBefore(new RequestLogFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionFilter(objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RequestLogFilter(applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionFilter(objectMapper, applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtFilter(jwtProvider, tokenParser), UsernamePasswordAuthenticationFilter.class);
 
 

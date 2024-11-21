@@ -3,11 +3,17 @@ package team.startup.expo.global.filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.filter.OncePerRequestFilter;
+import team.startup.expo.global.filter.event.ErrorLoggingEvent;
 
 @Slf4j
+@AllArgsConstructor
 public class RequestLogFilter extends OncePerRequestFilter {
+
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
         log.info("=========================");
@@ -36,6 +42,8 @@ public class RequestLogFilter extends OncePerRequestFilter {
             log.error(e.getMessage());
             log.error(e.getCause().getMessage());
             log.error("=========================");
+
+            applicationEventPublisher.publishEvent(new ErrorLoggingEvent(response.getStatus(), e.getCause().toString()));
         }
     }
 }
