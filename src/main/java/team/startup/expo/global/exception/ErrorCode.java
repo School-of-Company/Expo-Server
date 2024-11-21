@@ -47,6 +47,9 @@ public enum ErrorCode {
     // participant
     NOT_FOUND_PARTICIPANT(404, "행사 참가자를 찾지 못 했습니다."),
 
+    // attendance
+    ALREADY_ENTER_EXPO_USER(400, "이미 박람회에 입장한 유저입니다."),
+
     // trainee
     NOT_FOUND_TRAINEE(404, "연수자를 찾지 못 했습니다."),
 
