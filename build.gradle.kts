@@ -43,6 +43,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 	implementation("com.google.zxing:core:3.5.0")
 	implementation("com.google.zxing:javase:3.5.0")
+	implementation("com.google.code.gson:gson:2.8.9")
 }
 
 tasks.withType<Test> {
