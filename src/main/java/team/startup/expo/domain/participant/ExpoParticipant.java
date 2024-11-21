@@ -41,6 +41,9 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean informationStatus;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean attendanceStatus = false;
+
     private byte[] qrCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -49,5 +52,9 @@ public class ExpoParticipant {
 
     public void addQrCode(byte[] qrCode) {
         this.qrCode = qrCode;
+    }
+
+    public void changeAttendanceStatus() {
+        this.attendanceStatus = true;
     }
 }
