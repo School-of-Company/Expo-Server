@@ -1,7 +1,6 @@
 package team.startup.expo.domain.standard.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.util.UserUtil;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
@@ -28,8 +27,8 @@ public class AddStandardProServiceImpl implements AddStandardProService {
     private void saveStandardProgram(Expo expo, AddStandardProRequestDto dto) {
         StandardProgram standardProgram = StandardProgram.builder()
                 .title(dto.getTitle())
-                .startedAt(dto.getStartedAt())
-                .endedAt(dto.getEndedAt())
+                .startedAt(String.valueOf(dto.getStartedAt()))
+                .endedAt(String.valueOf(dto.getEndedAt()))
                 .expo(expo)
                 .build();
 
