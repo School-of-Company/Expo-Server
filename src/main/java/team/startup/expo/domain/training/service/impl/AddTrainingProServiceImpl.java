@@ -36,8 +36,8 @@ public class AddTrainingProServiceImpl implements AddTrainingProService {
     private void saveTrainingPro(AddTrainingProRequestDto dto, Expo expo) {
         TrainingProgram trainingProgram = TrainingProgram.builder()
                 .title(dto.getTitle())
-                .startedAt(dto.getStartedAt())
-                .endedAt(dto.getEndedAt())
+                .startedAt(String.valueOf(dto.getStartedAt()))
+                .endedAt(String.valueOf(dto.getEndedAt()))
                 .category(dto.getCategory())
                 .expo(expo)
                 .build();
