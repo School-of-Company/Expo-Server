@@ -22,6 +22,7 @@ public class TrainingController {
     private final UpdateTrainingProService updateTrainingProService;
     private final DeleteTrainingProService deleteTrainingProService;
     private final GetTrainingProListService getTrainingProListService;
+    private final AddTrainingProListService addTrainingProListService;
 
     @GetMapping("/{trainingPro_id}")
     public ResponseEntity<List<GetTrainingProTraineeResponseDto>> getTraineeByTrainingPro(@PathVariable("trainingPro_id") Long trainingProId) {
@@ -51,5 +52,11 @@ public class TrainingController {
     public ResponseEntity<List<GetTrainingProResponse>> getTrainingProList(@PathVariable("expo_id") Long expoId) {
         List<GetTrainingProResponse> response = getTrainingProListService.execute(expoId);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/list/{expo_id}")
+    public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") Long expoId, @RequestBody List<AddTrainingProRequestDto> dtos) {
+        addTrainingProListService.execute(expoId, dtos);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
