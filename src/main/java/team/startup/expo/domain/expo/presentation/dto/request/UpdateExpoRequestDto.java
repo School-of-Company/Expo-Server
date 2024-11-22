@@ -1,10 +1,13 @@
 package team.startup.expo.domain.expo.presentation.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.expo.Expo;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -17,10 +20,14 @@ public class UpdateExpoRequestDto {
     private String description;
 
     @NotNull
-    private String startedDay;
+    @Size(max = 20)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime startedDay;
 
     @NotNull
-    private String finishedDay;
+    @Size(max = 20)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime finishedDay;
 
     @NotNull
     private String location;
@@ -39,8 +46,8 @@ public class UpdateExpoRequestDto {
                 .id(expo.getId())
                 .title(title)
                 .description(description)
-                .startedDay(startedDay)
-                .finishedDay(finishedDay)
+                .startedDay(String.valueOf(startedDay))
+                .finishedDay(String.valueOf(finishedDay))
                 .location(location)
                 .coverImage(coverImage)
                 .x(x)
