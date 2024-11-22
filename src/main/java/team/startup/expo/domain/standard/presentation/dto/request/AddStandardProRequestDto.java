@@ -18,11 +18,11 @@ public class AddStandardProRequestDto {
 
     @NotNull
     @Size(max = 20)
-    private String startedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startedAt;
 
     @NotNull
     @Size(max = 20)
-    private String endedAt;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endedAt;
 }
