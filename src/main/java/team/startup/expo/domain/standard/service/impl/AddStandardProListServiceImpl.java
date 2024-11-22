@@ -7,24 +7,26 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.standard.StandardProgram;
 import team.startup.expo.domain.standard.presentation.dto.request.AddStandardProRequestDto;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
-import team.startup.expo.domain.standard.service.AddStandardProService;
+import team.startup.expo.domain.standard.service.AddStandardProListService;
 import team.startup.expo.global.annotation.TransactionService;
+
+import java.util.List;
 
 @TransactionService
 @RequiredArgsConstructor
-public class AddStandardProServiceImpl implements AddStandardProService {
+public class AddStandardProListServiceImpl implements AddStandardProListService {
 
     private final StandardProgramRepository standardProgramRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(Long expoId, AddStandardProRequestDto dto) {
+    public void execute(Long expoId, List<AddStandardProRequestDto> dtos) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        saveStandardProgram(expo, dto);
+        dtos.forEach(dto -> saveStandardProgram(dto, expo));
     }
 
-    private void saveStandardProgram(Expo expo, AddStandardProRequestDto dto) {
+    private void saveStandardProgram(AddStandardProRequestDto dto, Expo expo) {
         StandardProgram standardProgram = StandardProgram.builder()
                 .title(dto.getTitle())
                 .startedAt(String.valueOf(dto.getStartedAt()))
