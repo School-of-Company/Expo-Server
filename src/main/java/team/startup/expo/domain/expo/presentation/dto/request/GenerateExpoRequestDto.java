@@ -1,9 +1,12 @@
 package team.startup.expo.domain.expo.presentation.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -16,10 +19,14 @@ public class GenerateExpoRequestDto {
     private String description;
 
     @NotNull
-    private String startedDay;
+    @Size(max = 20)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime startedDay;
 
     @NotNull
-    private String finishedDay;
+    @Size(max = 20)
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime finishedDay;
 
     @NotNull
     private String location;
