@@ -1,5 +1,6 @@
 package team.startup.expo.domain.training.presentation;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +32,13 @@ public class TrainingController {
     }
 
     @PostMapping("/{expo_id}")
-    public ResponseEntity<Void> addTrainingPro(@PathVariable("expo_id") Long expoId, @RequestBody AddTrainingProRequestDto dto) {
+    public ResponseEntity<Void> addTrainingPro(@PathVariable("expo_id") Long expoId, @RequestBody @Valid AddTrainingProRequestDto dto) {
         addTrainingProService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/{trainingPro_id}")
-    public ResponseEntity<Void> updateTrainingPro(@PathVariable("trainingPro_id") Long trainingProId, @RequestBody UpdateTrainingProRequestDto dto) {
+    public ResponseEntity<Void> updateTrainingPro(@PathVariable("trainingPro_id") Long trainingProId, @RequestBody @Valid UpdateTrainingProRequestDto dto) {
         updateTrainingProService.execute(trainingProId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -55,7 +56,7 @@ public class TrainingController {
     }
 
     @PostMapping("/list/{expo_id}")
-    public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") Long expoId, @RequestBody List<AddTrainingProRequestDto> dtos) {
+    public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") Long expoId, @RequestBody @Valid List<AddTrainingProRequestDto> dtos) {
         addTrainingProListService.execute(expoId, dtos);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

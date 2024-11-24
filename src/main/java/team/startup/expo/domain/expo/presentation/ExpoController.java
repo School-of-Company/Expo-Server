@@ -1,5 +1,6 @@
 package team.startup.expo.domain.expo.presentation;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +25,13 @@ public class ExpoController {
     private final GetExpoListService getExpoListService;
 
     @PostMapping
-    public ResponseEntity<Void> generateExpo(@RequestBody GenerateExpoRequestDto dto) {
+    public ResponseEntity<Void> generateExpo(@RequestBody @Valid GenerateExpoRequestDto dto) {
         generateExpoService.execute(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/{expo_id}")
-    public ResponseEntity<Void> updateExpo(@PathVariable("expo_id") Long expoId, @RequestBody UpdateExpoRequestDto dto) {
+    public ResponseEntity<Void> updateExpo(@PathVariable("expo_id") Long expoId, @RequestBody @Valid UpdateExpoRequestDto dto) {
         updateExpoService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
