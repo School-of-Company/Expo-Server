@@ -1,5 +1,6 @@
 package team.startup.expo.domain.attendance.presentation;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class AttendanceController {
     @PatchMapping("/training/{trainingPro_id}")
     public ResponseEntity<Void> scanTrainingProByQrCode(
         @PathVariable("trainingPro_id") Long trainingProId,
-        @RequestBody ScanTrainingProRequestDto dto
+        @RequestBody @Valid ScanTrainingProRequestDto dto
     ) {
         scanTrainingProByQrCodeService.execute(trainingProId, dto);
         return ResponseEntity.ok().build();
@@ -31,14 +32,14 @@ public class AttendanceController {
     @PatchMapping("/standard/{standardPro_id}")
     public ResponseEntity<Void> scanStandardProByQrCode(
         @PathVariable("standardPro_id") Long standardProId,
-        @RequestBody ScanStandardProRequestDto dto
+        @RequestBody @Valid ScanStandardProRequestDto dto
     ) {
         scanStandardProByQrCodeService.execute(standardProId, dto);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping
-    public ResponseEntity<Void> preEnterScanQrCode(@RequestBody PreEnterScanQrCodeRequestDto dto) {
+    public ResponseEntity<Void> preEnterScanQrCode(@RequestBody @Valid PreEnterScanQrCodeRequestDto dto) {
         preEnterScanQrCodeService.execute(dto);
         return ResponseEntity.ok().build();
     }
