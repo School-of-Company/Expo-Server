@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.standard.presentation.dto.request.AddStandardProRequestDto;
 import team.startup.expo.domain.standard.presentation.dto.request.UpdateStandardProRequestDto;
+import team.startup.expo.domain.standard.presentation.dto.response.GetStandardProParticipantResponseDto;
 import team.startup.expo.domain.standard.presentation.dto.response.GetStandardProgramResponseDto;
 import team.startup.expo.domain.standard.service.*;
 
@@ -22,6 +23,7 @@ public class StandardController {
     private final UpdateStandardProService updateStandardProService;
     private final DeleteStandardProService deleteStandardProService;
     private final GetStandardProListService getStandardProListService;
+    private final GetParticipantByStandardProService getParticipantByStandardProService;
 
     @PostMapping("/{expo_id}")
     public ResponseEntity<Void> addStandardPro(@PathVariable("expo_id") String expoId, @RequestBody @Valid AddStandardProRequestDto dto) {
@@ -50,6 +52,12 @@ public class StandardController {
     @GetMapping("/program/{expo_id}")
     public ResponseEntity<List<GetStandardProgramResponseDto>> getStandardProList(@PathVariable("expo_id") String expoId) {
         List<GetStandardProgramResponseDto> response = getStandardProListService.execute(expoId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{standardPro_id}")
+    public ResponseEntity<List<GetStandardProParticipantResponseDto>> getParticipantByStandardPro(@PathVariable("standardPro_id") Long standardProId) {
+        List<GetStandardProParticipantResponseDto> response = getParticipantByStandardProService.execute(standardProId);
         return ResponseEntity.ok(response);
     }
 }
