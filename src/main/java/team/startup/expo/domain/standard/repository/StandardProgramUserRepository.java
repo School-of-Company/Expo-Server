@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface StandardProgramUserRepository extends JpaRepository<StandardProgramUser, Long> {
     Optional<StandardProgramUser> findByStandardProgramAndExpoParticipant(StandardProgram standardProgram, ExpoParticipant expoParticipant);
     Boolean existsByExpoParticipantAndStandardProgram(ExpoParticipant expoParticipant, StandardProgram standardProgram);
+    void deleteByStandardProgram(StandardProgram standardProgram);
 }
