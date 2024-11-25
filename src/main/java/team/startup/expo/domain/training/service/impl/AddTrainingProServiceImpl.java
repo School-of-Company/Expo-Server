@@ -21,7 +21,7 @@ public class AddTrainingProServiceImpl implements AddTrainingProService {
     private final TrainingProgramRepository trainingProgramRepository;
     private final UserUtil userUtil;
 
-    public void execute(Long expoId, AddTrainingProRequestDto dto) {
+    public void execute(String expoId, AddTrainingProRequestDto dto) {
         Admin admin = userUtil.getCurrentUser();
 
         Expo expo = expoRepository.findById(expoId)

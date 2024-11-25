@@ -13,16 +13,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UpdateStandardProRequestDto {
     @NotNull
-    @Size(max = 100)
     private String title;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startedAt;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime endedAt;
 

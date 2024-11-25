@@ -5,5 +5,5 @@ import team.startup.expo.domain.standard.presentation.dto.request.AddStandardPro
 import java.util.List;
 
 public interface AddStandardProListService {
-    void execute(Long expoId, List<AddStandardProRequestDto> dtos);
+    void execute(String expoId, List<AddStandardProRequestDto> dtos);
 }

@@ -32,7 +32,7 @@ public class TrainingController {
     }
 
     @PostMapping("/{expo_id}")
-    public ResponseEntity<Void> addTrainingPro(@PathVariable("expo_id") Long expoId, @RequestBody @Valid AddTrainingProRequestDto dto) {
+    public ResponseEntity<Void> addTrainingPro(@PathVariable("expo_id") String expoId, @RequestBody @Valid AddTrainingProRequestDto dto) {
         addTrainingProService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -50,13 +50,13 @@ public class TrainingController {
     }
 
     @GetMapping("/program/{expo_id}")
-    public ResponseEntity<List<GetTrainingProResponse>> getTrainingProList(@PathVariable("expo_id") Long expoId) {
+    public ResponseEntity<List<GetTrainingProResponse>> getTrainingProList(@PathVariable("expo_id") String expoId) {
         List<GetTrainingProResponse> response = getTrainingProListService.execute(expoId);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/list/{expo_id}")
-    public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") Long expoId, @RequestBody @Valid List<AddTrainingProRequestDto> dtos) {
+    public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") String expoId, @RequestBody @Valid List<AddTrainingProRequestDto> dtos) {
         addTrainingProListService.execute(expoId, dtos);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

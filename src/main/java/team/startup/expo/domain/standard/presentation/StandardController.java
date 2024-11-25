@@ -23,13 +23,13 @@ public class StandardController {
     private final UpdateStandardProService updateStandardProService;
 
     @PostMapping("/{expo_id}")
-    public ResponseEntity<Void> addStandardPro(@PathVariable("expo_id") Long expoId, @RequestBody @Valid AddStandardProRequestDto dto) {
+    public ResponseEntity<Void> addStandardPro(@PathVariable("expo_id") String expoId, @RequestBody @Valid AddStandardProRequestDto dto) {
         addStandardProService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/list/{expo_id}")
-    public ResponseEntity<Void> addStandardProList(@PathVariable("expo_id") Long expoId, @RequestBody @Valid List<AddStandardProRequestDto> dtos) {
+    public ResponseEntity<Void> addStandardProList(@PathVariable("expo_id") String expoId, @RequestBody @Valid List<AddStandardProRequestDto> dtos) {
         addStandardProListService.execute(expoId, dtos);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

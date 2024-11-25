@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -19,14 +19,12 @@ public class GenerateExpoRequestDto {
     private String description;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime startedDay;
+    private LocalDate startedDay;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime finishedDay;
+    private LocalDate finishedDay;
 
     @NotNull
     private String location;

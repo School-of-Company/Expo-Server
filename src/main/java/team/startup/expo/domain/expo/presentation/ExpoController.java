@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.expo.presentation.dto.request.GenerateExpoRequestDto;
 import team.startup.expo.domain.expo.presentation.dto.request.UpdateExpoRequestDto;
+import team.startup.expo.domain.expo.presentation.dto.response.GenerateExpoResponseDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoInfoResponseDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoResponseDto;
 import team.startup.expo.domain.expo.service.*;
@@ -25,25 +26,25 @@ public class ExpoController {
     private final GetExpoListService getExpoListService;
 
     @PostMapping
-    public ResponseEntity<Void> generateExpo(@RequestBody @Valid GenerateExpoRequestDto dto) {
-        generateExpoService.execute(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<GenerateExpoResponseDto> generateExpo(@RequestBody @Valid GenerateExpoRequestDto dto) {
+        GenerateExpoResponseDto response = generateExpoService.execute(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{expo_id}")
-    public ResponseEntity<Void> updateExpo(@PathVariable("expo_id") Long expoId, @RequestBody @Valid UpdateExpoRequestDto dto) {
+    public ResponseEntity<Void> updateExpo(@PathVariable("expo_id") String expoId, @RequestBody @Valid UpdateExpoRequestDto dto) {
         updateExpoService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @DeleteMapping("/{expo_id}")
-    public ResponseEntity<Void> deleteExpo(@PathVariable("expo_id") Long expoId) {
+    public ResponseEntity<Void> deleteExpo(@PathVariable("expo_id") String expoId) {
         deleteExpoService.execute(expoId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<GetExpoInfoResponseDto> getExpoInfo(@PathVariable("expo_id") Long expoId) {
+    public ResponseEntity<GetExpoInfoResponseDto> getExpoInfo(@PathVariable("expo_id") String expoId) {
         GetExpoInfoResponseDto response = getExpoInfoService.execute(expoId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

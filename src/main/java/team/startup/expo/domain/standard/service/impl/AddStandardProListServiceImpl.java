@@ -19,7 +19,7 @@ public class AddStandardProListServiceImpl implements AddStandardProListService 
     private final StandardProgramRepository standardProgramRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(Long expoId, List<AddStandardProRequestDto> dtos) {
+    public void execute(String expoId, List<AddStandardProRequestDto> dtos) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

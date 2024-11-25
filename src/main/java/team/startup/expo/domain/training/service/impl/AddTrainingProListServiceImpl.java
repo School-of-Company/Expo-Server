@@ -19,7 +19,7 @@ public class AddTrainingProListServiceImpl implements AddTrainingProListService 
     private final TrainingProgramRepository trainingProgramRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(Long expoId, List<AddTrainingProRequestDto> dtos) {
+    public void execute(String expoId, List<AddTrainingProRequestDto> dtos) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

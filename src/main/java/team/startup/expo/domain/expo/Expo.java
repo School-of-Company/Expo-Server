@@ -15,8 +15,8 @@ import team.startup.expo.domain.admin.Admin;
 public class Expo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String title;

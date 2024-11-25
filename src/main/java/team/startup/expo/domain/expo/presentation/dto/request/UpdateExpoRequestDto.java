@@ -20,12 +20,10 @@ public class UpdateExpoRequestDto {
     private String description;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime startedDay;
 
     @NotNull
-    @Size(max = 20)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime finishedDay;
 
