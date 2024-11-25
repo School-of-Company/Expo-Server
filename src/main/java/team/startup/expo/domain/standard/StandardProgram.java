@@ -27,7 +27,7 @@ public class StandardProgram {
     @Column(nullable = false, columnDefinition = "VARCHAR(20)")
     private String endedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
