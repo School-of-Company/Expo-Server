@@ -27,8 +27,8 @@ public class ExpoController {
 
     @PostMapping
     public ResponseEntity<GenerateExpoResponseDto> generateExpo(@RequestBody @Valid GenerateExpoRequestDto dto) {
-        generateExpoService.execute(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        GenerateExpoResponseDto response = generateExpoService.execute(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{expo_id}")
