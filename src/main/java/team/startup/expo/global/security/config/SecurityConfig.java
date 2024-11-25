@@ -107,6 +107,9 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/standard/{standardPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/attendance").permitAll()
 
+                                // form
+                                .requestMatchers(HttpMethod.POST, "/form/{expo_id}").permitAll()
+
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
 
