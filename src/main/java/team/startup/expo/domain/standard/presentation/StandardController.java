@@ -9,6 +9,7 @@ import team.startup.expo.domain.standard.presentation.dto.request.AddStandardPro
 import team.startup.expo.domain.standard.presentation.dto.request.UpdateStandardProRequestDto;
 import team.startup.expo.domain.standard.service.AddStandardProListService;
 import team.startup.expo.domain.standard.service.AddStandardProService;
+import team.startup.expo.domain.standard.service.DeleteStandardProService;
 import team.startup.expo.domain.standard.service.UpdateStandardProService;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class StandardController {
     private final AddStandardProService addStandardProService;
     private final AddStandardProListService addStandardProListService;
     private final UpdateStandardProService updateStandardProService;
+    private final DeleteStandardProService deleteStandardProService;
 
     @PostMapping("/{expo_id}")
     public ResponseEntity<Void> addStandardPro(@PathVariable("expo_id") String expoId, @RequestBody @Valid AddStandardProRequestDto dto) {
@@ -37,6 +39,12 @@ public class StandardController {
     @PatchMapping("/{standardPro_id}")
     public ResponseEntity<Void> updateStandardPro(@PathVariable("standardPro_id") Long standardProId, @RequestBody @Valid UpdateStandardProRequestDto dto) {
         updateStandardProService.execute(standardProId, dto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{standardPro_id}")
+    public ResponseEntity<Void> deleteStandardPro(@PathVariable("standardPro_id") Long standardProId) {
+        deleteStandardProService.execute(standardProId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
