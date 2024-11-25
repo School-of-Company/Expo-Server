@@ -84,7 +84,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/training/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/training/program/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/training/program/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/training/list/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // standard
@@ -92,6 +92,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/standard/list/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/standard/program/{expo_id}").permitAll()
 
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
