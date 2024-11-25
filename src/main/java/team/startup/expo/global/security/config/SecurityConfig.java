@@ -93,6 +93,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/standard/program/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
