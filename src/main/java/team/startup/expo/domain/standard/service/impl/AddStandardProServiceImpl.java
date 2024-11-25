@@ -17,7 +17,7 @@ public class AddStandardProServiceImpl implements AddStandardProService {
     private final StandardProgramRepository standardProgramRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(Long expoId, AddStandardProRequestDto dto) {
+    public void execute(String expoId, AddStandardProRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

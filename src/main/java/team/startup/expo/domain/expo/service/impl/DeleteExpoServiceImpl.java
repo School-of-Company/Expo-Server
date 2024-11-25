@@ -25,7 +25,7 @@ public class DeleteExpoServiceImpl implements DeleteExpoService {
     private final TrainingProgramRepository trainingProgramRepository;
     private final UserUtil userUtil;
 
-    public void execute(Long expoId) {
+    public void execute(String expoId) {
         Admin admin = userUtil.getCurrentUser();
 
         Expo expo = expoRepository.findById(expoId)

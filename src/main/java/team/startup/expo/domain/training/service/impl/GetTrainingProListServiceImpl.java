@@ -18,7 +18,7 @@ public class GetTrainingProListServiceImpl implements GetTrainingProListService 
     private final TrainingProgramRepository trainingProgramRepository;
     private final ExpoRepository expoRepository;
 
-    public List<GetTrainingProResponse> execute(Long expoId) {
+    public List<GetTrainingProResponse> execute(String expoId) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

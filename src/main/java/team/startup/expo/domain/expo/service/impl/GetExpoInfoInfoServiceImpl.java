@@ -14,7 +14,7 @@ public class GetExpoInfoInfoServiceImpl implements GetExpoInfoService {
 
     private final ExpoRepository expoRepository;
 
-    public GetExpoInfoResponseDto execute(Long expoId) {
+    public GetExpoInfoResponseDto execute(String expoId) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

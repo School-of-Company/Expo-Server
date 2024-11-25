@@ -5,6 +5,7 @@ import team.startup.expo.domain.expo.presentation.dto.response.GetExpoResponseDt
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.GetExpoListService;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
+import team.startup.expo.global.common.ulid.ULIDGenerator;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class GetExpoListServiceImpl implements GetExpoListService {
 
     private final ExpoRepository expoRepository;
+    private final ULIDGenerator ulidGenerator;
 
     public List<GetExpoResponseDto> execute() {
         return expoRepository.findAll().stream()

@@ -5,9 +5,11 @@ import team.startup.expo.domain.admin.Admin;
 import team.startup.expo.domain.admin.util.UserUtil;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.presentation.dto.request.GenerateExpoRequestDto;
+import team.startup.expo.domain.expo.presentation.dto.response.GenerateExpoResponseDto;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.GenerateExpoService;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.common.ulid.ULIDGenerator;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -16,14 +18,19 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
     private final ExpoRepository expoRepository;
     private final UserUtil userUtil;
 
-    public void execute(GenerateExpoRequestDto dto) {
+    public GenerateExpoResponseDto execute(GenerateExpoRequestDto dto) {
         Admin admin = userUtil.getCurrentUser();
 
-        saveExpo(dto, admin);
+        String expoId = saveExpo(dto, admin);
+
+        return GenerateExpoResponseDto.builder()
+                .expoId(expoId)
+                .build();
     }
 
-    private void saveExpo(GenerateExpoRequestDto dto, Admin admin) {
+    private String saveExpo(GenerateExpoRequestDto dto, Admin admin) {
         Expo expo = Expo.builder()
+                .id(ULIDGenerator.generateULID())
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .startedDay(String.valueOf(dto.getStartedDay()))
@@ -36,5 +43,7 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
                 .build();
 
         expoRepository.save(expo);
+
+        return expo.getId();
     }
 }

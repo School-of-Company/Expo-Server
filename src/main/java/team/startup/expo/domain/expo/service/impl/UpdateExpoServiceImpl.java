@@ -18,7 +18,7 @@ public class UpdateExpoServiceImpl implements UpdateExpoService {
     private final ExpoRepository expoRepository;
     private final UserUtil userUtil;
 
-    public void execute(Long expoId, UpdateExpoRequestDto dto) {
+    public void execute(String expoId, UpdateExpoRequestDto dto) {
         Admin admin = userUtil.getCurrentUser();
 
         Expo expo = expoRepository.findById(expoId)
