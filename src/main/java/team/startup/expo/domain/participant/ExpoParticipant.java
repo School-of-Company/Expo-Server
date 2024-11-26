@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.trainee.ParticipationType;
 
 @Entity
 @NoArgsConstructor
@@ -29,9 +30,6 @@ public class ExpoParticipant {
     @Column(nullable = false)
     private Authority authority;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean status;
-
     @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     private String affiliation;
 
@@ -43,6 +41,10 @@ public class ExpoParticipant {
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean attendanceStatus = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParticipationType participationType;
 
     private byte[] qrCode;
 

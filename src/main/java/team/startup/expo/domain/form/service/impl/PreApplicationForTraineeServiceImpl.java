@@ -7,6 +7,7 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.presentation.dto.request.PreApplicationForTraineeRequestDto;
 import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
+import team.startup.expo.domain.trainee.ParticipationType;
 import team.startup.expo.domain.trainee.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
@@ -35,6 +36,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                 .schoolLevel(dto.getSchoolLevel())
                 .organization(dto.getOrganization())
                 .name(dto.getName())
+                .participationType(ParticipationType.PRE)
                 .informationStatus(dto.getInformationStatus())
                 .attendanceStatus(false)
                 .expo(expo)

@@ -50,6 +50,10 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean attendanceStatus = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ParticipationType participationType;
+
     private byte[] qrCode;
 
     @ManyToOne

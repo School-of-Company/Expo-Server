@@ -1,0 +1,25 @@
+package team.startup.expo.domain.form.presentation.dto.request;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class PreApplicationForParticipantRequestDto {
+
+    @NotNull
+    private String name;
+
+    @NotNull
+    private String phoneNumber;
+
+    @NotNull
+    private String affiliation;
+
+    @NotNull
+    private String position;
+
+    @NotNull
+    private Boolean informationStatus;
+}
