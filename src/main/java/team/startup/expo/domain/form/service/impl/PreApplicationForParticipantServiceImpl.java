@@ -9,6 +9,7 @@ import team.startup.expo.domain.form.presentation.dto.request.PreApplicationForP
 import team.startup.expo.domain.form.service.PreApplicationForParticipantService;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.trainee.ParticipationType;
 import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
@@ -32,6 +33,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
                 .attendanceStatus(false)
+                .participationType(ParticipationType.PRE)
                 .informationStatus(dto.getInformationStatus())
                 .position(dto.getPosition())
                 .expo(expo)
