@@ -29,9 +29,6 @@ public class ExpoParticipant {
     @Column(nullable = false)
     private Authority authority;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean status;
-
     @Column(nullable = false, columnDefinition = "VARCHAR(50)")
     private String affiliation;
 
