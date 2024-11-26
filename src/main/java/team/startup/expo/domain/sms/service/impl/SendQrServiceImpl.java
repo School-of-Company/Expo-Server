@@ -57,8 +57,6 @@ public class SendQrServiceImpl implements SendQrService {
 
             Message message = createMessage(qrBytes, dto);
 
-            participant.addQrCode(qrBytes);
-
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         } else if (dto.getAuthority() == Authority.ROLE_TRAINEE) {
             Trainee trainee = traineeRepository.findByPhoneNumber(dto.getPhoneNumber())
@@ -70,8 +68,6 @@ public class SendQrServiceImpl implements SendQrService {
             byte[] qrBytes = createQr(information);
 
             Message message = createMessage(qrBytes, dto);
-
-            trainee.addQrCode(qrBytes);
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         }
