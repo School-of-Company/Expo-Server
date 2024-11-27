@@ -46,11 +46,19 @@ public class ExpoParticipant {
     @Column(nullable = false)
     private ParticipationType participationType;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] qrCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
     public void changeAttendanceStatus() {
         this.attendanceStatus = true;
+    }
+
+    public void addQrCode(byte[] qrCode) {
+        this.qrCode = qrCode;
     }
 }

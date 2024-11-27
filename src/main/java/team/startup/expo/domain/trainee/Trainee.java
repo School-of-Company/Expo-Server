@@ -54,11 +54,19 @@ public class Trainee {
     @Column(nullable = false)
     private ParticipationType participationType;
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    private byte[] qrCode;
+
     @ManyToOne
     @JoinColumn(name = "expo_id")
     private Expo expo;
 
     public void changeAttendanceStatus() {
         this.attendanceStatus = true;
+    }
+
+    public void addQrCode(byte[] qrCode) {
+        this.qrCode = qrCode;
     }
 }
