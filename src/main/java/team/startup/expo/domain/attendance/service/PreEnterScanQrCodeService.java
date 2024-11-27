@@ -1,7 +1,8 @@
 package team.startup.expo.domain.attendance.service;
 
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
+import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 
 public interface PreEnterScanQrCodeService {
-    void execute(PreEnterScanQrCodeRequestDto dto);
+    PreEnterScanQrCodeResponseDto execute(PreEnterScanQrCodeRequestDto dto);
 }

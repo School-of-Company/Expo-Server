@@ -7,7 +7,6 @@ import com.google.zxing.common.BitMatrix;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.model.MessageType;
 import net.nurigo.sdk.message.model.StorageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
@@ -30,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -55,6 +53,8 @@ public class SendQrServiceImpl implements SendQrService {
             String information = "{\"participantId\": \"" + participant.getId() + "\", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
             byte[] qrBytes = createQr(information);
 
+            participant.addQrCode(qrBytes);
+
             Message message = createMessage(qrBytes, dto);
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
@@ -64,8 +64,9 @@ public class SendQrServiceImpl implements SendQrService {
 
             String information = "{\"traineeId\" = " + trainee.getId() + ", \"phoneNumber\" = " + trainee.getPhoneNumber() + "}";
 
-
             byte[] qrBytes = createQr(information);
+
+            trainee.addQrCode(qrBytes);
 
             Message message = createMessage(qrBytes, dto);
 

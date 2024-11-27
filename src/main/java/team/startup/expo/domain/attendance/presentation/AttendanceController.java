@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanTrainingProRequestDto;
+import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
@@ -39,8 +40,8 @@ public class AttendanceController {
     }
 
     @PatchMapping
-    public ResponseEntity<Void> preEnterScanQrCode(@RequestBody @Valid PreEnterScanQrCodeRequestDto dto) {
-        preEnterScanQrCodeService.execute(dto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PreEnterScanQrCodeResponseDto> preEnterScanQrCode(@RequestBody @Valid PreEnterScanQrCodeRequestDto dto) {
+        PreEnterScanQrCodeResponseDto response = preEnterScanQrCodeService.execute(dto);
+        return ResponseEntity.ok(response);
     }
 }
