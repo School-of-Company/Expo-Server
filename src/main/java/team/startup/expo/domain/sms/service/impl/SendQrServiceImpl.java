@@ -50,7 +50,7 @@ public class SendQrServiceImpl implements SendQrService {
             ExpoParticipant participant = participantRepository.findByPhoneNumber(dto.getPhoneNumber())
                     .orElseThrow(NotFoundParticipantException::new);
 
-            String information = "{\"participantId\": \"" + participant.getId() + "\", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
+            String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
             byte[] qrBytes = createQr(information);
 
             participant.addQrCode(qrBytes);
@@ -62,7 +62,7 @@ public class SendQrServiceImpl implements SendQrService {
             Trainee trainee = traineeRepository.findByPhoneNumber(dto.getPhoneNumber())
                     .orElseThrow(NotFoundTraineeException::new);
 
-            String information = "{\"traineeId\" = " + trainee.getId() + ", \"phoneNumber\" = " + trainee.getPhoneNumber() + "}";
+            String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
 
             byte[] qrBytes = createQr(information);
 
