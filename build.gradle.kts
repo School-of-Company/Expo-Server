@@ -44,6 +44,8 @@ dependencies {
 	implementation("com.google.zxing:core:3.5.0")
 	implementation("com.google.zxing:javase:3.5.0")
 	implementation("com.google.code.gson:gson:2.8.9")
+	implementation("org.apache.poi:poi:5.3.0")
+	implementation("org.apache.poi:poi-ooxml:5.3.0")
 }
 
 tasks.withType<Test> {
