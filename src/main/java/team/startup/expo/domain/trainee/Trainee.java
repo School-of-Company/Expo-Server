@@ -25,7 +25,7 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean laptopStatus;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)

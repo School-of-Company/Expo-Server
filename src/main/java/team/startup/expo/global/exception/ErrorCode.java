@@ -28,6 +28,7 @@ public enum ErrorCode {
     DUPLICATE_EMAIL(409, "이미 존재하는 이메일입니다."),
     NOT_MATCH_ADMIN(403, "관리자가 일치하지 않습니다."),
     ALREADY_LEAVE_PROGRAM_USER(400, "이미 프로그램을 퇴실한 유저입니다."),
+    ALREADY_APPLICATION_USER(409, "이미 신청한 유저입니다."),
 
     // auth
     NOT_MATCH_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
