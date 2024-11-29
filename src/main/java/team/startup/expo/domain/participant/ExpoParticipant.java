@@ -23,7 +23,7 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(10)")
     private String name;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
