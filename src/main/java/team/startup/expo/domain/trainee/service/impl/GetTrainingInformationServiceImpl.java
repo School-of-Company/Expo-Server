@@ -1,8 +1,10 @@
 package team.startup.expo.domain.trainee.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInformationResponseDto;
-import team.startup.expo.domain.trainee.presentation.dto.response.GetTrainingProgramResponseDto;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.trainee.service.GetTrainingInformationService;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
@@ -15,24 +17,26 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class GetTrainingInformationServiceImpl implements GetTrainingInformationService {
 
-    private final TrainingProgramUserRepository trainingProgramUserRepository;
     private final TraineeRepository traineeRepository;
+    private final ExpoRepository expoRepository;
 
-    public List<GetTraineeInformationResponseDto> execute() {
-        return traineeRepository.findAll().stream()
-                .map(trainee -> {
-                    List<GetTrainingProgramResponseDto> programResponseDtos = trainingProgramUserRepository.findByTrainee(trainee).stream()
-                            .map(trainingProgramUser -> GetTrainingProgramResponseDto.builder()
-                                    .programName(trainingProgramUser.getTrainingProgram().getTitle())
-                                    .build())
-                            .toList();
+    public List<GetTraineeInformationResponseDto> execute(String expoId) {
+        Expo expo = expoRepository.findById(expoId)
+                .orElseThrow(NotFoundExpoException::new);
 
-                    return GetTraineeInformationResponseDto.builder()
-                            .name(trainee.getName())
-                            .trainingProgram(programResponseDtos)
-                            .trainingId(trainee.getTrainingId())
-                            .laptopStatus(trainee.getLaptopStatus())
-                            .build();
-                }).collect(Collectors.toList());
+        return traineeRepository.findByExpo(expo).stream()
+                .map(trainee -> GetTraineeInformationResponseDto.builder()
+                        .id(trainee.getId())
+                        .name(trainee.getName())
+                        .trainingId(trainee.getTrainingId())
+                        .phoneNumber(trainee.getPhoneNumber())
+                        .organization(trainee.getOrganization())
+                        .schoolLevel(trainee.getSchoolLevel())
+                        .position(trainee.getPosition())
+                        .laptopStatus(trainee.getLaptopStatus())
+                        .informationStatus(trainee.getInformationStatus())
+                        .participationType(trainee.getParticipationType())
+                        .build()
+                ).toList();
     }
 }

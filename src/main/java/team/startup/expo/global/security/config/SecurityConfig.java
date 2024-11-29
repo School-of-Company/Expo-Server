@@ -77,7 +77,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
 
                                 // trainee
-                                .requestMatchers(HttpMethod.GET, "/trainee").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/trainee/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // participant
                                 .requestMatchers(HttpMethod.GET, "/participant/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
