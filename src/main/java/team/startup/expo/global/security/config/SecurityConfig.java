@@ -71,7 +71,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/admin").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // excel
-                                .requestMatchers(HttpMethod.GET, "/excel/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/excel/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // auth
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
