@@ -5,8 +5,10 @@ import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.form.presentation.dto.request.PreApplicationForTraineeRequestDto;
 import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
+import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.trainee.ParticipationType;
 import team.startup.expo.domain.trainee.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -18,10 +20,15 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
+    private final ParticipantRepository participantRepository;
+
 
     public void execute(String expoId, PreApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
+
+        if (participantRepository.existsByPhoneNumber(dto.getPhoneNumber()) || traineeRepository.existsByPhoneNumber(dto.getPhoneNumber()))
+            throw new AlreadyApplicationUserException();
 
         saveTrainee(dto, expo);
     }
