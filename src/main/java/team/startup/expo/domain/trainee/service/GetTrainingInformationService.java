@@ -5,5 +5,5 @@ import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInfo
 import java.util.List;
 
 public interface GetTrainingInformationService {
-    List<GetTraineeInformationResponseDto> execute();
+    List<GetTraineeInformationResponseDto> execute(String expoId);
 }
