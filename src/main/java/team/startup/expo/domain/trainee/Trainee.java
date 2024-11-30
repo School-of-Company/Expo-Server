@@ -19,7 +19,7 @@ public class Trainee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
+    @Column(nullable = false, unique = true ,columnDefinition = "VARCHAR(20)")
     private String trainingId;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
