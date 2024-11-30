@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.training.presentation.dto.request.AddTrainingProRequestDto;
+import team.startup.expo.domain.training.presentation.dto.request.ApplicationTrainingProRequestDto;
 import team.startup.expo.domain.training.presentation.dto.request.UpdateTrainingProRequestDto;
 import team.startup.expo.domain.training.presentation.dto.response.GetTrainingProResponse;
 import team.startup.expo.domain.training.presentation.dto.response.GetTrainingProTraineeResponseDto;
@@ -24,6 +25,7 @@ public class TrainingController {
     private final DeleteTrainingProService deleteTrainingProService;
     private final GetTrainingProListService getTrainingProListService;
     private final AddTrainingProListService addTrainingProListService;
+    private final ApplicationTrainingProService applicationTrainingProService;
 
     @GetMapping("/{trainingPro_id}")
     public ResponseEntity<List<GetTrainingProTraineeResponseDto>> getTraineeByTrainingPro(@PathVariable("trainingPro_id") Long trainingProId) {
@@ -58,6 +60,12 @@ public class TrainingController {
     @PostMapping("/list/{expo_id}")
     public ResponseEntity<Void> addTrainingProList(@PathVariable("expo_id") String expoId, @RequestBody @Valid List<AddTrainingProRequestDto> dtos) {
         addTrainingProListService.execute(expoId, dtos);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/application/{trainingPro_id}")
+    public ResponseEntity<Void> applicationTrainingPro(@PathVariable("trainingPro_id") Long trainingProId, @RequestBody @Valid ApplicationTrainingProRequestDto dto) {
+        applicationTrainingProService.execute(trainingProId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

@@ -92,6 +92,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/training/{trainingPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/training/program/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/training/list/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/training/application/{trainingPro_id}").permitAll()
 
                                 // standard
                                 .requestMatchers(HttpMethod.POST, "/standard/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
