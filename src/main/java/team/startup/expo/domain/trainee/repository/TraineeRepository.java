@@ -12,4 +12,5 @@ public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     List<Trainee> findByExpo(Expo expo);
     void deleteByExpo(Expo expo);
     Boolean existsByPhoneNumber(String phoneNumber);
+    Optional<Trainee> findByTrainingId(String trainingId);
 }

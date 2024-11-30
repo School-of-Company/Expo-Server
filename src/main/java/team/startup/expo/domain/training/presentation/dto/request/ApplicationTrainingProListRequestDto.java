@@ -4,9 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import java.util.List;
+
 @Getter
-public class ApplicationTrainingProRequestDto {
+@NoArgsConstructor
+public class ApplicationTrainingProListRequestDto {
+
     @NotNull
     private String trainingId;
+
+    @NotNull
+    private List<Long> trainingProIds;
 }

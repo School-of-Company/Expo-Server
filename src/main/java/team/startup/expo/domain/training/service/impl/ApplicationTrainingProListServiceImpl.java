@@ -8,34 +8,34 @@ import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.training.TrainingProgram;
 import team.startup.expo.domain.training.TrainingProgramUser;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
-import team.startup.expo.domain.training.presentation.dto.request.ApplicationTrainingProRequestDto;
+import team.startup.expo.domain.training.presentation.dto.request.ApplicationTrainingProListRequestDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
-import team.startup.expo.domain.training.service.ApplicationTrainingProService;
+import team.startup.expo.domain.training.service.ApplicationTrainingProListService;
 import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
 @RequiredArgsConstructor
-public class ApplicationTrainingProServiceImpl implements ApplicationTrainingProService {
+public class ApplicationTrainingProListServiceImpl implements ApplicationTrainingProListService {
 
     private final TraineeRepository traineeRepository;
-    private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
+    private final TrainingProgramRepository trainingProgramRepository;
 
-    public void execute(Long trainingProId, ApplicationTrainingProRequestDto dto) {
-        TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
-                .orElseThrow(NotFoundTrainingProgramException::new);
-
+    public void execute(ApplicationTrainingProListRequestDto dto) {
         Trainee trainee = traineeRepository.findByTrainingId(dto.getTrainingId())
                 .orElseThrow(NotFoundTraineeException::new);
+
+        dto.getTrainingProIds().forEach(trainingProId -> {saveTrainingProUser(trainee, trainingProId);});
+    }
+
+    private void saveTrainingProUser(Trainee trainee, Long trainingProId) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
+                .orElseThrow(NotFoundTrainingProgramException::new);
 
         if (trainingProgramUserRepository.existsByTraineeAndTrainingProgram(trainee, trainingProgram))
             throw new AlreadyApplicationUserException();
 
-        saveTrainingProUser(trainingProgram, trainee);
-    }
-
-    private void saveTrainingProUser(TrainingProgram trainingProgram, Trainee trainee) {
         TrainingProgramUser trainingProgramUser = TrainingProgramUser.builder()
                 .trainingProgram(trainingProgram)
                 .trainee(trainee)
