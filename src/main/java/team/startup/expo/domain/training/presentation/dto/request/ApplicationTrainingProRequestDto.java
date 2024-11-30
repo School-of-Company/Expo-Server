@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ApplicationTrainingProRequestDto {
     @NotNull
-    private Long trainingId;
+    private String trainingId;
 }
