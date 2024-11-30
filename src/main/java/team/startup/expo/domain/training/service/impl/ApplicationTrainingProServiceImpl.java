@@ -26,7 +26,7 @@ public class ApplicationTrainingProServiceImpl implements ApplicationTrainingPro
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
                 .orElseThrow(NotFoundTrainingProgramException::new);
 
-        Trainee trainee = traineeRepository.findById(dto.getTrainingId())
+        Trainee trainee = traineeRepository.findByTrainingId(dto.getTrainingId())
                 .orElseThrow(NotFoundTraineeException::new);
 
         if (trainingProgramUserRepository.existsByTraineeAndTrainingProgram(trainee, trainingProgram))
