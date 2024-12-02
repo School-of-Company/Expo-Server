@@ -24,6 +24,7 @@ public class GetTraineeByTrainingProServiceImpl implements GetTraineeByTrainingP
 
         return trainingProgramUserRepository.findByTrainingProgram(trainingProgram).stream()
                 .map(trainingProgramUser -> GetTrainingProTraineeResponseDto.builder()
+                        .id(trainingProgramUser.getId())
                         .name(trainingProgramUser.getTrainee().getName())
                         .organization(trainingProgramUser.getTrainee().getOrganization())
                         .position(trainingProgramUser.getTrainee().getPosition())
