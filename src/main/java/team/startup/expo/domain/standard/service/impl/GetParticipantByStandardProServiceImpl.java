@@ -25,6 +25,7 @@ public class GetParticipantByStandardProServiceImpl implements GetParticipantByS
         return standardProgramUserRepository.findByStandardProgram(standardProgram).stream()
                 .map(standardProgramUser ->
                     GetStandardProParticipantResponseDto.builder()
+                            .id(standardProgramUser.getId())
                             .name(standardProgramUser.getExpoParticipant().getName())
                             .affiliation(standardProgramUser.getExpoParticipant().getAffiliation())
                             .programName(standardProgramUser.getStandardProgram().getTitle())
