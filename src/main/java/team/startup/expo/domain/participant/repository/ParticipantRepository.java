@@ -12,5 +12,5 @@ public interface ParticipantRepository extends JpaRepository<ExpoParticipant, Lo
     Optional<ExpoParticipant> findByPhoneNumber(String phoneNumber);
     void deleteByExpo(Expo expo);
     List<ExpoParticipant> findByExpoAndParticipationType(Expo expo, ParticipationType participationType);
-    Boolean existsByPhoneNumber(String phoneNumber);
+    Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
 }
