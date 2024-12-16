@@ -26,7 +26,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        if (participantRepository.existsByPhoneNumber(dto.getPhoneNumber()) || traineeRepository.existsByPhoneNumber(dto.getPhoneNumber()))
+        if (participantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
         saveParticipant(expo, dto);
