@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParticipantRepository extends JpaRepository<ExpoParticipant, Long> {
-    Optional<ExpoParticipant> findByPhoneNumber(String phoneNumber);
+    Optional<ExpoParticipant> findByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     void deleteByExpo(Expo expo);
     List<ExpoParticipant> findByExpoAndParticipationType(Expo expo, ParticipationType participationType);
     Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
