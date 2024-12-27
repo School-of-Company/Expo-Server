@@ -13,6 +13,9 @@ import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 import team.startup.expo.domain.admin.Authority;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
+import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
@@ -39,15 +42,19 @@ public class SendQrServiceImpl implements SendQrService {
     private final static int HEIGHT = 200;
 
     private final ParticipantRepository participantRepository;
+    private final ExpoRepository expoRepository;
     private final DefaultMessageService messageService;
     private final TraineeRepository traineeRepository;
     private final SmsProperties smsProperties;
 
-    public SingleMessageSentResponse execute(SendQrRequestDto dto) {
+    public SingleMessageSentResponse execute(String expoId, SendQrRequestDto dto) {
         SingleMessageSentResponse response = null;
 
+        Expo expo = expoRepository.findById(expoId)
+                .orElseThrow(NotFoundExpoException::new);
+
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            ExpoParticipant participant = participantRepository.findByPhoneNumber(dto.getPhoneNumber())
+            ExpoParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
@@ -59,7 +66,7 @@ public class SendQrServiceImpl implements SendQrService {
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         } else if (dto.getAuthority() == Authority.ROLE_TRAINEE) {
-            Trainee trainee = traineeRepository.findByPhoneNumber(dto.getPhoneNumber())
+            Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundTraineeException::new);
 
             String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
