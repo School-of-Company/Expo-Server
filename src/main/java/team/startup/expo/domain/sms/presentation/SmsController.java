@@ -36,9 +36,9 @@ public class SmsController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/qr")
-    public ResponseEntity<SingleMessageSentResponse> sendQr(@RequestBody SendQrRequestDto dto) {
-        SingleMessageSentResponse response = sendQrService.execute(dto);
+    @PostMapping("/qr/{expo_id}")
+    public ResponseEntity<SingleMessageSentResponse> sendQr(@PathVariable("expo_id") String expoId, @RequestBody SendQrRequestDto dto) {
+        SingleMessageSentResponse response = sendQrService.execute(expoId, dto);
         return ResponseEntity.ok(response);
     }
 

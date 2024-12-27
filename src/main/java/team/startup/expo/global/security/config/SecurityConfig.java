@@ -63,7 +63,7 @@ public class SecurityConfig {
                                 // sms
                                 .requestMatchers(HttpMethod.POST, "/sms").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/sms").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/sms/qr").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/sms/qr/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/sms/message/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // admin
@@ -114,7 +114,7 @@ public class SecurityConfig {
                                 // attendance
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/training/{trainingPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/standard/{standardPro_id}").permitAll()
-                                .requestMatchers(HttpMethod.PATCH, "/attendance").permitAll()
+                                .requestMatchers(HttpMethod.PATCH, "/attendance/{expo_id}").permitAll()
 
                                 // form
                                 .requestMatchers(HttpMethod.POST, "/form/{expo_id}").permitAll()
