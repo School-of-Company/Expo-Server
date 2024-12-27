@@ -4,5 +4,5 @@ import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScan
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 
 public interface PreEnterScanQrCodeService {
-    PreEnterScanQrCodeResponseDto execute(PreEnterScanQrCodeRequestDto dto);
+    PreEnterScanQrCodeResponseDto execute(String expoId, PreEnterScanQrCodeRequestDto dto);
 }

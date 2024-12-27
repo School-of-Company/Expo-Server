@@ -6,6 +6,9 @@ import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserExcepti
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
+import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
@@ -20,11 +23,16 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
     private final TraineeRepository traineeRepository;
     private final ParticipantRepository participantRepository;
+    private final ExpoRepository expoRepository;
 
-    public PreEnterScanQrCodeResponseDto execute(PreEnterScanQrCodeRequestDto dto) {
+    public PreEnterScanQrCodeResponseDto execute(String expoId, PreEnterScanQrCodeRequestDto dto) {
         PreEnterScanQrCodeResponseDto responseDto = null;
+
+        Expo expo = expoRepository.findById(expoId)
+                .orElseThrow(NotFoundExpoException::new);
+
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            ExpoParticipant participant = participantRepository.findByPhoneNumber(dto.getPhoneNumber())
+            ExpoParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             if (participant.getAttendanceStatus())
@@ -38,7 +46,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                     .qrCode(participant.getQrCode())
                     .build();
         } else if (dto.getAuthority() == Authority.ROLE_TRAINEE) {
-            Trainee trainee = traineeRepository.findByPhoneNumber(dto.getPhoneNumber())
+            Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundTraineeException::new);
 
             if (trainee.getAttendanceStatus())

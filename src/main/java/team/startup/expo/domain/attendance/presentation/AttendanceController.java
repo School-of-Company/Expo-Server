@@ -39,9 +39,9 @@ public class AttendanceController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping
-    public ResponseEntity<PreEnterScanQrCodeResponseDto> preEnterScanQrCode(@RequestBody @Valid PreEnterScanQrCodeRequestDto dto) {
-        PreEnterScanQrCodeResponseDto response = preEnterScanQrCodeService.execute(dto);
+    @PatchMapping("/{expo_id}")
+    public ResponseEntity<PreEnterScanQrCodeResponseDto> preEnterScanQrCode(@PathVariable("expo_id") String expoId, @RequestBody @Valid PreEnterScanQrCodeRequestDto dto) {
+        PreEnterScanQrCodeResponseDto response = preEnterScanQrCodeService.execute(expoId, dto);
         return ResponseEntity.ok(response);
     }
 }
