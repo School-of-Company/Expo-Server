@@ -6,7 +6,7 @@ import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.form.presentation.dto.request.PreApplicationForTraineeRequestDto;
+import team.startup.expo.domain.form.presentation.dto.request.ApplicationForTraineeRequestDto;
 import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.trainee.ParticipationType;
@@ -23,7 +23,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private final ParticipantRepository participantRepository;
 
 
-    public void execute(String expoId, PreApplicationForTraineeRequestDto dto) {
+    public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
@@ -33,7 +33,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         saveTrainee(dto, expo);
     }
 
-    private void saveTrainee(PreApplicationForTraineeRequestDto dto, Expo expo) {
+    private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo) {
         Trainee trainee = Trainee.builder()
                 .trainingId(dto.getTrainingId())
                 .laptopStatus(dto.getLaptopStatus())
