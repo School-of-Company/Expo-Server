@@ -30,10 +30,22 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	compileOnly("org.projectlombok:lombok")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation ("io.jsonwebtoken:jjwt-impl:0.11.5")
+	implementation ("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("net.nurigo:sdk:4.3.0")
+	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+	implementation("com.google.zxing:core:3.5.0")
+	implementation("com.google.zxing:javase:3.5.0")
+	implementation("com.google.code.gson:gson:2.8.9")
+	implementation("org.apache.poi:poi:5.3.0")
+	implementation("org.apache.poi:poi-ooxml:5.3.0")
 }
 
 tasks.withType<Test> {
