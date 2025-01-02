@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PreApplicationForParticipantRequestDto {
+public class ApplicationForParticipantRequestDto {
 
     @NotNull
     private String name;

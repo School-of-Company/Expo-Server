@@ -7,7 +7,7 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.form.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.form.service.PreApplicationForParticipantService;
+import team.startup.expo.domain.form.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.trainee.ParticipationType;
@@ -16,7 +16,7 @@ import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
 @RequiredArgsConstructor
-public class PreApplicationForParticipantServiceImpl implements PreApplicationForParticipantService {
+public class FieldApplicationForParticipantServiceImpl implements FieldApplicationForParticipantService {
 
     private final ExpoRepository expoRepository;
     private final ParticipantRepository participantRepository;
@@ -39,7 +39,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
                 .attendanceStatus(false)
-                .participationType(ParticipationType.PRE)
+                .participationType(ParticipationType.FIELD)
                 .informationStatus(dto.getInformationStatus())
                 .position(dto.getPosition())
                 .expo(expo)
