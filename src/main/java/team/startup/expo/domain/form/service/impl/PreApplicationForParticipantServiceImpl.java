@@ -6,7 +6,7 @@ import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.form.presentation.dto.request.PreApplicationForParticipantRequestDto;
+import team.startup.expo.domain.form.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.form.service.PreApplicationForParticipantService;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
@@ -22,7 +22,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
     private final ParticipantRepository participantRepository;
     private final TraineeRepository traineeRepository;
 
-    public void execute(String expoId, PreApplicationForParticipantRequestDto dto) {
+    public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
@@ -32,7 +32,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
         saveParticipant(expo, dto);
     }
 
-    private void saveParticipant(Expo expo, PreApplicationForParticipantRequestDto dto) {
+    private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
         ExpoParticipant expoParticipant = ExpoParticipant.builder()
                 .name(dto.getName())
                 .affiliation(dto.getAffiliation())
