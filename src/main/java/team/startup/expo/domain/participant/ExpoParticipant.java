@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.trainee.ParticipationType;
 
@@ -20,24 +19,9 @@ public class ExpoParticipant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
-    private String name;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
-    private String phoneNumber;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Authority authority;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
-    private String affiliation;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
-    private String position;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private Boolean informationStatus;
+    @Lob
+    @Column(columnDefinition = "TEXT", nullable = false)
+    private String informationJson;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean attendanceStatus = false;
