@@ -19,6 +19,12 @@ public class Trainee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(10)")
+    private String name;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    private String phoneNumber;
+
     @Lob
     @Column(nullable = false, columnDefinition = "TEXT")
     private String informationJson;
