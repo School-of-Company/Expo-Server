@@ -12,14 +12,17 @@ import team.startup.expo.domain.expo.Expo;
 @AllArgsConstructor
 @Getter
 @Builder
-public class DynamicForm {
+public class Form {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String form;
+    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String json;
 
+    @Enumerated(EnumType.STRING)
     private FormType formType;
 
     @ManyToOne
