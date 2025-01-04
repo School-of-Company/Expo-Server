@@ -1,4 +1,4 @@
-package team.startup.expo.domain.form.exception;
+package team.startup.expo.domain.application.exception;
 
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;

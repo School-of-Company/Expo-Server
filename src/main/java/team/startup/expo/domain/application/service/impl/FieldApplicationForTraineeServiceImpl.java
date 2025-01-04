@@ -1,13 +1,13 @@
-package team.startup.expo.domain.form.service.impl;
+package team.startup.expo.domain.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.form.presentation.dto.request.ApplicationForTraineeRequestDto;
-import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
+import team.startup.expo.domain.application.service.FieldApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.trainee.ParticipationType;
 import team.startup.expo.domain.trainee.Trainee;
@@ -16,12 +16,11 @@ import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
 @RequiredArgsConstructor
-public class PreApplicationForTraineeServiceImpl implements PreApplicationForTraineeService {
+public class FieldApplicationForTraineeServiceImpl implements FieldApplicationForTraineeService {
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
     private final ParticipantRepository participantRepository;
-
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -43,7 +42,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                 .schoolLevel(dto.getSchoolLevel())
                 .organization(dto.getOrganization())
                 .name(dto.getName())
-                .participationType(ParticipationType.PRE)
+                .participationType(ParticipationType.FIELD)
                 .informationStatus(dto.getInformationStatus())
                 .attendanceStatus(false)
                 .expo(expo)
