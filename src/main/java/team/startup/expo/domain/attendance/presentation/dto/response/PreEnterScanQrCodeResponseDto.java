@@ -7,6 +7,5 @@ import lombok.Getter;
 @Builder
 public class PreEnterScanQrCodeResponseDto {
     private String name;
-    private String affiliation;
     private byte[] qrCode;
 }
