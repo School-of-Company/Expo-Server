@@ -1,7 +1,6 @@
 package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.attendance.exception.AlreadyLeaveProgramUserException;
 import team.startup.expo.domain.attendance.exception.NotFoundTrainingProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanTrainingProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
@@ -33,25 +32,38 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
                 .orElseThrow(NotFoundTrainingProgramException::new);
 
-        if (trainingProgramUserRepository.existsByTraineeAndTrainingProgram(trainee, trainingProgram)) {
-            TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
-                    .orElseThrow(NotFoundTrainingProgramUserException::new);
+        TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
+                .orElseThrow(NotFoundTrainingProgramUserException::new);
 
-            if (trainingProgramUser.getLeaveTime() != null)
-                throw new AlreadyLeaveProgramUserException();
-
-            trainingProgramUser.addLeaveTime(String.valueOf(LocalTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        } else {
-            saveTrainingProgramUser(trainingProgram, trainee);
+        if (trainingProgramUser.getEntryTime() == null) {
+            saveEntryTrainingProUser(trainingProgramUser, trainingProgram, trainee);
+        } else if (trainingProgramUser.getLeaveTime() == null) {
+            saveLeaveTrainingProUser(trainingProgramUser, trainingProgram, trainee);
         }
     }
 
-    private void saveTrainingProgramUser(TrainingProgram trainingProgram, Trainee trainee) {
+    private void saveEntryTrainingProUser(TrainingProgramUser user, TrainingProgram trainingProgram, Trainee trainee) {
         LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         TrainingProgramUser trainingProgramUser = TrainingProgramUser.builder()
-                .status(true)
+                .id(user.getId())
                 .entryTime(String.valueOf(now))
+                .status(true)
+                .trainingProgram(trainingProgram)
+                .trainee(trainee)
+                .build();
+
+        trainingProgramUserRepository.save(trainingProgramUser);
+    }
+
+    private void saveLeaveTrainingProUser(TrainingProgramUser user, TrainingProgram trainingProgram, Trainee trainee) {
+        LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        TrainingProgramUser trainingProgramUser = TrainingProgramUser.builder()
+                .id(user.getId())
+                .entryTime(user.getEntryTime())
+                .leaveTime(String.valueOf(now))
+                .status(true)
                 .trainingProgram(trainingProgram)
                 .trainee(trainee)
                 .build();
