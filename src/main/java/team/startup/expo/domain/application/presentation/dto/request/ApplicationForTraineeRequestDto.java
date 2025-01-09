@@ -1,4 +1,4 @@
-package team.startup.expo.domain.form.presentation.dto.request;
+package team.startup.expo.domain.application.presentation.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

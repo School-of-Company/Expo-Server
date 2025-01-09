@@ -1,21 +1,21 @@
-package team.startup.expo.domain.form.presentation;
+package team.startup.expo.domain.application.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.startup.expo.domain.form.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.form.presentation.dto.request.ApplicationForTraineeRequestDto;
-import team.startup.expo.domain.form.service.FieldApplicationForParticipantService;
-import team.startup.expo.domain.form.service.FieldApplicationForTraineeService;
-import team.startup.expo.domain.form.service.PreApplicationForParticipantService;
-import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
+import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
+import team.startup.expo.domain.application.service.FieldApplicationForTraineeService;
+import team.startup.expo.domain.application.service.PreApplicationForParticipantService;
+import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/form")
-public class FormController {
+@RequestMapping("/application")
+public class ApplicationController {
 
     private final PreApplicationForTraineeService preApplicationForTraineeService;
     private final PreApplicationForParticipantService preApplicationForParticipantService;
