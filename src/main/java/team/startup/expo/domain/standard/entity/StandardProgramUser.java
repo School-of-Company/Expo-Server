@@ -32,7 +32,7 @@ public class StandardProgramUser {
     private StandardProgram standardProgram;
 
     @ManyToOne
-    @JoinColumn(name = "participant_id")
+    @JoinColumn(name = "standard_participant_id")
     private StandardParticipant standardParticipant;
 
     public void addLeaveTime(String leaveTime) {
