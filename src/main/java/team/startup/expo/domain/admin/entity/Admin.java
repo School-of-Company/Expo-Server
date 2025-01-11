@@ -1,4 +1,4 @@
-package team.startup.expo.domain.admin;
+package team.startup.expo.domain.admin.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

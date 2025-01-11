@@ -3,7 +3,7 @@ package team.startup.expo.domain.attendance.presentation.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 
 @NoArgsConstructor
 @Getter

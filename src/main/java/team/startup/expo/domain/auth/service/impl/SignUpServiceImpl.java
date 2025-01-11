@@ -2,8 +2,8 @@ package team.startup.expo.domain.auth.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import team.startup.expo.domain.admin.Admin;
-import team.startup.expo.domain.admin.Status;
+import team.startup.expo.domain.admin.entity.Admin;
+import team.startup.expo.domain.admin.entity.Status;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.auth.exception.DuplicateEmailException;
 import team.startup.expo.domain.auth.exception.DuplicateNicknameException;

@@ -1,7 +1,7 @@
 package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;

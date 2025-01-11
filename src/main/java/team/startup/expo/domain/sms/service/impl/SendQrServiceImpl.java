@@ -11,7 +11,7 @@ import net.nurigo.sdk.message.model.StorageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;

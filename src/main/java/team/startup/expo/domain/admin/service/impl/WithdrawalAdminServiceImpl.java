@@ -1,7 +1,7 @@
 package team.startup.expo.domain.admin.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Admin;
+import team.startup.expo.domain.admin.entity.Admin;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.admin.service.WithdrawalAdminService;
 import team.startup.expo.domain.admin.util.UserUtil;

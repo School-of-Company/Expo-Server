@@ -1,7 +1,7 @@
 package team.startup.expo.domain.expo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Admin;
+import team.startup.expo.domain.admin.entity.Admin;
 import team.startup.expo.domain.admin.util.UserUtil;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
@@ -14,7 +14,6 @@ import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.training.TrainingProgram;
-import team.startup.expo.domain.training.TrainingProgramUser;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;
