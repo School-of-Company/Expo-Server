@@ -25,6 +25,9 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
+    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    private String trainingId;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String informationJson;
 
