@@ -26,18 +26,15 @@ public class ExpoParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String informationJson;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Authority authority;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
-    private String affiliation;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(20)")
-    private String position;
-
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private Boolean informationStatus;
+    private Boolean personalInformationStatus;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean attendanceStatus = false;
