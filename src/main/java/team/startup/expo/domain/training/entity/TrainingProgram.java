@@ -1,4 +1,4 @@
-package team.startup.expo.domain.training;
+package team.startup.expo.domain.training.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

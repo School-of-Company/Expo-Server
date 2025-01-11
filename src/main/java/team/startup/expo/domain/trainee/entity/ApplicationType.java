@@ -1,4 +1,4 @@
-package team.startup.expo.domain.trainee;
+package team.startup.expo.domain.trainee.entity;
 
 public enum ApplicationType {
     PRE,

@@ -5,11 +5,11 @@ import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramExce
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
-import team.startup.expo.domain.participant.StandardParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
-import team.startup.expo.domain.standard.StandardProgram;
-import team.startup.expo.domain.standard.StandardProgramUser;
+import team.startup.expo.domain.standard.entity.StandardProgram;
+import team.startup.expo.domain.standard.entity.StandardProgramUser;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;

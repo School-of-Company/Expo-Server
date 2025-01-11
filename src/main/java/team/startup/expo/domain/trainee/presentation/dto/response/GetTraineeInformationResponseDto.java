@@ -2,7 +2,7 @@ package team.startup.expo.domain.trainee.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import team.startup.expo.domain.trainee.ApplicationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 @Getter
 @Builder

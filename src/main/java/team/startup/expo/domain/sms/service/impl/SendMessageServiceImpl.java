@@ -10,11 +10,11 @@ import team.startup.expo.domain.expo.exception.NotExistParticipantAtExpoExceptio
 import team.startup.expo.domain.expo.exception.NotExistTraineeAtExpoException;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.StandardParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.presentation.dto.request.SendMessageRequestDto;
 import team.startup.expo.domain.sms.service.SendMessageService;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 import team.startup.expo.global.sms.SmsProperties;

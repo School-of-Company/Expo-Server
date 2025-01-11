@@ -9,11 +9,11 @@ import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.StandardParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 

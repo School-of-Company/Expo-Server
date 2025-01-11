@@ -11,7 +11,7 @@ import team.startup.expo.domain.auth.exception.DuplicatePhoneNumberException;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
 import team.startup.expo.domain.auth.presentation.dto.request.SignUpRequestDto;
 import team.startup.expo.domain.auth.service.SignUpService;
-import team.startup.expo.domain.sms.SmsAuthEntity;
+import team.startup.expo.domain.sms.entity.SmsAuthEntity;
 import team.startup.expo.domain.sms.repository.SmsAuthRepository;
 import team.startup.expo.global.annotation.TransactionService;
 

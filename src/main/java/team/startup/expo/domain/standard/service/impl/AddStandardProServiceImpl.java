@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.standard.StandardProgram;
+import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.presentation.dto.request.AddStandardProRequestDto;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.service.AddStandardProService;

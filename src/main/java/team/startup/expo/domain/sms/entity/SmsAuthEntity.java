@@ -1,4 +1,4 @@
-package team.startup.expo.domain.sms;
+package team.startup.expo.domain.sms.entity;
 
 import lombok.Builder;
 import lombok.Getter;

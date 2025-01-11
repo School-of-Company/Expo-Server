@@ -1,4 +1,4 @@
-package team.startup.expo.domain.trainee;
+package team.startup.expo.domain.participant.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,13 +7,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-public class Trainee {
+public class StandardParticipant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +25,6 @@ public class Trainee {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
-
-    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
-    private String trainingId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String informationJson;
@@ -49,7 +47,7 @@ public class Trainee {
     @Column(columnDefinition = "LONGBLOB")
     private byte[] qrCode;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
     private Expo expo;
 

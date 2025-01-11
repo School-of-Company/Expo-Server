@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.ApplicationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 

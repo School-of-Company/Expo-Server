@@ -8,9 +8,9 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
-import team.startup.expo.domain.participant.StandardParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
-import team.startup.expo.domain.trainee.ApplicationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 

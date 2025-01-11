@@ -12,7 +12,7 @@ import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 

@@ -1,11 +1,11 @@
-package team.startup.expo.domain.standard;
+package team.startup.expo.domain.standard.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.participant.StandardParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 
 @Entity
 @NoArgsConstructor

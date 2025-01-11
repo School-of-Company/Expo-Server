@@ -9,8 +9,8 @@ import team.startup.expo.domain.application.exception.AlreadyApplicationUserExce
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
 import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
-import team.startup.expo.domain.trainee.ApplicationType;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 

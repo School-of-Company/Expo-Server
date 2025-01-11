@@ -7,7 +7,7 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.ApplicationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;

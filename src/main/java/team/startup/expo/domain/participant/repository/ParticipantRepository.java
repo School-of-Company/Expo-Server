@@ -2,8 +2,8 @@ package team.startup.expo.domain.participant.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import team.startup.expo.domain.expo.entity.Expo;
-import team.startup.expo.domain.participant.StandardParticipant;
-import team.startup.expo.domain.trainee.ApplicationType;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 import java.util.Optional;
