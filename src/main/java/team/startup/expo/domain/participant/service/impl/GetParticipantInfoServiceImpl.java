@@ -23,14 +23,12 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        return participantRepository.findByExpoAndParticipationType(expo, type).stream()
-                .map(expoParticipant -> GetParticipantInfoResponseDto.builder()
-                        .id(expoParticipant.getId())
-                        .name(expoParticipant.getName())
-                        .phoneNumber(expoParticipant.getPhoneNumber())
-                        .affiliation(expoParticipant.getAffiliation())
-                        .informationStatus(expoParticipant.getInformationStatus())
-                        .position(expoParticipant.getPosition())
+        return participantRepository.findByExpoAndApplicationType(expo, type).stream()
+                .map(standardParticipant -> GetParticipantInfoResponseDto.builder()
+                        .id(standardParticipant.getId())
+                        .name(standardParticipant.getName())
+                        .phoneNumber(standardParticipant.getPhoneNumber())
+                        .informationStatus(standardParticipant.getPersonalInformationStatus())
                         .build()
                 ).toList();
 

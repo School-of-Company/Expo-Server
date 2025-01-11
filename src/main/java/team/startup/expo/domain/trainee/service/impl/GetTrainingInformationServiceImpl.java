@@ -26,13 +26,7 @@ public class GetTrainingInformationServiceImpl implements GetTrainingInformation
                 .map(trainee -> GetTraineeInformationResponseDto.builder()
                         .id(trainee.getId())
                         .name(trainee.getName())
-                        .trainingId(trainee.getTrainingId())
                         .phoneNumber(trainee.getPhoneNumber())
-                        .organization(trainee.getOrganization())
-                        .schoolLevel(trainee.getSchoolLevel())
-                        .position(trainee.getPosition())
-                        .laptopStatus(trainee.getLaptopStatus())
-                        .informationStatus(trainee.getInformationStatus())
                         .applicationType(trainee.getApplicationType())
                         .build()
                 ).toList();

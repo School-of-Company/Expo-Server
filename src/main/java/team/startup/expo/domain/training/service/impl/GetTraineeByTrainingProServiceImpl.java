@@ -26,8 +26,6 @@ public class GetTraineeByTrainingProServiceImpl implements GetTraineeByTrainingP
                 .map(trainingProgramUser -> GetTrainingProTraineeResponseDto.builder()
                         .id(trainingProgramUser.getId())
                         .name(trainingProgramUser.getTrainee().getName())
-                        .organization(trainingProgramUser.getTrainee().getOrganization())
-                        .position(trainingProgramUser.getTrainee().getPosition())
                         .programName(trainingProgramUser.getTrainingProgram().getTitle())
                         .status(trainingProgramUser.getStatus())
                         .entryTime(trainingProgramUser.getEntryTime())

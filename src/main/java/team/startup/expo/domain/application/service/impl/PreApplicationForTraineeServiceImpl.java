@@ -35,16 +35,11 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
 
     private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo) {
         Trainee trainee = Trainee.builder()
-                .trainingId(dto.getTrainingId())
-                .laptopStatus(dto.getLaptopStatus())
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_TRAINEE)
-                .position(dto.getPosition())
-                .schoolLevel(dto.getSchoolLevel())
-                .organization(dto.getOrganization())
                 .name(dto.getName())
-                .participationType(ApplicationType.PRE)
-                .informationStatus(dto.getInformationStatus())
+                .applicationType(ApplicationType.PRE)
+                .personalInformationStatus(dto.getInformationStatus())
                 .attendanceStatus(false)
                 .expo(expo)
                 .build();

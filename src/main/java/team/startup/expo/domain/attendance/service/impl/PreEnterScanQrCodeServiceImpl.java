@@ -42,7 +42,6 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
             responseDto = PreEnterScanQrCodeResponseDto.builder()
                     .name(participant.getName())
-                    .affiliation(participant.getAffiliation())
                     .qrCode(participant.getQrCode())
                     .build();
         } else if (dto.getAuthority() == Authority.ROLE_TRAINEE) {
@@ -56,7 +55,6 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
             responseDto = PreEnterScanQrCodeResponseDto.builder()
                     .name(trainee.getName())
-                    .affiliation(trainee.getOrganization())
                     .qrCode(trainee.getQrCode())
                     .build();
         }

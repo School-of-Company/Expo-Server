@@ -35,13 +35,11 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
         StandardParticipant standardParticipant = StandardParticipant.builder()
                 .name(dto.getName())
-                .affiliation(dto.getAffiliation())
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
                 .attendanceStatus(false)
-                .participationType(ApplicationType.FIELD)
-                .informationStatus(dto.getInformationStatus())
-                .position(dto.getPosition())
+                .applicationType(ApplicationType.FIELD)
+                .personalInformationStatus(dto.getInformationStatus())
                 .expo(expo)
                 .build();
 
