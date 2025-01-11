@@ -71,16 +71,16 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
         for (Trainee trainee : traineeList) {
             Row row = sheet.createRow(rowCount++);
 
-            row.createCell(0).setCellValue(trainee.getTrainingId());
-            row.createCell(1).setCellValue(trainee.getLaptopStatus() ? "사용 가능" : "사용 불가");
-            row.createCell(2).setCellValue(trainee.getPhoneNumber());
-            row.createCell(3).setCellValue(trainee.getPosition());
-            row.createCell(4).setCellValue(trainee.getSchoolLevel());
-            row.createCell(5).setCellValue(trainee.getOrganization());
-            row.createCell(6).setCellValue(trainee.getName());
-            row.createCell(7).setCellValue(trainee.getInformationStatus() ? "True" : "False");
-            row.createCell(8).setCellValue(trainee.getAttendanceStatus() ? "출석" : "미출석");
-            row.createCell(9).setCellValue(trainee.getApplicationType().toString());
+//            row.createCell(0).setCellValue(trainee.getTrainingId());
+//            row.createCell(1).setCellValue(trainee.getLaptopStatus() ? "사용 가능" : "사용 불가");
+//            row.createCell(2).setCellValue(trainee.getPhoneNumber());
+//            row.createCell(3).setCellValue(trainee.getPosition());
+//            row.createCell(4).setCellValue(trainee.getSchoolLevel());
+//            row.createCell(5).setCellValue(trainee.getOrganization());
+//            row.createCell(6).setCellValue(trainee.getName());
+//            row.createCell(7).setCellValue(trainee.getInformationStatus() ? "True" : "False");
+//            row.createCell(8).setCellValue(trainee.getAttendanceStatus() ? "출석" : "미출석");
+//            row.createCell(9).setCellValue(trainee.getApplicationType().toString());
 
             // Body 스타일 적용
             for (int i = 0; i < headers.length; i++) {
