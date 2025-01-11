@@ -9,7 +9,7 @@ import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
 import team.startup.expo.domain.expo.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
@@ -32,7 +32,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                 .orElseThrow(NotFoundExpoException::new);
 
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            ExpoParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
+            StandardParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             if (participant.getAttendanceStatus())

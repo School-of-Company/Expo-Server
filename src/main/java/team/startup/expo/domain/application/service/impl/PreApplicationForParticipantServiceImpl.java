@@ -8,7 +8,7 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.PreApplicationForParticipantService;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.trainee.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -33,7 +33,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
     }
 
     private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
-        ExpoParticipant expoParticipant = ExpoParticipant.builder()
+        StandardParticipant standardParticipant = StandardParticipant.builder()
                 .name(dto.getName())
                 .affiliation(dto.getAffiliation())
                 .phoneNumber(dto.getPhoneNumber())
@@ -45,6 +45,6 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                 .expo(expo)
                 .build();
 
-        participantRepository.save(expoParticipant);
+        participantRepository.save(standardParticipant);
     }
 }

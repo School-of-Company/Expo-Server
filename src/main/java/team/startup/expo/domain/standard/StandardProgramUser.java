@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.StandardParticipant;
 
 @Entity
 @NoArgsConstructor
@@ -33,7 +33,7 @@ public class StandardProgramUser {
 
     @ManyToOne
     @JoinColumn(name = "participant_id")
-    private ExpoParticipant expoParticipant;
+    private StandardParticipant standardParticipant;
 
     public void addLeaveTime(String leaveTime) {
         this.leaveTime = leaveTime;

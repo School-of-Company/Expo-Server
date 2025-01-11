@@ -5,7 +5,7 @@ import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramExce
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.standard.StandardProgram;
@@ -26,23 +26,23 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
     private final StandardProgramUserRepository standardProgramUserRepository;
 
     public void execute(Long standardProId, ScanStandardProRequestDto dto) {
-        ExpoParticipant expoParticipant = participantRepository.findById(dto.getParticipantId())
+        StandardParticipant standardParticipant = participantRepository.findById(dto.getParticipantId())
                 .orElseThrow(NotFoundParticipantException::new);
 
         StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
                 .orElseThrow(NotFoundStandardProgramException::new);
 
-        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndExpoParticipant(standardProgram, expoParticipant)
+        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndExpoParticipant(standardProgram, standardParticipant)
                 .orElseThrow(NotFoundStandardProgramUserException::new);
 
         if (standardProgramUser.getEntryTime() == null) {
-            saveEntryStandardProgramUser(standardProgramUser, standardProgram, expoParticipant);
+            saveEntryStandardProgramUser(standardProgramUser, standardProgram, standardParticipant);
         } else if (standardProgramUser.getLeaveTime() == null) {
-            saveLeaveStandardProgramUser(standardProgramUser, standardProgram, expoParticipant);
+            saveLeaveStandardProgramUser(standardProgramUser, standardProgram, standardParticipant);
         }
     }
 
-    private void saveEntryStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, ExpoParticipant expoParticipant) {
+    private void saveEntryStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, StandardParticipant standardParticipant) {
         LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
@@ -50,13 +50,13 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
                 .status(true)
                 .entryTime(String.valueOf(now))
                 .standardProgram(standardProgram)
-                .expoParticipant(expoParticipant)
+                .standardParticipant(standardParticipant)
                 .build();
 
         standardProgramUserRepository.save(standardProgramUser);
     }
 
-    private void saveLeaveStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, ExpoParticipant expoParticipant) {
+    private void saveLeaveStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, StandardParticipant standardParticipant) {
         LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
@@ -65,7 +65,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
                 .entryTime(user.getEntryTime())
                 .leaveTime(String.valueOf(now))
                 .standardProgram(standardProgram)
-                .expoParticipant(expoParticipant)
+                .standardParticipant(standardParticipant)
                 .build();
 
         standardProgramUserRepository.save(standardProgramUser);

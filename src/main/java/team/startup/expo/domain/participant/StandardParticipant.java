@@ -14,7 +14,7 @@ import team.startup.expo.domain.trainee.ApplicationType;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ExpoParticipant {
+public class StandardParticipant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

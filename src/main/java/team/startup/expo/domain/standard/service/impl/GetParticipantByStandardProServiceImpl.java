@@ -26,10 +26,10 @@ public class GetParticipantByStandardProServiceImpl implements GetParticipantByS
                 .map(standardProgramUser ->
                     GetStandardProParticipantResponseDto.builder()
                             .id(standardProgramUser.getId())
-                            .name(standardProgramUser.getExpoParticipant().getName())
-                            .affiliation(standardProgramUser.getExpoParticipant().getAffiliation())
+                            .name(standardProgramUser.getStandardParticipant().getName())
+                            .affiliation(standardProgramUser.getStandardParticipant().getAffiliation())
                             .programName(standardProgramUser.getStandardProgram().getTitle())
-                            .position(standardProgramUser.getExpoParticipant().getPosition())
+                            .position(standardProgramUser.getStandardParticipant().getPosition())
                             .entryTime(standardProgramUser.getEntryTime())
                             .leaveTime(standardProgramUser.getLeaveTime())
                             .status(standardProgramUser.getStatus())
