@@ -80,7 +80,7 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             row.createCell(6).setCellValue(trainee.getName());
             row.createCell(7).setCellValue(trainee.getInformationStatus() ? "True" : "False");
             row.createCell(8).setCellValue(trainee.getAttendanceStatus() ? "출석" : "미출석");
-            row.createCell(9).setCellValue(trainee.getParticipationType().toString());
+            row.createCell(9).setCellValue(trainee.getApplicationType().toString());
 
             // Body 스타일 적용
             for (int i = 0; i < headers.length; i++) {

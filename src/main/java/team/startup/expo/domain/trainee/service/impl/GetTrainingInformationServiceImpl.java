@@ -7,11 +7,9 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInformationResponseDto;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.trainee.service.GetTrainingInformationService;
-import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
@@ -35,7 +33,7 @@ public class GetTrainingInformationServiceImpl implements GetTrainingInformation
                         .position(trainee.getPosition())
                         .laptopStatus(trainee.getLaptopStatus())
                         .informationStatus(trainee.getInformationStatus())
-                        .participationType(trainee.getParticipationType())
+                        .applicationType(trainee.getApplicationType())
                         .build()
                 ).toList();
     }

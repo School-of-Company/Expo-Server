@@ -7,7 +7,7 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.ParticipationType;
+import team.startup.expo.domain.trainee.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
     private final ParticipantRepository participantRepository;
     private final ExpoRepository expoRepository;
 
-    public List<GetParticipantInfoResponseDto> execute(String expoId, ParticipationType type) {
+    public List<GetParticipantInfoResponseDto> execute(String expoId, ApplicationType type) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 

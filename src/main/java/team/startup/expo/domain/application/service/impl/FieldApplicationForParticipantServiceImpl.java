@@ -10,7 +10,7 @@ import team.startup.expo.domain.application.presentation.dto.request.Application
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.ExpoParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
-import team.startup.expo.domain.trainee.ParticipationType;
+import team.startup.expo.domain.trainee.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 
@@ -39,7 +39,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
                 .attendanceStatus(false)
-                .participationType(ParticipationType.FIELD)
+                .participationType(ApplicationType.FIELD)
                 .informationStatus(dto.getInformationStatus())
                 .position(dto.getPosition())
                 .expo(expo)

@@ -40,7 +40,7 @@ public class Trainee {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ParticipationType participationType;
+    private ApplicationType applicationType;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")

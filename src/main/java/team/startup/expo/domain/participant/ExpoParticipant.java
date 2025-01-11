@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.admin.Authority;
 import team.startup.expo.domain.expo.Expo;
-import team.startup.expo.domain.trainee.ParticipationType;
+import team.startup.expo.domain.trainee.ApplicationType;
 
 @Entity
 @NoArgsConstructor
@@ -41,7 +41,7 @@ public class ExpoParticipant {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ParticipationType participationType;
+    private ApplicationType applicationType;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
