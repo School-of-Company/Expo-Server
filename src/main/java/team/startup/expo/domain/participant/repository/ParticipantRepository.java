@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface ParticipantRepository extends JpaRepository<StandardParticipant, Long> {
     Optional<StandardParticipant> findByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     void deleteByExpo(Expo expo);
-    List<StandardParticipant> findByExpoAndParticipationType(Expo expo, ApplicationType applicationType);
+    List<StandardParticipant> findByExpoAndApplicationType(Expo expo, ApplicationType applicationType);
     Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     List<StandardParticipant> findByExpo(Expo expo);
 }
