@@ -18,13 +18,12 @@ public class Form {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Lob
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String jsonData;
+    @Column(columnDefinition = "TEXT")
+    private String informationImage;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private FormType formType;
+    @Enumerated(EnumType.STRING)
+    private ParticipationType participationType;
 
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)
