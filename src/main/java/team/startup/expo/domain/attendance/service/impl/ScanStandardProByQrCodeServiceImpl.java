@@ -32,7 +32,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
                 .orElseThrow(NotFoundStandardProgramException::new);
 
-        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndExpoParticipant(standardProgram, standardParticipant)
+        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
                 .orElseThrow(NotFoundStandardProgramUserException::new);
 
         if (standardProgramUser.getEntryTime() == null) {
