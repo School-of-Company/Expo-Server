@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StandardProgramUserRepository extends JpaRepository<StandardProgramUser, Long> {
-    Optional<StandardProgramUser> findByStandardProgramAndExpoParticipant(StandardProgram standardProgram, StandardParticipant standardParticipant);
-    Boolean existsByExpoParticipantAndStandardProgram(StandardParticipant standardParticipant, StandardProgram standardProgram);
+    Optional<StandardProgramUser> findByStandardProgramAndStandardParticipant(StandardProgram standardProgram, StandardParticipant standardParticipant);
     void deleteByStandardProgram(StandardProgram standardProgram);
     List<StandardProgramUser> findByStandardProgram(StandardProgram standardProgram);
 }
