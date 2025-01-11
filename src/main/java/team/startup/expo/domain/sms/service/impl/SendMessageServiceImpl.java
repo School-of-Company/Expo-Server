@@ -5,7 +5,7 @@ import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.response.MultipleDetailMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotExistParticipantAtExpoException;
 import team.startup.expo.domain.expo.exception.NotExistTraineeAtExpoException;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;

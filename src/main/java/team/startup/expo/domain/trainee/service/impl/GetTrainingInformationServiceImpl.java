@@ -1,7 +1,7 @@
 package team.startup.expo.domain.trainee.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInformationResponseDto;

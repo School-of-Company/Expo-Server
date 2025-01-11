@@ -6,7 +6,7 @@ import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserExcepti
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.StandardParticipant;
