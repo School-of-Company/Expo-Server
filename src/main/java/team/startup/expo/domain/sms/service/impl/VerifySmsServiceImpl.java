@@ -2,7 +2,7 @@ package team.startup.expo.domain.sms.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
-import team.startup.expo.domain.sms.SmsAuthEntity;
+import team.startup.expo.domain.sms.entity.SmsAuthEntity;
 import team.startup.expo.domain.sms.exception.NotMatchRandomCodeException;
 import team.startup.expo.domain.sms.repository.SmsAuthRepository;
 import team.startup.expo.domain.sms.service.VerifySmsService;

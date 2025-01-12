@@ -5,16 +5,16 @@ import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.response.MultipleDetailMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotExistParticipantAtExpoException;
 import team.startup.expo.domain.expo.exception.NotExistTraineeAtExpoException;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.presentation.dto.request.SendMessageRequestDto;
 import team.startup.expo.domain.sms.service.SendMessageService;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 import team.startup.expo.global.sms.SmsProperties;
@@ -67,14 +67,14 @@ public class SendMessageServiceImpl implements SendMessageService {
     }
 
     private MultipleDetailMessageSentResponse sendMessageForParticipant(Expo expo, SendMessageRequestDto dto) {
-        List<ExpoParticipant> participantList = participantRepository.findByExpo(expo);
+        List<StandardParticipant> participantList = participantRepository.findByExpo(expo);
 
         if (participantList.isEmpty())
             throw new NotExistTraineeAtExpoException();
 
         ArrayList<Message> messageList = new ArrayList<>();
 
-        for (ExpoParticipant participant : participantList) {
+        for (StandardParticipant participant : participantList) {
             Message message = new Message();
             message.setFrom(smsProperties.getFromNumber());
             message.setTo(participant.getPhoneNumber());

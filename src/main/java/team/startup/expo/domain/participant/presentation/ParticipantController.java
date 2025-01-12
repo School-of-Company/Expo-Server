@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.ParticipationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class ParticipantController {
     private final GetParticipantInfoService getParticipantInfoService;
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<List<GetParticipantInfoResponseDto>> getParticipantInfo(@PathVariable("expo_id") String expoId, @RequestParam("type") ParticipationType type) {
+    public ResponseEntity<List<GetParticipantInfoResponseDto>> getParticipantInfo(@PathVariable("expo_id") String expoId, @RequestParam("type") ApplicationType type) {
         List<GetParticipantInfoResponseDto> response = getParticipantInfoService.execute(expoId, type);
         return ResponseEntity.ok(response);
     }

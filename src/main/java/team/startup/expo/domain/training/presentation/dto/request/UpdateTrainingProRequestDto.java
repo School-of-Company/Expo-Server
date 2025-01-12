@@ -2,12 +2,10 @@ package team.startup.expo.domain.training.presentation.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
-import team.startup.expo.domain.training.Category;
-import team.startup.expo.domain.training.TrainingProgram;
+import team.startup.expo.domain.training.entity.Category;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 
 import java.time.LocalDateTime;
 

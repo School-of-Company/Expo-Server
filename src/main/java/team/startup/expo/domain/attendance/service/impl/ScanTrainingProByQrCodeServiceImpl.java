@@ -6,10 +6,10 @@ import team.startup.expo.domain.attendance.presentation.dto.request.ScanTraining
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
 import java.time.LocalTime;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
-import team.startup.expo.domain.training.TrainingProgram;
-import team.startup.expo.domain.training.TrainingProgramUser;
+import team.startup.expo.domain.training.entity.TrainingProgram;
+import team.startup.expo.domain.training.entity.TrainingProgramUser;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;

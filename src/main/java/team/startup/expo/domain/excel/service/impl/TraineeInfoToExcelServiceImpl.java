@@ -9,10 +9,10 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
@@ -71,16 +71,16 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
         for (Trainee trainee : traineeList) {
             Row row = sheet.createRow(rowCount++);
 
-            row.createCell(0).setCellValue(trainee.getTrainingId());
-            row.createCell(1).setCellValue(trainee.getLaptopStatus() ? "사용 가능" : "사용 불가");
-            row.createCell(2).setCellValue(trainee.getPhoneNumber());
-            row.createCell(3).setCellValue(trainee.getPosition());
-            row.createCell(4).setCellValue(trainee.getSchoolLevel());
-            row.createCell(5).setCellValue(trainee.getOrganization());
-            row.createCell(6).setCellValue(trainee.getName());
-            row.createCell(7).setCellValue(trainee.getInformationStatus() ? "True" : "False");
-            row.createCell(8).setCellValue(trainee.getAttendanceStatus() ? "출석" : "미출석");
-            row.createCell(9).setCellValue(trainee.getParticipationType().toString());
+//            row.createCell(0).setCellValue(trainee.getTrainingId());
+//            row.createCell(1).setCellValue(trainee.getLaptopStatus() ? "사용 가능" : "사용 불가");
+//            row.createCell(2).setCellValue(trainee.getPhoneNumber());
+//            row.createCell(3).setCellValue(trainee.getPosition());
+//            row.createCell(4).setCellValue(trainee.getSchoolLevel());
+//            row.createCell(5).setCellValue(trainee.getOrganization());
+//            row.createCell(6).setCellValue(trainee.getName());
+//            row.createCell(7).setCellValue(trainee.getInformationStatus() ? "True" : "False");
+//            row.createCell(8).setCellValue(trainee.getAttendanceStatus() ? "출석" : "미출석");
+//            row.createCell(9).setCellValue(trainee.getApplicationType().toString());
 
             // Body 스타일 적용
             for (int i = 0; i < headers.length; i++) {

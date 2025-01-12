@@ -11,18 +11,18 @@ import net.nurigo.sdk.message.model.StorageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.ExpoParticipant;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.sms.presentation.dto.request.SendQrRequestDto;
 import team.startup.expo.domain.sms.service.SendQrService;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.sms.SmsProperties;
@@ -54,7 +54,7 @@ public class SendQrServiceImpl implements SendQrService {
                 .orElseThrow(NotFoundExpoException::new);
 
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            ExpoParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
+            StandardParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";

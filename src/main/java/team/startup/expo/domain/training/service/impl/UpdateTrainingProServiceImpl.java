@@ -1,7 +1,7 @@
 package team.startup.expo.domain.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.training.TrainingProgram;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
 import team.startup.expo.domain.training.presentation.dto.request.UpdateTrainingProRequestDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;

@@ -1,13 +1,13 @@
 package team.startup.expo.domain.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Admin;
+import team.startup.expo.domain.admin.entity.Admin;
 import team.startup.expo.domain.admin.util.UserUtil;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotMatchAdminException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.training.TrainingProgram;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.presentation.dto.request.AddTrainingProRequestDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.domain.training.service.AddTrainingProService;

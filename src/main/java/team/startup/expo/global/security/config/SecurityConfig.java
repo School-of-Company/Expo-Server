@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.global.filter.ExceptionFilter;
 import team.startup.expo.global.filter.JwtFilter;
 import team.startup.expo.global.filter.RequestLogFilter;

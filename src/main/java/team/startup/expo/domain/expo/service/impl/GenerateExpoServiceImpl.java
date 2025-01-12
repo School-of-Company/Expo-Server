@@ -1,9 +1,9 @@
 package team.startup.expo.domain.expo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Admin;
+import team.startup.expo.domain.admin.entity.Admin;
 import team.startup.expo.domain.admin.util.UserUtil;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.presentation.dto.request.GenerateExpoRequestDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GenerateExpoResponseDto;
 import team.startup.expo.domain.expo.repository.ExpoRepository;

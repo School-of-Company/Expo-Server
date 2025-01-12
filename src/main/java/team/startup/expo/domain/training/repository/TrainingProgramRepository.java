@@ -1,8 +1,8 @@
 package team.startup.expo.domain.training.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import team.startup.expo.domain.expo.Expo;
-import team.startup.expo.domain.training.TrainingProgram;
+import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 
 import java.util.List;
 

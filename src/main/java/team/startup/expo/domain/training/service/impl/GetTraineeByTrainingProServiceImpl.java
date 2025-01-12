@@ -1,7 +1,7 @@
 package team.startup.expo.domain.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.training.TrainingProgram;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
 import team.startup.expo.domain.training.presentation.dto.response.GetTrainingProTraineeResponseDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
@@ -26,8 +26,6 @@ public class GetTraineeByTrainingProServiceImpl implements GetTraineeByTrainingP
                 .map(trainingProgramUser -> GetTrainingProTraineeResponseDto.builder()
                         .id(trainingProgramUser.getId())
                         .name(trainingProgramUser.getTrainee().getName())
-                        .organization(trainingProgramUser.getTrainee().getOrganization())
-                        .position(trainingProgramUser.getTrainee().getPosition())
                         .programName(trainingProgramUser.getTrainingProgram().getTitle())
                         .status(trainingProgramUser.getStatus())
                         .entryTime(trainingProgramUser.getEntryTime())

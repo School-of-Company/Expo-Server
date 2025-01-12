@@ -1,12 +1,12 @@
 package team.startup.expo.domain.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.form.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
-import team.startup.expo.domain.trainee.Trainee;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
-import team.startup.expo.domain.training.TrainingProgram;
-import team.startup.expo.domain.training.TrainingProgramUser;
+import team.startup.expo.domain.training.entity.TrainingProgram;
+import team.startup.expo.domain.training.entity.TrainingProgramUser;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
 import team.startup.expo.domain.training.presentation.dto.request.ApplicationTrainingProRequestDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;

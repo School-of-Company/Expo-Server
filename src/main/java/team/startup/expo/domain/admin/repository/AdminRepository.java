@@ -2,8 +2,8 @@ package team.startup.expo.domain.admin.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import team.startup.expo.domain.admin.Admin;
-import team.startup.expo.domain.admin.Status;
+import team.startup.expo.domain.admin.entity.Admin;
+import team.startup.expo.domain.admin.entity.Status;
 
 import java.util.List;
 import java.util.Optional;
