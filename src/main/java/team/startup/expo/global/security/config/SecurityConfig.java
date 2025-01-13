@@ -116,11 +116,14 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/standard/{standardPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/{expo_id}").permitAll()
 
+                                // application
+                                .requestMatchers(HttpMethod.POST, "/application/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/pre-standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/standard/{expo_id}").permitAll()
+
                                 // form
-                                .requestMatchers(HttpMethod.POST, "/form/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/pre-standard/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/field/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/field/standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
