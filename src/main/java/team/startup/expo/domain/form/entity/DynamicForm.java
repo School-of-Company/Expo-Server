@@ -29,7 +29,7 @@ public class DynamicForm {
     @Column(nullable = false)
     private FormType formType;
 
-    @JoinColumn(name = "expo_id")
+    @JoinColumn(name = "form_id")
     @ManyToOne
-    private Expo expo;
+    private Form form;
 }
