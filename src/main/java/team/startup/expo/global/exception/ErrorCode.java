@@ -56,6 +56,9 @@ public enum ErrorCode {
     // trainee
     NOT_FOUND_TRAINEE(404, "연수자를 찾지 못 했습니다."),
 
+    // form
+    ALREADY_EXIST_FORM(409, "이미 폼이 존재합니다."),
+
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
 
