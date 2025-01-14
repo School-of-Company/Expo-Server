@@ -10,11 +10,6 @@ public class GetTraineeInformationResponseDto {
     private Long id;
     private String name;
     private String trainingId;
-    private Boolean laptopStatus;
     private String phoneNumber;
-    private String position;
-    private String schoolLevel;
-    private String organization;
-    private Boolean informationStatus;
     private ApplicationType applicationType;
 }

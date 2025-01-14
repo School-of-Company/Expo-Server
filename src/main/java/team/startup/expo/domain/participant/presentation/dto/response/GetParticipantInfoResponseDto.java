@@ -9,7 +9,5 @@ public class GetParticipantInfoResponseDto {
     private Long id;
     private String name;
     private String phoneNumber;
-    private String affiliation;
-    private String position;
     private Boolean informationStatus;
 }
