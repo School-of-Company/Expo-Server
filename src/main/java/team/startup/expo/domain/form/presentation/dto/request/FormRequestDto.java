@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class CreateFormRequestDto {
+public class FormRequestDto {
     @NotNull
     private String informationImage;
 
