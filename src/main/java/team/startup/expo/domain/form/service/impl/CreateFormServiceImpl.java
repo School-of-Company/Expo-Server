@@ -43,7 +43,7 @@ public class CreateFormServiceImpl implements CreateFormService {
         return formRepository.save(form);
     }
 
-    private void saveDynamicForm(FormRequestDto.CreateDynamicFormRequestDto dynamicFormRequestDto, Form form) {
+    private void saveDynamicForm(FormRequestDto.DynamicFormRequestDto dynamicFormRequestDto, Form form) {
         DynamicForm dynamicForm = DynamicForm.builder()
                 .title(dynamicFormRequestDto.getTitle())
                 .jsonData(dynamicFormRequestDto.getJsonData())
