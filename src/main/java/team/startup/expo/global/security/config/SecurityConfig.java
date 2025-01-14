@@ -124,6 +124,7 @@ public class SecurityConfig {
 
                                 // form
                                 .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.PATCH, "/form/{form_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
