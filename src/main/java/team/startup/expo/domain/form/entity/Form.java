@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 
 @Entity
 @NoArgsConstructor
@@ -28,4 +29,9 @@ public class Form {
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)
     private Expo expo;
+
+    public void updateForm(FormRequestDto dto) {
+        this.informationImage = dto.getInformationImage();
+        this.participationType = dto.getParticipantType();
+    }
 }
