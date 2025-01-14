@@ -23,19 +23,18 @@ public class UpdateFormServiceImpl implements UpdateFormService {
         Form form = formRepository.findById(formId)
                 .orElseThrow(NotFoundFormException::new);
 
-        List<DynamicForm> dynamicFormList = dynamicFormRepository.findByForm(form);
+        dynamicFormRepository.deleteByForm(form);
 
         form.updateForm(dto);
-        dto.getDynamicForm().forEach(dynamicFormDto -> dynamicFormList.forEach(dynamicForm -> updateDynamicForm(dynamicFormDto, dynamicForm)));
+        dto.getDynamicForm().forEach(dynamicForm -> {saveDynamicForm(dynamicForm, form);});
     }
 
-    private void updateDynamicForm(FormRequestDto.DynamicFormRequestDto dto, DynamicForm dynamicForm) {
+    private void saveDynamicForm(FormRequestDto.DynamicFormRequestDto dto, Form form) {
         DynamicForm updateDynamicForm = DynamicForm.builder()
-                .id(dynamicForm.getId())
                 .title(dto.getTitle())
                 .formType(dto.getFormType())
                 .jsonData(dto.getJsonData())
-                .form(dynamicForm.getForm())
+                .form(form)
                 .build();
 
         dynamicFormRepository.save(updateDynamicForm);
