@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.service.CreateFormService;
+import team.startup.expo.domain.form.service.DeleteFormService;
 import team.startup.expo.domain.form.service.UpdateFormService;
 
 @RestController
@@ -16,6 +17,7 @@ public class FormController {
 
     private final CreateFormService createFormService;
     private final UpdateFormService updateFormService;
+    private final DeleteFormService deleteFormService;
 
     @PostMapping("/{expo_id}")
     public ResponseEntity<Void> createForm(@PathVariable("expo_id") String expoId, @RequestBody @Valid FormRequestDto dto) {
@@ -26,6 +28,12 @@ public class FormController {
     @PatchMapping("/{form_id}")
     public ResponseEntity<Void> updateForm(@PathVariable("form_id") Long formId, @RequestBody @Valid FormRequestDto dto) {
         updateFormService.execute(formId, dto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{form_id}")
+    public ResponseEntity<Void> deleteForm(@PathVariable("form_id") Long formId) {
+        deleteFormService.execute(formId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
