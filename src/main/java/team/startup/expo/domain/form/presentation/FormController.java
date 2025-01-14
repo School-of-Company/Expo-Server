@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.startup.expo.domain.form.presentation.dto.GetFormResponseDto;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.service.CreateFormService;
 import team.startup.expo.domain.form.service.DeleteFormService;
+import team.startup.expo.domain.form.service.GetFormService;
 import team.startup.expo.domain.form.service.UpdateFormService;
 
 @RestController
@@ -18,6 +20,7 @@ public class FormController {
     private final CreateFormService createFormService;
     private final UpdateFormService updateFormService;
     private final DeleteFormService deleteFormService;
+    private final GetFormService getFormService;
 
     @PostMapping("/{expo_id}")
     public ResponseEntity<Void> createForm(@PathVariable("expo_id") String expoId, @RequestBody @Valid FormRequestDto dto) {
@@ -35,5 +38,11 @@ public class FormController {
     public ResponseEntity<Void> deleteForm(@PathVariable("form_id") Long formId) {
         deleteFormService.execute(formId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/{form_id}")
+    public ResponseEntity<GetFormResponseDto> getForm(@PathVariable("form_id") Long formId) {
+        GetFormResponseDto result = getFormService.execute(formId);
+        return ResponseEntity.ok(result);
     }
 }
