@@ -8,8 +8,6 @@ import lombok.Getter;
 public class GetStandardProParticipantResponseDto {
     private Long id;
     private String name;
-    private String affiliation;
-    private String position;
     private String programName;
     private Boolean status;
     private String entryTime;
