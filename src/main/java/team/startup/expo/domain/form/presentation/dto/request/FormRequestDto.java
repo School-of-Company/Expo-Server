@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class CreateFormRequestDto {
+public class FormRequestDto {
     @NotNull
     private String informationImage;
 
@@ -18,11 +18,11 @@ public class CreateFormRequestDto {
     private ParticipationType participantType;
 
     @NotNull
-    private List<CreateDynamicFormRequestDto> dynamicForm;
+    private List<DynamicFormRequestDto> dynamicForm;
 
     @Getter
     @NoArgsConstructor
-    public static class CreateDynamicFormRequestDto {
+    public static class DynamicFormRequestDto {
         @NotNull
         private String title;
 
