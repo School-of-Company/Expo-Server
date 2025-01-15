@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.admin.presentation.dto.response.GetPendingAdminResponseDto;
 import team.startup.expo.domain.admin.service.AcceptAdminService;
 import team.startup.expo.domain.admin.service.GetPendingAdminsService;
+import team.startup.expo.domain.admin.service.RefuseAdminService;
 import team.startup.expo.domain.admin.service.WithdrawalAdminService;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class AdminController {
     private final AcceptAdminService acceptAdminService;
     private final GetPendingAdminsService getPendingAdminsService;
     private final WithdrawalAdminService withdrawalAdminService;
+    private final RefuseAdminService refuseAdminService;
 
     @PatchMapping("/{admin_id}")
     public ResponseEntity<Void> acceptAdmin(@PathVariable("admin_id") Long adminId) {
@@ -35,6 +37,12 @@ public class AdminController {
     @DeleteMapping
     public ResponseEntity<Void> withdrawalAdmin() {
         withdrawalAdminService.execute();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/{admin_id}")
+    public ResponseEntity<Void> refuseAdmin(@PathVariable("admin_id") Long adminId) {
+        refuseAdminService.execute(adminId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
