@@ -14,6 +14,7 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_standard_participant")
 public class StandardParticipant {
 
     @Id

@@ -12,6 +12,7 @@ import team.startup.expo.domain.admin.entity.Admin;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_expo")
 public class Expo {
 
     @Id
