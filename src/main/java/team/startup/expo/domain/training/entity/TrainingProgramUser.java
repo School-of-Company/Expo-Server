@@ -12,6 +12,7 @@ import team.startup.expo.domain.trainee.entity.Trainee;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_training_program_user")
 public class TrainingProgramUser {
 
     @Id

@@ -13,6 +13,7 @@ import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_form")
 public class Form {
 
     @Id

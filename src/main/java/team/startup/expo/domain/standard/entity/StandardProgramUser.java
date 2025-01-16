@@ -12,6 +12,7 @@ import team.startup.expo.domain.participant.entity.StandardParticipant;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_standard_program_user")
 public class StandardProgramUser {
 
     @Id

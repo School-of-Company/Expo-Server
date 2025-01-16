@@ -13,6 +13,7 @@ import team.startup.expo.domain.expo.entity.Expo;
 @AllArgsConstructor
 @Builder
 @Getter
+@Table(name = "tb_trainee")
 public class Trainee {
 
     @Id
