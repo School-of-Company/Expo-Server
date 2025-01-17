@@ -12,4 +12,5 @@ public interface StandardProgramUserRepository extends JpaRepository<StandardPro
     Optional<StandardProgramUser> findByStandardProgramAndStandardParticipant(StandardProgram standardProgram, StandardParticipant standardParticipant);
     void deleteByStandardProgram(StandardProgram standardProgram);
     List<StandardProgramUser> findByStandardProgram(StandardProgram standardProgram);
+    Boolean existsByStandardParticipantAndStandardProgram(StandardParticipant standardParticipant, StandardProgram standardProgram);
 }
