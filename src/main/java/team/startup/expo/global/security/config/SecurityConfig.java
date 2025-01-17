@@ -104,6 +104,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/standard/program/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "standard/application/{expo_id}").permitAll()
 
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
