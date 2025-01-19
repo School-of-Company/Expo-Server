@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     Optional<Trainee> findByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     List<Trainee> findByExpo(Expo expo);
+    List<Trainee> findByExpoAndName(Expo expo, String name);
     void deleteByExpo(Expo expo);
     Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     Optional<Trainee> findByTrainingId(String trainingId);
