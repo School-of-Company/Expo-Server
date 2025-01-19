@@ -17,8 +17,12 @@ public class ParticipantController {
     private final GetParticipantInfoService getParticipantInfoService;
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<List<GetParticipantInfoResponseDto>> getParticipantInfo(@PathVariable("expo_id") String expoId, @RequestParam("type") ApplicationType type) {
-        List<GetParticipantInfoResponseDto> response = getParticipantInfoService.execute(expoId, type);
+    public ResponseEntity<List<GetParticipantInfoResponseDto>> getParticipantInfo(
+            @PathVariable("expo_id") String expoId,
+            @RequestParam(value = "type") ApplicationType type,
+            @RequestParam(value = "name", required = false) String name
+    ) {
+        List<GetParticipantInfoResponseDto> response = getParticipantInfoService.execute(expoId, type, name);
         return ResponseEntity.ok(response);
     }
 }

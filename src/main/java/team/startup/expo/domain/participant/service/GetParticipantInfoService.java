@@ -6,5 +6,5 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import java.util.List;
 
 public interface GetParticipantInfoService {
-    List<GetParticipantInfoResponseDto> execute(String expoId, ApplicationType type);
+    List<GetParticipantInfoResponseDto> execute(String expoId, ApplicationType type, String name);
 }
