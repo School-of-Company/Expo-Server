@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInformationResponseDto;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.trainee.service.GetTrainingInformationService;
@@ -18,11 +19,19 @@ public class GetTrainingInformationServiceImpl implements GetTrainingInformation
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
 
-    public List<GetTraineeInformationResponseDto> execute(String expoId) {
+    public List<GetTraineeInformationResponseDto> execute(String expoId, String name) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        return traineeRepository.findByExpo(expo).stream()
+        List<Trainee> traineeList;
+
+        if (name == null) {
+            traineeList = traineeRepository.findByExpo(expo);
+        } else {
+            traineeList = traineeRepository.findByExpoAndName(expo, name);
+        }
+
+        return traineeList.stream()
                 .map(trainee -> GetTraineeInformationResponseDto.builder()
                         .id(trainee.getId())
                         .name(trainee.getName())
