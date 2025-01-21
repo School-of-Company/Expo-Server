@@ -38,8 +38,9 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
                 .attendanceStatus(false)
+                .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
-                .personalInformationStatus(dto.getInformationStatus())
+                .personalInformationStatus(dto.getPersonalInformationStatus())
                 .expo(expo)
                 .build();
 

@@ -12,23 +12,14 @@ public class ApplicationForTraineeRequestDto {
     private String trainingId;
 
     @NotNull
-    private Boolean laptopStatus;
+    private String name;
 
     @NotNull
     private String phoneNumber;
 
     @NotNull
-    private String position;
+    private String informationJson;
 
     @NotNull
-    private String schoolLevel;
-
-    @NotNull
-    private String organization;
-
-    @NotNull
-    private String name;
-
-    @NotNull
-    private Boolean informationStatus;
+    private Boolean personalInformationStatus;
 }
