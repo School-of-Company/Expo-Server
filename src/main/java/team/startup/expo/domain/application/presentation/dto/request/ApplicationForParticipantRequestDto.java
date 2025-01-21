@@ -15,11 +15,8 @@ public class ApplicationForParticipantRequestDto {
     private String phoneNumber;
 
     @NotNull
-    private String affiliation;
+    private String informationJson;
 
     @NotNull
-    private String position;
-
-    @NotNull
-    private Boolean informationStatus;
+    private Boolean personalInformationStatus;
 }
