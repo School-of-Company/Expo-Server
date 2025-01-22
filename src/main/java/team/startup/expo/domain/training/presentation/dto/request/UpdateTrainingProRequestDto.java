@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class UpdateTrainingProRequestDto {
+    @NotNull
+    private Long id;
 
     @NotNull
     private String title;
