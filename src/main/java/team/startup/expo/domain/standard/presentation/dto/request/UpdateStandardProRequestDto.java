@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UpdateStandardProRequestDto {
     @NotNull
+    private Long id;
+
+    @NotNull
     private String title;
 
     @NotNull
