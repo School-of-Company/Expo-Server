@@ -1,3 +1,7 @@
+#!/bin/bash
+
+chmod +x deploy.sh
+
 REPOSITORY=/home/ubuntu
 PROJECT_NAME=app
 JAR_PATH=$REPOSITORY/$PROJECT_NAME/build/libs/expo-0.0.1-SNAPSHOT.jar
@@ -16,4 +20,4 @@ fi
 echo "> 애플리케이션 배포"
 JAR_NAME=$(ls -tr $JAR_PATH | tail -n 1)
 echo "> JAR NAME: $JAR_NAME"
-nohup java -jar $JAR_NAME  --logging.file.path=/home/ubuntu/app &
+nohup java -jar $JAR_NAME --logging.file.path=/home/ubuntu/app &
