@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.10"
 	id("io.spring.dependency-management") version "1.1.6"
+	kotlin("jvm")
 }
 
 group = "java.team.startup"
@@ -47,6 +48,7 @@ dependencies {
 	implementation("com.google.code.gson:gson:2.8.9")
 	implementation("org.apache.poi:poi:5.3.0")
 	implementation("org.apache.poi:poi-ooxml:5.3.0")
+	implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.withType<Test> {
