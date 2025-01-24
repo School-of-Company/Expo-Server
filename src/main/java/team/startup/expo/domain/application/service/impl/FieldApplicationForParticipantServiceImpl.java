@@ -1,6 +1,7 @@
 package team.startup.expo.domain.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
@@ -10,6 +11,8 @@ import team.startup.expo.domain.application.presentation.dto.request.Application
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.sms.event.SendQrEvent;
+import team.startup.expo.domain.sms.event.handler.SendQrEventHandler;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
@@ -21,6 +24,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private final ExpoRepository expoRepository;
     private final ParticipantRepository participantRepository;
     private final TraineeRepository traineeRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -30,6 +34,8 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
             throw new AlreadyApplicationUserException();
 
         saveParticipant(expo, dto);
+
+        applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
     }
 
     private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
