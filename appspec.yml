@@ -5,13 +5,14 @@ files:
     destination: /home/ubuntu/app
     overwrite: yes
 
-hooks:
-  ApplicationStop:
-    - location: stop.sh
-      timeout: 300
-      runas: ubuntu
+permissions:
+  - object: /home/ubuntu/app
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
 
-  BeforeInstall:
-    - location: start.sh
+hooks:
+  ApplicationStart:
+    - location: deploy.sh
       timeout: 300
       runas: ubuntu
