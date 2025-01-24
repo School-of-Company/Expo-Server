@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/.ssh/Expo-Server
+    destination: /home/ubuntu/app
 
 hooks:
   ApplicationStop:
