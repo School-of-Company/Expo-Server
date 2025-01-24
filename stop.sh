@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ubuntu/.ssh/Expo-Server"
+PROJECT_ROOT="/home/ubuntu/.ssh/Expo-Server/build/libs"
 JAR_FILE="$PROJECT_ROOT/expo-0.0.1-SNAPSHOT.jar"
 
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
