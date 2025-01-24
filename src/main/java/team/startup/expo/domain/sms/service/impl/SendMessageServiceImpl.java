@@ -50,7 +50,7 @@ public class SendMessageServiceImpl implements SendMessageService {
         List<Trainee> traineeList = traineeRepository.findByExpo(expo);
 
         if (traineeList.isEmpty())
-            throw new NotExistParticipantAtExpoException();
+            throw new NotExistTraineeAtExpoException();
 
         ArrayList<Message> messageList = new ArrayList<>();
 
@@ -70,7 +70,7 @@ public class SendMessageServiceImpl implements SendMessageService {
         List<StandardParticipant> participantList = participantRepository.findByExpo(expo);
 
         if (participantList.isEmpty())
-            throw new NotExistTraineeAtExpoException();
+            throw new NotExistParticipantAtExpoException();
 
         ArrayList<Message> messageList = new ArrayList<>();
 
