@@ -36,10 +36,10 @@ public class GenerateExpoRequestDto {
     private String coverImage;
 
     @NotNull
-    private Float x;
+    private String x;
 
     @NotNull
-    private Float y;
+    private String y;
 
     @NotNull
     private List<AddStandardProRequestDto> addStandardProRequestDto;

@@ -40,10 +40,10 @@ public class UpdateExpoRequestDto {
     private String coverImage;
 
     @NotNull
-    private Float x;
+    private String x;
 
     @NotNull
-    private Float y;
+    private String y;
 
     @NotNull
     private List<UpdateStandardProRequestDto> updateStandardProRequestDto;

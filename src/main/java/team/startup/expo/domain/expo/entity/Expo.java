@@ -37,11 +37,11 @@ public class Expo {
     @Column(columnDefinition = "TEXT")
     private String coverImage;
 
-    @Column(nullable = false)
-    private Float x;
+    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    private String x;
 
-    @Column(nullable = false)
-    private Float y;
+    @Column(nullable = false, columnDefinition = "VARCHAR(15)")
+    private String y;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
