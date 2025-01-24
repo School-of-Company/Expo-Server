@@ -5,7 +5,7 @@ PROJECT_NAME=app
 JAR_PATH=$REPOSITORY/$PROJECT_NAME/build/libs/expo-0.0.1-SNAPSHOT.jar
 
 
-cd $REPOSITORY/$PROJECT_NAME/
+cd $REPOSITORY/$PROJECT_NAME/scripts
 
 chmod +x deploy.sh
 sudo chmod +x /home/ubuntu/app/scripts/deploy.sh
