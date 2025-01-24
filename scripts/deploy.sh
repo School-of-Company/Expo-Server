@@ -1,12 +1,12 @@
 #!/bin/bash
 
-chmod +x deploy.sh
-
 REPOSITORY=/home/ubuntu
 PROJECT_NAME=app
 JAR_PATH=$REPOSITORY/$PROJECT_NAME/build/libs/expo-0.0.1-SNAPSHOT.jar
 
 cd $REPOSITORY/$PROJECT_NAME/
+
+chmod +x deploy.sh
 
 CURRENT_PID=$(lsof -ti tcp:8080)
 if [ -z "$CURRENT_PID" ]; then
