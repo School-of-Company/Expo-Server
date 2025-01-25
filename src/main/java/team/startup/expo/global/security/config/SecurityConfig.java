@@ -60,6 +60,9 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
+                                // health
+                                .requestMatchers(HttpMethod.GET, "/health").permitAll()
+
                                 // sms
                                 .requestMatchers(HttpMethod.POST, "/sms").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/sms").permitAll()
