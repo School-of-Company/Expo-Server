@@ -9,7 +9,6 @@ cd $REPOSITORY/$PROJECT_NAME/scripts
 
 chmod +x deploy.sh
 sudo chmod +x /home/ubuntu/app/scripts/deploy.sh
-sudo ./deploy.sh
 
 CURRENT_PID=$(lsof -ti tcp:8080)
 if [ -z "$CURRENT_PID" ]; then
