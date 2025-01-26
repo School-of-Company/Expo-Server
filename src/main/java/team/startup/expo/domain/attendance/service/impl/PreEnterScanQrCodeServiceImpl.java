@@ -10,7 +10,7 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.trainee.entity.Trainee;
@@ -22,7 +22,7 @@ import team.startup.expo.global.annotation.TransactionService;
 public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService {
 
     private final TraineeRepository traineeRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
 
     public PreEnterScanQrCodeResponseDto execute(String expoId, PreEnterScanQrCodeRequestDto dto) {
@@ -32,7 +32,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                 .orElseThrow(NotFoundExpoException::new);
 
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            StandardParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
+            StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             if (participant.getAttendanceStatus())

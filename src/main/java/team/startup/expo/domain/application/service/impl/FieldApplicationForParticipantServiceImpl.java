@@ -10,9 +10,8 @@ import team.startup.expo.domain.application.exception.AlreadyApplicationUserExce
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.event.SendQrEvent;
-import team.startup.expo.domain.sms.event.handler.SendQrEventHandler;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
@@ -22,7 +21,7 @@ import team.startup.expo.global.annotation.TransactionService;
 public class FieldApplicationForParticipantServiceImpl implements FieldApplicationForParticipantService {
 
     private final ExpoRepository expoRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final TraineeRepository traineeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -30,7 +29,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        if (participantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
+        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
         saveParticipant(expo, dto);
@@ -50,6 +49,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .expo(expo)
                 .build();
 
-        participantRepository.save(standardParticipant);
+        standardParticipantRepository.save(standardParticipant);
     }
 }

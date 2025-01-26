@@ -8,7 +8,7 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import java.util.List;
 import java.util.Optional;
 
-public interface ParticipantRepository extends JpaRepository<StandardParticipant, Long> {
+public interface StandardParticipantRepository extends JpaRepository<StandardParticipant, Long> {
     Optional<StandardParticipant> findByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     void deleteByExpo(Expo expo);
     List<StandardParticipant> findByExpoAndApplicationTypeAndName(Expo expo, ApplicationType applicationType, String name);

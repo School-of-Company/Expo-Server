@@ -6,7 +6,7 @@ import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUser
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
@@ -21,12 +21,12 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCodeService {
 
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final StandardProgramRepository standardProgramRepository;
     private final StandardProgramUserRepository standardProgramUserRepository;
 
     public void execute(Long standardProId, ScanStandardProRequestDto dto) {
-        StandardParticipant standardParticipant = participantRepository.findById(dto.getParticipantId())
+        StandardParticipant standardParticipant = standardParticipantRepository.findById(dto.getParticipantId())
                 .orElseThrow(NotFoundParticipantException::new);
 
         StandardProgram standardProgram = standardProgramRepository.findById(standardProId)

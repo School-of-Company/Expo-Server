@@ -17,7 +17,7 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.sms.presentation.dto.request.SendQrRequestDto;
@@ -41,7 +41,7 @@ public class SendQrServiceImpl implements SendQrService {
     private final static int WIDTH = 200;
     private final static int HEIGHT = 200;
 
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
     private final DefaultMessageService messageService;
     private final TraineeRepository traineeRepository;
@@ -54,7 +54,7 @@ public class SendQrServiceImpl implements SendQrService {
                 .orElseThrow(NotFoundExpoException::new);
 
         if (dto.getAuthority() == Authority.ROLE_STANDARD) {
-            StandardParticipant participant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
+            StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                     .orElseThrow(NotFoundParticipantException::new);
 
             String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
