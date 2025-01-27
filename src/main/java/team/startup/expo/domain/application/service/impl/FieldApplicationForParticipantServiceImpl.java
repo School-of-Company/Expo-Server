@@ -42,7 +42,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .name(dto.getName())
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
-                .attendanceStatus(false)
                 .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())

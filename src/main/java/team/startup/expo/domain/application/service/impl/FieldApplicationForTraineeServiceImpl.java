@@ -46,7 +46,6 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
                 .applicationType(ApplicationType.FIELD)
                 .informationJson(dto.getInformationJson())
                 .personalInformationStatus(dto.getPersonalInformationStatus())
-                .attendanceStatus(false)
                 .expo(expo)
                 .build();
 

@@ -46,7 +46,6 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                 .applicationType(ApplicationType.PRE)
                 .informationJson(dto.getInformationJson())
                 .personalInformationStatus(dto.getPersonalInformationStatus())
-                .attendanceStatus(false)
                 .expo(expo)
                 .build();
 
