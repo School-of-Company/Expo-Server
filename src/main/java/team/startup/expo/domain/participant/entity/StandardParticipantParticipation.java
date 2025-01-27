@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.startup.expo.domain.expo.entity.Expo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,4 +34,12 @@ public class StandardParticipantParticipation {
     @JoinColumn(name = "standard_participant_id")
     @ManyToOne
     private StandardParticipant standardParticipant;
+
+    @JoinColumn(name = "expo_id")
+    @ManyToOne
+    private Expo expo;
+
+    public void addLeaveTime() {
+        this.leaveTime = LocalDateTime.now();
+    }
 }
