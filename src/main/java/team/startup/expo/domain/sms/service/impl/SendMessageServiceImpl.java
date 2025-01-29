@@ -11,7 +11,7 @@ import team.startup.expo.domain.expo.exception.NotExistTraineeAtExpoException;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.presentation.dto.request.SendMessageRequestDto;
 import team.startup.expo.domain.sms.service.SendMessageService;
 import team.startup.expo.domain.trainee.entity.Trainee;
@@ -29,7 +29,7 @@ public class SendMessageServiceImpl implements SendMessageService {
     private final DefaultMessageService messageService;
     private final SmsProperties smsProperties;
     private final TraineeRepository traineeRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
 
     public MultipleDetailMessageSentResponse execute(String expoId, SendMessageRequestDto dto) {
@@ -67,7 +67,7 @@ public class SendMessageServiceImpl implements SendMessageService {
     }
 
     private MultipleDetailMessageSentResponse sendMessageForParticipant(Expo expo, SendMessageRequestDto dto) {
-        List<StandardParticipant> participantList = participantRepository.findByExpo(expo);
+        List<StandardParticipant> participantList = standardParticipantRepository.findByExpo(expo);
 
         if (participantList.isEmpty())
             throw new NotExistParticipantAtExpoException();

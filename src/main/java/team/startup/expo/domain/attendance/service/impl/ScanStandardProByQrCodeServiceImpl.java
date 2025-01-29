@@ -5,14 +5,16 @@ import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramExce
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
+import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.date.DateUtil;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -21,16 +23,20 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCodeService {
 
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final StandardProgramRepository standardProgramRepository;
     private final StandardProgramUserRepository standardProgramUserRepository;
+    private final DateUtil dateUtil;
 
     public void execute(Long standardProId, ScanStandardProRequestDto dto) {
-        StandardParticipant standardParticipant = participantRepository.findById(dto.getParticipantId())
+        StandardParticipant standardParticipant = standardParticipantRepository.findById(dto.getParticipantId())
                 .orElseThrow(NotFoundParticipantException::new);
 
         StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
                 .orElseThrow(NotFoundStandardProgramException::new);
+
+        if (!dateUtil.dateComparison(standardProgram.getExpo().getStartedDay(), standardProgram.getExpo().getFinishedDay()))
+            throw new NotInProgressExpoException();
 
         StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
                 .orElseThrow(NotFoundStandardProgramUserException::new);

@@ -7,7 +7,7 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
@@ -24,7 +24,7 @@ public class ApplicationStandardProListServiceImpl implements ApplicationStandar
 
     private final StandardProgramRepository standardProgramRepository;
     private final StandardProgramUserRepository standardProgramUserRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
 
@@ -32,7 +32,7 @@ public class ApplicationStandardProListServiceImpl implements ApplicationStandar
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        StandardParticipant standardParticipant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
+        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundParticipantException::new);
 
         dto.getStandardProIds().forEach(standardProId -> {saveStandardProUser(standardParticipant, standardProId);});

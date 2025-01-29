@@ -37,9 +37,6 @@ public class StandardParticipant {
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean personalInformationStatus;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private Boolean attendanceStatus = false;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationType applicationType;
@@ -51,10 +48,6 @@ public class StandardParticipant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
     private Expo expo;
-
-    public void changeAttendanceStatus() {
-        this.attendanceStatus = true;
-    }
 
     public void addQrCode(byte[] qrCode) {
         this.qrCode = qrCode;

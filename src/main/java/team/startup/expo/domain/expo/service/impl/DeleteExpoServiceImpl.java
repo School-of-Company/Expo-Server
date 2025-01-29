@@ -8,7 +8,7 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotMatchAdminException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.DeleteExpoService;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
@@ -28,7 +28,7 @@ public class DeleteExpoServiceImpl implements DeleteExpoService {
     private final StandardProgramRepository standardProgramRepository;
     private final StandardProgramUserRepository standardProgramUserRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final TraineeRepository traineeRepository;
     private final TrainingProgramRepository trainingProgramRepository;
     private final UserUtil userUtil;
@@ -53,7 +53,7 @@ public class DeleteExpoServiceImpl implements DeleteExpoService {
 
         standardProgramRepository.deleteByExpo(expo);
         trainingProgramRepository.deleteByExpo(expo);
-        participantRepository.deleteByExpo(expo);
+        standardParticipantRepository.deleteByExpo(expo);
         traineeRepository.deleteByExpo(expo);
         expoRepository.delete(expo);
     }

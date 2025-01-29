@@ -47,6 +47,7 @@ public enum ErrorCode {
     NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
     NOT_EXIST_TRAINEE_AT_EXPO(404, "해당 박람회에 연수자가 존재하지 않습니다."),
     NOT_EXIST_PARTICIPANT_AT_EXPO(404, "해당 박람회에 관람객이 존재하지 않습니다."),
+    NOT_IN_PROGRESS_EXPO(400, "해당 박람회는 진행 중인 상태가 아닙니다."),
 
     // participant
     NOT_FOUND_PARTICIPANT(404, "행사 참가자를 찾지 못 했습니다."),

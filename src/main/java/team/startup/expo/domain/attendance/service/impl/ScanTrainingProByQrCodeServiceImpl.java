@@ -5,6 +5,8 @@ import team.startup.expo.domain.attendance.exception.NotFoundTrainingProgramUser
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanTrainingProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
 import java.time.LocalTime;
+
+import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -14,6 +16,7 @@ import team.startup.expo.domain.training.exception.NotFoundTrainingProgramExcept
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.date.DateUtil;
 
 import java.time.temporal.ChronoUnit;
 
@@ -24,6 +27,7 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
     private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
     private final TraineeRepository traineeRepository;
+    private final DateUtil dateUtil;
 
     public void execute(Long trainingProId, ScanTrainingProRequestDto dto) {
         Trainee trainee = traineeRepository.findById(dto.getTraineeId())
@@ -31,6 +35,9 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
 
         TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
                 .orElseThrow(NotFoundTrainingProgramException::new);
+
+        if (!dateUtil.dateComparison(trainingProgram.getExpo().getStartedDay(), trainingProgram.getExpo().getFinishedDay()))
+            throw new NotInProgressExpoException();
 
         TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
                 .orElseThrow(NotFoundTrainingProgramUserException::new);

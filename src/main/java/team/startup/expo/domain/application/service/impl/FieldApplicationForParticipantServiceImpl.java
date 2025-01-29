@@ -5,32 +5,37 @@ import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.event.SendQrEvent;
-import team.startup.expo.domain.sms.event.handler.SendQrEventHandler;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.date.DateUtil;
 
 @TransactionService
 @RequiredArgsConstructor
 public class FieldApplicationForParticipantServiceImpl implements FieldApplicationForParticipantService {
 
     private final ExpoRepository expoRepository;
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final TraineeRepository traineeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final DateUtil dateUtil;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        if (participantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
+        if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
+            throw new NotInProgressExpoException();
+
+        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
         saveParticipant(expo, dto);
@@ -43,13 +48,12 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .name(dto.getName())
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
-                .attendanceStatus(false)
                 .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())
                 .expo(expo)
                 .build();
 
-        participantRepository.save(standardParticipant);
+        standardParticipantRepository.save(standardParticipant);
     }
 }
