@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
@@ -15,6 +16,7 @@ import team.startup.expo.domain.sms.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.date.DateUtil;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -24,10 +26,14 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private final StandardParticipantRepository standardParticipantRepository;
     private final TraineeRepository traineeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final DateUtil dateUtil;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
+
+        if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
+            throw new NotInProgressExpoException();
 
         if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
