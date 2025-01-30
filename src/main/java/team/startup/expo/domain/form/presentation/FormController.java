@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.presentation.dto.GetFormResponseDto;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.service.CreateFormService;
@@ -40,9 +41,9 @@ public class FormController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{form_id}")
-    public ResponseEntity<GetFormResponseDto> getForm(@PathVariable("form_id") Long formId) {
-        GetFormResponseDto result = getFormService.execute(formId);
+    @GetMapping("/{expo_id}")
+    public ResponseEntity<GetFormResponseDto> getForm(@PathVariable("expo_id") String expoId, @RequestParam("type") ParticipationType participationType) {
+        GetFormResponseDto result = getFormService.execute(expoId, participationType);
         return ResponseEntity.ok(result);
     }
 }
