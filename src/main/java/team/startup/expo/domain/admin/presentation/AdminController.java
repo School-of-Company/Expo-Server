@@ -4,11 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import team.startup.expo.domain.admin.presentation.dto.response.GetMyInformationResponseDto;
 import team.startup.expo.domain.admin.presentation.dto.response.GetPendingAdminResponseDto;
-import team.startup.expo.domain.admin.service.AcceptAdminService;
-import team.startup.expo.domain.admin.service.GetPendingAdminsService;
-import team.startup.expo.domain.admin.service.RefuseAdminService;
-import team.startup.expo.domain.admin.service.WithdrawalAdminService;
+import team.startup.expo.domain.admin.service.*;
 
 import java.util.List;
 
@@ -21,6 +19,7 @@ public class AdminController {
     private final GetPendingAdminsService getPendingAdminsService;
     private final WithdrawalAdminService withdrawalAdminService;
     private final RefuseAdminService refuseAdminService;
+    private final GetMyInformationService getMyInformationService;
 
     @PatchMapping("/{admin_id}")
     public ResponseEntity<Void> acceptAdmin(@PathVariable("admin_id") Long adminId) {
@@ -44,5 +43,11 @@ public class AdminController {
     public ResponseEntity<Void> refuseAdmin(@PathVariable("admin_id") Long adminId) {
         refuseAdminService.execute(adminId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/my")
+    public ResponseEntity<GetMyInformationResponseDto> getMyInformation() {
+        GetMyInformationResponseDto responseDto = getMyInformationService.execute();
+        return ResponseEntity.ok(responseDto);
     }
 }
