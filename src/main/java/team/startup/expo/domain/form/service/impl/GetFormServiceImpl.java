@@ -1,6 +1,9 @@
 package team.startup.expo.domain.form.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.entity.DynamicForm;
 import team.startup.expo.domain.form.entity.Form;
 import team.startup.expo.domain.form.entity.ParticipationType;
@@ -18,10 +21,14 @@ import java.util.List;
 public class GetFormServiceImpl implements GetFormService {
 
     private final FormRepository formRepository;
+    private final ExpoRepository expoRepository;
     private final DynamicFormRepository dynamicFormRepository;
 
-    public GetFormResponseDto execute(Long formId) {
-        Form form = formRepository.findById(formId)
+    public GetFormResponseDto execute(String expoId, ParticipationType participationType) {
+        Expo expo = expoRepository.findById(expoId)
+                .orElseThrow(NotFoundExpoException::new);
+
+        Form form = formRepository.findByExpoAndParticipationType(expo, participationType)
                 .orElseThrow(NotFoundFormException::new);
 
         List<DynamicForm> dynamicFormList = dynamicFormRepository.findByForm(form);
