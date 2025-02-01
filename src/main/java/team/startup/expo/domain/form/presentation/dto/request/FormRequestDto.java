@@ -31,5 +31,10 @@ public class FormRequestDto {
 
         @NotNull
         private String jsonData;
+
+        @NotNull
+        private Boolean requiredStatus;
+
+        private String otherJson;
     }
 }
