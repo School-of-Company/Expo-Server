@@ -138,6 +138,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/survey/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
