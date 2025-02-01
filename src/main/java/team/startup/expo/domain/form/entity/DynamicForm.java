@@ -18,7 +18,7 @@ public class DynamicForm {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(50)")
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
