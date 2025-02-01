@@ -33,8 +33,8 @@ public class GetSurveyServiceImpl implements GetSurveyService {
 
         List<DynamicSurvey> dynamicSurveyList = dynamicSurveyRepository.findBySurvey(survey);
 
-        List<SurveyResponseDto.DynamicSurveyRequestDto> dynamicSurveyRequestDto = dynamicSurveyList.stream()
-                .map(dynamicSurvey -> SurveyResponseDto.DynamicSurveyRequestDto.builder()
+        List<SurveyResponseDto.DynamicSurveyResponseDto> dynamicSurveyResponseDto = dynamicSurveyList.stream()
+                .map(dynamicSurvey -> SurveyResponseDto.DynamicSurveyResponseDto.builder()
                         .title(dynamicSurvey.getTitle())
                         .jsonData(dynamicSurvey.getJsonData())
                         .formType(dynamicSurvey.getFormType())
@@ -45,7 +45,7 @@ public class GetSurveyServiceImpl implements GetSurveyService {
 
         return SurveyResponseDto.builder()
                 .participationType(participationType)
-                .dynamicSurveyRequestDto(dynamicSurveyRequestDto)
+                .dynamicSurveyResponseDto(dynamicSurveyResponseDto)
                 .build();
     }
 }

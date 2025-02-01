@@ -12,11 +12,11 @@ import java.util.List;
 @Builder
 public class SurveyResponseDto {
     private ParticipationType participationType;
-    private List<DynamicSurveyRequestDto> dynamicSurveyRequestDto;
+    private List<DynamicSurveyResponseDto> dynamicSurveyResponseDto;
 
     @Getter
     @Builder
-    public static class DynamicSurveyRequestDto {
+    public static class DynamicSurveyResponseDto {
         private String title;
         private String jsonData;
         private FormType formType;
