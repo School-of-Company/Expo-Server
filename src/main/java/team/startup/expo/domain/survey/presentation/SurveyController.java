@@ -10,6 +10,7 @@ import team.startup.expo.domain.survey.presentation.dto.request.SurveyRequestDto
 import team.startup.expo.domain.survey.presentation.dto.response.SurveyResponseDto;
 import team.startup.expo.domain.survey.service.CreateSurveyService;
 import team.startup.expo.domain.survey.service.GetSurveyService;
+import team.startup.expo.domain.survey.service.UpdateSurveyService;
 
 @RestController
 @RequestMapping("/survey")
@@ -18,6 +19,7 @@ public class SurveyController {
 
     private final CreateSurveyService createSurveyService;
     private final GetSurveyService getSurveyService;
+    private final UpdateSurveyService updateSurveyService;
 
     @PostMapping("/{expo_id}")
     public ResponseEntity<Void> createSurvey(@PathVariable("expo_id") String expoId, @Valid @RequestBody SurveyRequestDto dto) {
@@ -29,5 +31,11 @@ public class SurveyController {
     public ResponseEntity<SurveyResponseDto> getSurvey(@PathVariable("expo_id") String expoId, @RequestParam("type")ParticipationType participationType) {
         SurveyResponseDto response = getSurveyService.execute(expoId, participationType);
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{expo_id}")
+    public ResponseEntity<Void> updateSurvey(@PathVariable("expo_id") String expoId, @Valid @RequestBody SurveyRequestDto dto) {
+        updateSurveyService.execute(expoId, dto);
+        return ResponseEntity.noContent().build();
     }
 }
