@@ -1,13 +1,9 @@
-package team.startup.expo.domain.form.presentation.dto;
+package team.startup.expo.domain.form.presentation.dto.response;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 
 import java.util.List;
 
@@ -24,5 +20,7 @@ public class GetFormResponseDto {
         private String title;
         private FormType formType;
         private String jsonData;
+        private Boolean requiredStatus;
+        private String otherJson;
     }
 }

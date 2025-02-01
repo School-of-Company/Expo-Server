@@ -29,6 +29,12 @@ public class DynamicForm {
     @Column(nullable = false)
     private FormType formType;
 
+    @Column(nullable = false)
+    private Boolean requiredStatus;
+
+    @Column(columnDefinition = "TEXT")
+    private String otherJson;
+
     @JoinColumn(name = "form_id")
     @ManyToOne
     private Form form;

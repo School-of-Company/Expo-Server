@@ -34,6 +34,8 @@ public class UpdateFormServiceImpl implements UpdateFormService {
                 .title(dto.getTitle())
                 .formType(dto.getFormType())
                 .jsonData(dto.getJsonData())
+                .requiredStatus(dto.getRequiredStatus())
+                .otherJson(dto.getOtherJson())
                 .form(form)
                 .build();
 

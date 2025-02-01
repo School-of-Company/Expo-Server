@@ -8,7 +8,7 @@ import team.startup.expo.domain.form.entity.DynamicForm;
 import team.startup.expo.domain.form.entity.Form;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
-import team.startup.expo.domain.form.presentation.dto.GetFormResponseDto;
+import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDto;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.GetFormService;
@@ -38,6 +38,8 @@ public class GetFormServiceImpl implements GetFormService {
                         .title(dynamicForm.getTitle())
                         .jsonData(dynamicForm.getJsonData())
                         .formType(dynamicForm.getFormType())
+                        .requiredStatus(dynamicForm.getRequiredStatus())
+                        .otherJson(dynamicForm.getOtherJson())
                         .build()
                 ).toList();
 

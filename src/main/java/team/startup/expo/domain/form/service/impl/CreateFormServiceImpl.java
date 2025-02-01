@@ -48,6 +48,8 @@ public class CreateFormServiceImpl implements CreateFormService {
                 .title(dynamicFormRequestDto.getTitle())
                 .jsonData(dynamicFormRequestDto.getJsonData())
                 .formType(dynamicFormRequestDto.getFormType())
+                .requiredStatus(dynamicFormRequestDto.getRequiredStatus())
+                .otherJson(dynamicFormRequestDto.getOtherJson())
                 .form(form)
                 .build();
 
