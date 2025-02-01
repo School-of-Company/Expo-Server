@@ -12,7 +12,7 @@ import team.startup.expo.domain.form.entity.FormType;
 @AllArgsConstructor
 @Builder
 @Getter
-@Table(name = "tb_standard_participant")
+@Table(name = "tb_dynamic_survey")
 public class DynamicSurvey {
 
     @Id
