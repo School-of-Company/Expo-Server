@@ -1,18 +1,19 @@
-package team.startup.expo.domain.form.entity;
+package team.startup.expo.domain.survey.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.startup.expo.domain.form.entity.FormType;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
-@Table(name = "tb_dynamic_form")
-public class DynamicForm {
+@Table(name = "tb_standard_participant")
+public class DynamicSurvey {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,7 @@ public class DynamicForm {
     @Column(columnDefinition = "TEXT")
     private String otherJson;
 
-    @JoinColumn(name = "form_id")
     @ManyToOne
-    private Form form;
+    @JoinColumn(name = "survey_id")
+    private Survey survey;
 }
