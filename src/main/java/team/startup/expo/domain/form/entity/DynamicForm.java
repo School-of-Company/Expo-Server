@@ -22,7 +22,6 @@ public class DynamicForm {
     private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    @Lob
     private String jsonData;
 
     @Enumerated(EnumType.STRING)
