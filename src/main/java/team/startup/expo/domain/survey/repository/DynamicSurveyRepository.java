@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DynamicSurveyRepository extends JpaRepository<DynamicSurvey, Long> {
     List<DynamicSurvey> findBySurvey(Survey survey);
+    void deleteBySurvey(Survey survey);
 }
