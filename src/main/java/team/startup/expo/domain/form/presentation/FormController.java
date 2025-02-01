@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.presentation.dto.GetFormResponseDto;
+import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDto;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.service.CreateFormService;
 import team.startup.expo.domain.form.service.DeleteFormService;
