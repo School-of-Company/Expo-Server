@@ -1,6 +1,5 @@
 package team.startup.expo.domain.survey.presentation.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import team.startup.expo.domain.form.entity.FormType;
