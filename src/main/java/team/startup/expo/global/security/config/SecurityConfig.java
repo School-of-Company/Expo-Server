@@ -136,6 +136,7 @@ public class SecurityConfig {
 
                                 // survey
                                 .requestMatchers(HttpMethod.POST, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/survey/{expo_id}").permitAll()
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
