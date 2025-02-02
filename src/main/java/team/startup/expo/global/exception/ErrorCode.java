@@ -65,6 +65,7 @@ public enum ErrorCode {
     // survey
     ALREADY_EXIST_SURVEY(409, "이미 설문조사 폼이 존재합니다."),
     NOT_FOUND_SURVEY(404, "설문조사 폼을 찾을 수 없습니다."),
+    ALREADY_EXIST_SURVEY_ANSWER(409, "이미 설문조사를 참여하였습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");

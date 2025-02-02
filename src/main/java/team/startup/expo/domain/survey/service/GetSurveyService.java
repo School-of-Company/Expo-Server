@@ -1,8 +1,0 @@
-package team.startup.expo.domain.survey.service;
-
-import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.survey.presentation.dto.response.SurveyResponseDto;
-
-public interface GetSurveyService {
-    SurveyResponseDto execute(String expoId, ParticipationType participationType);
-}
