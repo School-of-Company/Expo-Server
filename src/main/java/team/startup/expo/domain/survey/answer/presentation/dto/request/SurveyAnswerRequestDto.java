@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class StandardSurveyAnswerRequestDto {
+public class SurveyAnswerRequestDto {
     private String phoneNumber;
     private String answerJson;
 }

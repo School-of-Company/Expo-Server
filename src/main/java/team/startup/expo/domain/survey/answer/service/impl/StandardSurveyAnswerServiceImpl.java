@@ -8,7 +8,7 @@ import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
-import team.startup.expo.domain.survey.answer.presentation.dto.request.StandardSurveyAnswerRequestDto;
+import team.startup.expo.domain.survey.answer.presentation.dto.request.SurveyAnswerRequestDto;
 import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.domain.survey.answer.service.StandardSurveyAnswerService;
 import team.startup.expo.global.annotation.TransactionService;
@@ -21,7 +21,7 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
     private final StandardParticipantRepository participantRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(String expoId, StandardSurveyAnswerRequestDto dto) {
+    public void execute(String expoId, SurveyAnswerRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
