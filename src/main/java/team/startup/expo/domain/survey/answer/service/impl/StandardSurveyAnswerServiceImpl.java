@@ -8,6 +8,7 @@ import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
+import team.startup.expo.domain.survey.answer.exception.AlreadyExistSurveyAnswerException;
 import team.startup.expo.domain.survey.answer.presentation.dto.request.SurveyAnswerRequestDto;
 import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.domain.survey.answer.service.StandardSurveyAnswerService;
@@ -27,6 +28,9 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
 
         StandardParticipant standardParticipant = participantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundParticipantException::new);
+
+        if (standardparticipantSurveyAnswerRepository.existsByStandardParticipant(standardParticipant))
+            throw new AlreadyExistSurveyAnswerException();
 
         saveSurveyAnswer(dto.getAnswerJson(), standardParticipant);
     }
