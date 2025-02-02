@@ -1,17 +1,17 @@
-package team.startup.expo.domain.survey.service.impl;
+package team.startup.expo.domain.survey.management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.survey.entity.DynamicSurvey;
-import team.startup.expo.domain.survey.entity.Survey;
-import team.startup.expo.domain.survey.exception.NotFoundSurveyException;
-import team.startup.expo.domain.survey.presentation.dto.response.SurveyResponseDto;
-import team.startup.expo.domain.survey.repository.DynamicSurveyRepository;
-import team.startup.expo.domain.survey.repository.SurveyRepository;
-import team.startup.expo.domain.survey.service.GetSurveyService;
+import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
+import team.startup.expo.domain.survey.management.entity.Survey;
+import team.startup.expo.domain.survey.management.exception.NotFoundSurveyException;
+import team.startup.expo.domain.survey.management.presentation.dto.response.SurveyResponseDto;
+import team.startup.expo.domain.survey.management.repository.DynamicSurveyRepository;
+import team.startup.expo.domain.survey.management.repository.SurveyRepository;
+import team.startup.expo.domain.survey.management.service.GetSurveyService;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package team.startup.expo.domain.survey.presentation.dto.response;
+package team.startup.expo.domain.survey.management.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

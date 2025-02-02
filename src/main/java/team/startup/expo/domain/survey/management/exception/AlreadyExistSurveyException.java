@@ -1,4 +1,4 @@
-package team.startup.expo.domain.survey.exception;
+package team.startup.expo.domain.survey.management.exception;
 
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;

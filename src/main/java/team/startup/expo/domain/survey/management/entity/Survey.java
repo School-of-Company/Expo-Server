@@ -1,4 +1,4 @@
-package team.startup.expo.domain.survey.entity;
+package team.startup.expo.domain.survey.management.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,21 +1,21 @@
-package team.startup.expo.domain.survey.service.impl;
+package team.startup.expo.domain.survey.management.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.survey.entity.DynamicSurvey;
-import team.startup.expo.domain.survey.entity.Survey;
-import team.startup.expo.domain.survey.exception.NotFoundSurveyException;
-import team.startup.expo.domain.survey.presentation.dto.request.SurveyRequestDto;
-import team.startup.expo.domain.survey.repository.DynamicSurveyRepository;
-import team.startup.expo.domain.survey.repository.SurveyRepository;
-import team.startup.expo.domain.survey.service.UpdateSurveyService;
+import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
+import team.startup.expo.domain.survey.management.entity.Survey;
+import team.startup.expo.domain.survey.management.exception.AlreadyExistSurveyException;
+import team.startup.expo.domain.survey.management.presentation.dto.request.SurveyRequestDto;
+import team.startup.expo.domain.survey.management.repository.DynamicSurveyRepository;
+import team.startup.expo.domain.survey.management.repository.SurveyRepository;
+import team.startup.expo.domain.survey.management.service.CreateSurveyService;
 import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
 @RequiredArgsConstructor
-public class UpdateSurveyServiceImpl implements UpdateSurveyService {
+public class CreateSurveyServiceImpl implements CreateSurveyService {
 
     private final SurveyRepository surveyRepository;
     private final DynamicSurveyRepository dynamicSurveyRepository;
@@ -25,11 +25,21 @@ public class UpdateSurveyServiceImpl implements UpdateSurveyService {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        Survey survey = surveyRepository.findByExpoAndParticipationType(expo, dto.getParticipationType())
-                .orElseThrow(NotFoundSurveyException::new);
+        if (surveyRepository.existsByExpoAndParticipationType(expo, dto.getParticipationType()))
+            throw new AlreadyExistSurveyException();
 
-        dynamicSurveyRepository.deleteBySurvey(survey);
+        Survey survey = saveSurvey(dto, expo);
+
         dto.getDynamicSurveyRequestDto().forEach(dynamicSurveyRequestDto -> saveDynamicSurvey(dynamicSurveyRequestDto, survey));
+    }
+
+    private Survey saveSurvey(SurveyRequestDto dto, Expo expo) {
+        Survey survey = Survey.builder()
+                .participationType(dto.getParticipationType())
+                .expo(expo)
+                .build();
+
+        return surveyRepository.save(survey);
     }
 
     private void saveDynamicSurvey(SurveyRequestDto.DynamicSurveyRequestDto dto, Survey survey) {

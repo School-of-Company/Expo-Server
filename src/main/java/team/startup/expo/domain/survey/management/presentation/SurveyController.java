@@ -1,4 +1,4 @@
-package team.startup.expo.domain.survey.presentation;
+package team.startup.expo.domain.survey.management.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -6,12 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.survey.presentation.dto.request.SurveyRequestDto;
-import team.startup.expo.domain.survey.presentation.dto.response.SurveyResponseDto;
-import team.startup.expo.domain.survey.service.CreateSurveyService;
-import team.startup.expo.domain.survey.service.DeleteSurveyService;
-import team.startup.expo.domain.survey.service.GetSurveyService;
-import team.startup.expo.domain.survey.service.UpdateSurveyService;
+import team.startup.expo.domain.survey.management.presentation.dto.request.SurveyRequestDto;
+import team.startup.expo.domain.survey.management.presentation.dto.response.SurveyResponseDto;
+import team.startup.expo.domain.survey.management.service.CreateSurveyService;
+import team.startup.expo.domain.survey.management.service.DeleteSurveyService;
+import team.startup.expo.domain.survey.management.service.GetSurveyService;
+import team.startup.expo.domain.survey.management.service.UpdateSurveyService;
 
 @RestController
 @RequestMapping("/survey")
