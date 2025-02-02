@@ -142,6 +142,7 @@ public class SecurityConfig {
 
                                 // surveyAnswer
                                 .requestMatchers(HttpMethod.POST, "/survey/answer/standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/survey/answer/trainee/{expo_id}").permitAll()
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
