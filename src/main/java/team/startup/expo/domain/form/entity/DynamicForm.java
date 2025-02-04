@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @NoArgsConstructor
@@ -36,5 +38,6 @@ public class DynamicForm {
 
     @JoinColumn(name = "form_id")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Form form;
 }

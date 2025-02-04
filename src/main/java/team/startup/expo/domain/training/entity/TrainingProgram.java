@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.expo.entity.Expo;
 
 @Entity
@@ -34,5 +36,6 @@ public class TrainingProgram {
 
     @ManyToOne
     @JoinColumn(name = "expo_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 }
