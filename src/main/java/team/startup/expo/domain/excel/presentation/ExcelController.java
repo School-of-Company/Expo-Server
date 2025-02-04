@@ -1,5 +1,6 @@
 package team.startup.expo.domain.excel.presentation;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ExcelController {
     private final TraineeInfoToExcelService traineeInfoToExcelService;
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<Void> traineeInfoToExcel(@PathVariable("expo_id") String expoId, HttpServletResponse res) {
+    public ResponseEntity<Void> traineeInfoToExcel(@PathVariable("expo_id") String expoId, HttpServletResponse res) throws JsonProcessingException {
         traineeInfoToExcelService.execute(expoId, res);
         return ResponseEntity.ok().build();
     }
