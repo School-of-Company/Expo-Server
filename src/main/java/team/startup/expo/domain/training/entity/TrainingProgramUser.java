@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.trainee.entity.Trainee;
 
 @Entity
@@ -30,13 +32,11 @@ public class TrainingProgramUser {
 
     @ManyToOne
     @JoinColumn(name = "trainingPro_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private TrainingProgram trainingProgram;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainee_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Trainee trainee;
-
-    public void addLeaveTime(String leaveTime) {
-        this.leaveTime = leaveTime;
-    }
 }

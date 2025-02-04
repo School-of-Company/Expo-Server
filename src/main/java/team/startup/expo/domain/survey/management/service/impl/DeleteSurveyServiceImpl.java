@@ -26,7 +26,7 @@ public class DeleteSurveyServiceImpl implements DeleteSurveyService {
 
         List<Survey> surveyList = surveyRepository.findByExpo(expo);
 
-        surveyList.forEach(dynamicSurveyRepository::deleteBySurvey);
+        dynamicSurveyRepository.deleteBySurveys(surveyList);
         surveyRepository.deleteAll(surveyList);
     }
 }

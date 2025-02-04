@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 
@@ -29,6 +31,7 @@ public class Form {
 
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 
     public void updateForm(FormRequestDto dto) {

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.form.entity.ParticipationType;
 
@@ -26,5 +28,6 @@ public class Survey {
 
     @ManyToOne
     @JoinColumn(name = "expo_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 }

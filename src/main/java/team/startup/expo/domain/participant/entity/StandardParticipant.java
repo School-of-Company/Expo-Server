@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -47,6 +49,7 @@ public class StandardParticipant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "expo_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 
     public void addQrCode(byte[] qrCode) {

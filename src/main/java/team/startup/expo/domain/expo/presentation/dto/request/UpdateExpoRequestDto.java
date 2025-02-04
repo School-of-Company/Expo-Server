@@ -12,7 +12,6 @@ import team.startup.expo.domain.training.presentation.dto.request.AddTrainingPro
 import team.startup.expo.domain.training.presentation.dto.request.UpdateTrainingProRequestDto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -62,7 +61,6 @@ public class UpdateExpoRequestDto {
                 .coverImage(coverImage)
                 .x(x)
                 .y(y)
-                .admin(expo.getAdmin())
                 .build();
     }
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.expo.entity.Expo;
 
 import java.time.LocalDate;
@@ -33,10 +35,12 @@ public class StandardParticipantParticipation {
 
     @JoinColumn(name = "standard_participant_id")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private StandardParticipant standardParticipant;
 
     @JoinColumn(name = "expo_id")
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 
     public void addLeaveTime() {
