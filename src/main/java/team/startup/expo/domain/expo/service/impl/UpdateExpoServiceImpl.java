@@ -1,20 +1,16 @@
 package team.startup.expo.domain.expo.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.entity.Admin;
 import team.startup.expo.domain.admin.util.UserUtil;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
-import team.startup.expo.domain.expo.exception.NotMatchAdminException;
 import team.startup.expo.domain.expo.presentation.dto.request.UpdateExpoRequestDto;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.UpdateExpoService;
 import team.startup.expo.domain.standard.entity.StandardProgram;
-import team.startup.expo.domain.standard.presentation.dto.request.AddStandardProRequestDto;
 import team.startup.expo.domain.standard.presentation.dto.request.UpdateStandardProRequestDto;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.training.entity.TrainingProgram;
-import team.startup.expo.domain.training.presentation.dto.request.AddTrainingProRequestDto;
 import team.startup.expo.domain.training.presentation.dto.request.UpdateTrainingProRequestDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
 import team.startup.expo.global.annotation.TransactionService;
@@ -24,18 +20,12 @@ import team.startup.expo.global.annotation.TransactionService;
 public class UpdateExpoServiceImpl implements UpdateExpoService {
 
     private final ExpoRepository expoRepository;
-    private final UserUtil userUtil;
     private final StandardProgramRepository standardProgramRepository;
     private final TrainingProgramRepository trainingProgramRepository;
 
     public void execute(String expoId, UpdateExpoRequestDto dto) {
-        Admin admin = userUtil.getCurrentUser();
-
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
-
-        if (expo.getAdmin() != admin)
-            throw new NotMatchAdminException();
 
         dto.getUpdateStandardProRequestDto().forEach(updateStandardProRequestDto -> {saveStandardPro(updateStandardProRequestDto, expo);});
         dto.getUpdateTrainingProRequestDto().forEach(updateTrainingProRequestDto -> {saveTrainingPro(updateTrainingProRequestDto, expo);});

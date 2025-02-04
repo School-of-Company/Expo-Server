@@ -24,14 +24,11 @@ import java.util.List;
 public class GenerateExpoServiceImpl implements GenerateExpoService {
 
     private final ExpoRepository expoRepository;
-    private final UserUtil userUtil;
     private final StandardProgramRepository standardProgramRepository;
     private final TrainingProgramRepository trainingProgramRepository;
 
     public GenerateExpoResponseDto execute(GenerateExpoRequestDto dto) {
-        Admin admin = userUtil.getCurrentUser();
-
-        Expo expo = saveExpo(dto, admin);
+        Expo expo = saveExpo(dto);
 
         dto.getAddStandardProRequestDto().forEach(addStandardProRequestDto -> {saveStandardPro(addStandardProRequestDto, expo);});
         dto.getAddTrainingProRequestDto().forEach(addTrainingProRequestDto -> {saveTrainingPro(addTrainingProRequestDto, expo);});
@@ -41,7 +38,7 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
                 .build();
     }
 
-    private Expo saveExpo(GenerateExpoRequestDto dto, Admin admin) {
+    private Expo saveExpo(GenerateExpoRequestDto dto) {
         Expo expo = Expo.builder()
                 .id(ULIDGenerator.generateULID())
                 .title(dto.getTitle())
@@ -52,7 +49,6 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
                 .coverImage(dto.getCoverImage())
                 .x(dto.getX())
                 .y(dto.getY())
-                .admin(admin)
                 .build();
 
         expoRepository.save(expo);

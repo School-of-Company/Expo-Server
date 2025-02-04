@@ -19,16 +19,10 @@ public class AddTrainingProServiceImpl implements AddTrainingProService {
 
     private final ExpoRepository expoRepository;
     private final TrainingProgramRepository trainingProgramRepository;
-    private final UserUtil userUtil;
 
     public void execute(String expoId, AddTrainingProRequestDto dto) {
-        Admin admin = userUtil.getCurrentUser();
-
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
-
-        if (expo.getAdmin() != admin)
-            throw new NotMatchAdminException();
 
         saveTrainingPro(dto, expo);
     }

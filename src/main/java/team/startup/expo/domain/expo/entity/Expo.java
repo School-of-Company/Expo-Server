@@ -42,8 +42,4 @@ public class Expo {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String y;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
 }
