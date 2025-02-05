@@ -1,6 +1,7 @@
 package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
 import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
@@ -63,6 +64,10 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
         if (standardParticipantParticipation.isPresent()) {
             StandardParticipantParticipation getStandardParticipantParticipation = standardParticipantParticipation.get();
+
+            if (getStandardParticipantParticipation.getLeaveTime() != null)
+                throw new AlreadyEnterExpoUserException();
+
             getStandardParticipantParticipation.addLeaveTime();
         } else {
             StandardParticipantParticipation newStandardParticipantParticipation = StandardParticipantParticipation.builder()
@@ -91,6 +96,10 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
         if (traineeParticipation.isPresent()) {
             TraineeParticipation getTraineeParticipation = traineeParticipation.get();
+
+            if (getTraineeParticipation.getLeaveTime() != null)
+                throw new AlreadyEnterExpoUserException();
+
             getTraineeParticipation.addLeaveTime();
         } else {
             TraineeParticipation newTraineeParticipation = TraineeParticipation.builder()
