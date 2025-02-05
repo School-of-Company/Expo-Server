@@ -27,7 +27,6 @@ public class TraineeParticipation {
     @Column(nullable = false)
     private LocalDateTime entryTime;
 
-    @Column(nullable = false)
     private LocalDateTime leaveTime;
 
     @Column(nullable = false)
