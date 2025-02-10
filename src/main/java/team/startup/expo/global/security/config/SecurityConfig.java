@@ -150,10 +150,10 @@ public class SecurityConfig {
                                 .anyRequest().denyAll()
                 )
 
-                .addFilterBefore(new RequestLogFilter(applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionFilter(objectMapper, applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtProvider, tokenParser), UsernamePasswordAuthenticationFilter.class);
 
+                .addFilterBefore(new JwtFilter(jwtProvider, tokenParser), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionFilter(objectMapper, applicationEventPublisher), JwtFilter.class)
+                .addFilterBefore(new RequestLogFilter(applicationEventPublisher), ExceptionFilter.class);
 
         return http.build();
 
