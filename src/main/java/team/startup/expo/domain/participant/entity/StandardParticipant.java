@@ -29,6 +29,14 @@ public class StandardParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
+    @Column(nullable = false)
+    private String affiliation;
+
+    @Column(nullable = false)
+    private SchoolLevel schoolLevel;
+
+    private String schoolDetail;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String informationJson;
 
