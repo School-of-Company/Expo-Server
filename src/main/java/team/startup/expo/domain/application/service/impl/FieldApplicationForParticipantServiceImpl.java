@@ -3,6 +3,7 @@ package team.startup.expo.domain.application.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.exception.NotEnterSchoolDetailException;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
@@ -10,6 +11,7 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
+import team.startup.expo.domain.participant.entity.SchoolLevel;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.event.SendQrEvent;
@@ -38,6 +40,9 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
         if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
+        if (dto.getSchoolDetail() == null && dto.getSchoolLevel() != SchoolLevel.KINDERGARTEN && dto.getSchoolLevel() != SchoolLevel.OTHER)
+            throw new NotEnterSchoolDetailException();
+
         saveParticipant(expo, dto);
 
         applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
@@ -48,6 +53,9 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .name(dto.getName())
                 .phoneNumber(dto.getPhoneNumber())
                 .authority(Authority.ROLE_STANDARD)
+                .affiliation(dto.getAffiliation())
+                .schoolLevel(dto.getSchoolLevel())
+                .schoolDetail(dto.getSchoolDetail())
                 .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())

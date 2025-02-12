@@ -43,6 +43,9 @@ public enum ErrorCode {
     NOT_FOUND_STANDARD_PROGRAM(404, "일반 프로그램을 찾지 못 했습니다."),
     NOT_FOUND_STANDARD_PROGRAM_USER(404, "일반 프로그램을 참가 중인 유저를 찾지 못 했습니다."),
 
+    // application
+    NOT_ENTER_SCHOOL_DETAIL(400, "상세한 학교 이름을 입력하지 않았습니다."),
+
     // expo
     NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
     NOT_EXIST_TRAINEE_AT_EXPO(404, "해당 박람회에 연수자가 존재하지 않습니다."),
