@@ -9,6 +9,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.trainee.entity.Trainee;
 
+import java.time.LocalDate;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +31,9 @@ public class TrainingProgramUser {
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
+
+    @Column(nullable = false)
+    private LocalDate attendanceDate;
 
     @ManyToOne
     @JoinColumn(name = "trainingPro_id")

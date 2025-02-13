@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.attendance.exception.NotFoundTrainingProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanTrainingProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanTrainingProByQrCodeService;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
@@ -40,7 +42,13 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
             throw new NotInProgressExpoException();
 
         TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
-                .orElseThrow(NotFoundTrainingProgramUserException::new);
+                .orElse(TrainingProgramUser.builder()
+                        .status(false)
+                        .attendanceDate(LocalDate.now())
+                        .trainingProgram(trainingProgram)
+                        .trainee(trainee)
+                        .build()
+                );
 
         if (trainingProgramUser.getEntryTime() == null) {
             saveEntryTrainingProUser(trainingProgramUser, trainingProgram, trainee);
@@ -54,6 +62,7 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
 
         TrainingProgramUser trainingProgramUser = TrainingProgramUser.builder()
                 .id(user.getId())
+                .attendanceDate(user.getAttendanceDate())
                 .entryTime(String.valueOf(now))
                 .status(true)
                 .trainingProgram(trainingProgram)
@@ -68,6 +77,7 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
 
         TrainingProgramUser trainingProgramUser = TrainingProgramUser.builder()
                 .id(user.getId())
+                .attendanceDate(user.getAttendanceDate())
                 .entryTime(user.getEntryTime())
                 .leaveTime(String.valueOf(now))
                 .status(true)
