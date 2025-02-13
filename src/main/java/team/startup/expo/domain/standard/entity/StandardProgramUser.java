@@ -9,6 +9,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 
+import java.time.LocalDate;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +31,9 @@ public class StandardProgramUser {
 
     @Column(columnDefinition = "VARCHAR(20)")
     private String leaveTime;
+
+    @Column(nullable = false)
+    private LocalDate attendanceDate;
 
     @ManyToOne
     @JoinColumn(name = "standardPro_id")

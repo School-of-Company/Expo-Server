@@ -16,6 +16,7 @@ import team.startup.expo.domain.standard.repository.StandardProgramUserRepositor
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -41,6 +42,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
                 .orElse(StandardProgramUser.builder()
                         .status(false)
+                        .attendanceDate(LocalDate.now())
                         .standardProgram(standardProgram)
                         .standardParticipant(standardParticipant)
                         .build()
@@ -59,6 +61,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
                 .id(user.getId())
                 .status(true)
+                .attendanceDate(LocalDate.now())
                 .entryTime(String.valueOf(now))
                 .standardProgram(standardProgram)
                 .standardParticipant(standardParticipant)
@@ -73,6 +76,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
                 .id(user.getId())
                 .status(true)
+                .attendanceDate(LocalDate.now())
                 .entryTime(user.getEntryTime())
                 .leaveTime(String.valueOf(now))
                 .standardProgram(standardProgram)
