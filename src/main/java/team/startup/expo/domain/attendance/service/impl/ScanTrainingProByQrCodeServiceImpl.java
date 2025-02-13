@@ -40,7 +40,12 @@ public class ScanTrainingProByQrCodeServiceImpl implements ScanTrainingProByQrCo
             throw new NotInProgressExpoException();
 
         TrainingProgramUser trainingProgramUser = trainingProgramUserRepository.findByTraineeAndTrainingProgram(trainee, trainingProgram)
-                .orElseThrow(NotFoundTrainingProgramUserException::new);
+                .orElse(TrainingProgramUser.builder()
+                        .status(false)
+                        .trainingProgram(trainingProgram)
+                        .trainee(trainee)
+                        .build()
+                );
 
         if (trainingProgramUser.getEntryTime() == null) {
             saveEntryTrainingProUser(trainingProgramUser, trainingProgram, trainee);

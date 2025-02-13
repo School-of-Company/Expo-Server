@@ -39,7 +39,12 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
             throw new NotInProgressExpoException();
 
         StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
-                .orElseThrow(NotFoundStandardProgramUserException::new);
+                .orElse(StandardProgramUser.builder()
+                        .status(false)
+                        .standardProgram(standardProgram)
+                        .standardParticipant(standardParticipant)
+                        .build()
+                );
 
         if (standardProgramUser.getEntryTime() == null) {
             saveEntryStandardProgramUser(standardProgramUser, standardProgram, standardParticipant);
