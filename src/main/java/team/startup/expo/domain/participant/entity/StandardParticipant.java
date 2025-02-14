@@ -33,6 +33,7 @@ public class StandardParticipant {
     private String affiliation;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private SchoolLevel schoolLevel;
 
     private String schoolDetail;
