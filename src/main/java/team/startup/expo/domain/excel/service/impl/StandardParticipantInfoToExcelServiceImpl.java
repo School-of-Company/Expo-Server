@@ -80,13 +80,25 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             int rowCount = 1;
             for (StandardParticipant participant : standardParticipantList) {
                 Row row = sheet.createRow(rowCount++);
+                Cell cell3 = row.createCell(3);
+                Cell cell6 = row.createCell(6);
+                switch (participant.getSchoolLevel()) { // 학교급 Enum 구분
+                    case KINDERGARTEN -> cell3.setCellValue("유치원");
+                    case ELEMENTARY -> cell3.setCellValue("초등학교");
+                    case MIDDLE -> cell3.setCellValue("중학교");
+                    case HIGH -> cell3.setCellValue("고등학교");
+                    default -> cell3.setCellValue("기타");
+                }
+
+                switch (participant.getApplicationType()) { // 신청방식 Enum 구분
+                    case PRE -> cell6.setCellValue("사전신청");
+                    case FIELD -> cell6.setCellValue("현장신청");
+                }
                 row.createCell(0).setCellValue(participant.getName());
                 row.createCell(1).setCellValue(participant.getPhoneNumber());
                 row.createCell(2).setCellValue(participant.getAffiliation());
-                row.createCell(3).setCellValue(participant.getSchoolLevel().ordinal());
                 row.createCell(4).setCellValue(participant.getSchoolDetail());
-                row.createCell(5).setCellValue(participant.getPersonalInformationStatus());
-                row.createCell(6).setCellValue(participant.getApplicationType().ordinal());
+                row.createCell(5).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
 
                 // JSON 데이터를 엑셀에 추가
                 int cellIndex = 7;
