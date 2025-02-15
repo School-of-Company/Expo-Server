@@ -27,8 +27,11 @@ public class UpdateExpoServiceImpl implements UpdateExpoService {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        dto.getUpdateStandardProRequestDto().forEach(updateStandardProRequestDto -> {saveStandardPro(updateStandardProRequestDto, expo);});
-        dto.getUpdateTrainingProRequestDto().forEach(updateTrainingProRequestDto -> {saveTrainingPro(updateTrainingProRequestDto, expo);});
+        standardProgramRepository.deleteByExpo(expo);
+        trainingProgramRepository.deleteByExpo(expo);
+
+        dto.getUpdateStandardProRequestDto().forEach(standardProRequestDto -> saveStandardPro(standardProRequestDto, expo));
+        dto.getUpdateTrainingProRequestDto().forEach(trainingProRequestDto -> saveTrainingPro(trainingProRequestDto, expo));
 
         expoRepository.save(dto.toEntity(expo));
     }
