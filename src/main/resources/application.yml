@@ -41,3 +41,9 @@ cloud:
 
 discord:
   errorUrl: ${DISCORD_ERROR_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
