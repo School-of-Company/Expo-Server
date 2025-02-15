@@ -60,6 +60,9 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
+                                // actuator
+                                .requestMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
+
                                 // health
                                 .requestMatchers(HttpMethod.GET, "/health").permitAll()
 

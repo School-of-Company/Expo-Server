@@ -49,6 +49,8 @@ dependencies {
 	implementation("org.apache.poi:poi:5.3.0")
 	implementation("org.apache.poi:poi-ooxml:5.3.0")
 	implementation(kotlin("stdlib-jdk8"))
+	implementation ("org.springframework.boot:spring-boot-starter-actuator")
+	runtimeOnly ("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks.withType<Test> {
