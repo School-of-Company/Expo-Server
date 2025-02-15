@@ -4,9 +4,11 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import java.util.TimeZone;
 
+@EnableAsync
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class ExpoApplication {

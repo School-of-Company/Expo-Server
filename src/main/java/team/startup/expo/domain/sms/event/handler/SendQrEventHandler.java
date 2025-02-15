@@ -12,6 +12,7 @@ import net.nurigo.sdk.message.model.StorageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -48,6 +49,7 @@ public class SendQrEventHandler {
     private final TraineeRepository traineeRepository;
     private final SmsProperties smsProperties;
 
+    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public SingleMessageSentResponse sendQrHandler(SendQrEvent sendQrEvent) {
         SingleMessageSentResponse response = null;
