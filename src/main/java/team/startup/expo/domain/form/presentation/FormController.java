@@ -29,9 +29,9 @@ public class FormController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/{form_id}")
-    public ResponseEntity<Void> updateForm(@PathVariable("form_id") Long formId, @RequestBody @Valid FormRequestDto dto) {
-        updateFormService.execute(formId, dto);
+    @PatchMapping("/{expo_id}")
+    public ResponseEntity<Void> updateForm(@PathVariable("expo_id") String expoId, @RequestBody @Valid FormRequestDto dto) {
+        updateFormService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
