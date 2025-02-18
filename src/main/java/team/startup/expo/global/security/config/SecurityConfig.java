@@ -135,14 +135,14 @@ public class SecurityConfig {
                                 // form
                                 .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/form/{form_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/form/{form_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/form/{form_id}/{participationType}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/form/{expo_id}").permitAll()
 
                                 // survey
                                 .requestMatchers(HttpMethod.POST, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/survey/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
-                                .requestMatchers(HttpMethod.DELETE, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/survey/{expo_id}/{participationType}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // surveyAnswer
                                 .requestMatchers(HttpMethod.POST, "/survey/answer/standard/{expo_id}").permitAll()
