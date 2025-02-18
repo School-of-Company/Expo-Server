@@ -41,9 +41,9 @@ public class SurveyController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{expo_id}")
-    public ResponseEntity<Void> deleteSurvey(@PathVariable("expo_id") String expoId) {
-        deleteSurveyService.execute(expoId);
+    @DeleteMapping("/{expo_id}/{participationType}")
+    public ResponseEntity<Void> deleteSurvey(@PathVariable("expo_id") String expoId, @PathVariable ParticipationType participationType) {
+        deleteSurveyService.execute(expoId, participationType);
         return ResponseEntity.noContent().build();
     }
 }

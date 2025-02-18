@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.survey.management.entity.Survey;
+import team.startup.expo.domain.survey.management.exception.NotFoundSurveyException;
 import team.startup.expo.domain.survey.management.repository.DynamicSurveyRepository;
 import team.startup.expo.domain.survey.management.repository.SurveyRepository;
 import team.startup.expo.domain.survey.management.service.DeleteSurveyService;
@@ -20,13 +22,14 @@ public class DeleteSurveyServiceImpl implements DeleteSurveyService {
     private final DynamicSurveyRepository dynamicSurveyRepository;
     private final ExpoRepository expoRepository;
 
-    public void execute(String expoId) {
+    public void execute(String expoId, ParticipationType participationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        List<Survey> surveyList = surveyRepository.findByExpo(expo);
+        Survey survey = surveyRepository.findByExpoAndParticipationType(expo, participationType)
+                .orElseThrow(NotFoundSurveyException::new);
 
-        dynamicSurveyRepository.deleteBySurveys(surveyList);
-        surveyRepository.deleteAll(surveyList);
+        dynamicSurveyRepository.deleteBySurvey(survey);
+        surveyRepository.delete(survey);
     }
 }
