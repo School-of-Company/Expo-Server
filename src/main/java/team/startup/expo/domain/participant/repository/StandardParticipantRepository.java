@@ -21,4 +21,5 @@ public interface StandardParticipantRepository extends JpaRepository<StandardPar
     List<StandardParticipant> findByExpoAndApplicationType(Expo expo, ApplicationType applicationType);
     Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
     List<StandardParticipant> findByExpo(Expo expo);
+    Boolean existsByPhoneNumber(String phoneNumber);
 }
