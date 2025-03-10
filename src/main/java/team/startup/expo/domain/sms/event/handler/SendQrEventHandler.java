@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class SendQrEventHandler {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public SingleMessageSentResponse sendQrHandler(SendQrEvent sendQrEvent) {
+    public CompletableFuture<SingleMessageSentResponse> sendQrHandler(SendQrEvent sendQrEvent) {
         SingleMessageSentResponse response = null;
 
         Expo expo = expoRepository.findById(sendQrEvent.getExpoId())
@@ -84,7 +85,7 @@ public class SendQrEventHandler {
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         }
 
-        return response;
+        return CompletableFuture.completedFuture(response);
     }
 
     private byte[] createQr(String information) {
