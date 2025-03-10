@@ -27,6 +27,8 @@ import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
+import team.startup.expo.global.exception.ErrorCode;
+import team.startup.expo.global.exception.GlobalException;
 import team.startup.expo.global.sms.SmsProperties;
 
 import java.io.ByteArrayOutputStream;
@@ -34,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor
@@ -51,40 +54,44 @@ public class SendQrEventHandler {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public SingleMessageSentResponse sendQrHandler(SendQrEvent sendQrEvent) {
+    public CompletableFuture<SingleMessageSentResponse> sendQrHandler(SendQrEvent sendQrEvent) {
         SingleMessageSentResponse response = null;
 
-        Expo expo = expoRepository.findById(sendQrEvent.getExpoId())
-                .orElseThrow(NotFoundExpoException::new);
+        try {
+            Expo expo = expoRepository.findById(sendQrEvent.getExpoId())
+                    .orElseThrow(NotFoundExpoException::new);
 
-        if (sendQrEvent.getAuthority() == Authority.ROLE_STANDARD) {
-            StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
-                    .orElseThrow(NotFoundParticipantException::new);
+            if (sendQrEvent.getAuthority() == Authority.ROLE_STANDARD) {
+                StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
+                        .orElseThrow(NotFoundParticipantException::new);
 
-            String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
-            byte[] qrBytes = createQr(information);
+                String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
+                byte[] qrBytes = createQr(information);
 
-            participant.addQrCode(qrBytes);
+                participant.addQrCode(qrBytes);
 
-            Message message = createMessage(qrBytes, sendQrEvent);
+                Message message = createMessage(qrBytes, sendQrEvent);
 
-            response = messageService.sendOne(new SingleMessageSendingRequest(message));
-        } else if (sendQrEvent.getAuthority() == Authority.ROLE_TRAINEE) {
-            Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
-                    .orElseThrow(NotFoundTraineeException::new);
+                response = messageService.sendOne(new SingleMessageSendingRequest(message));
+            } else if (sendQrEvent.getAuthority() == Authority.ROLE_TRAINEE) {
+                Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
+                        .orElseThrow(NotFoundTraineeException::new);
 
-            String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
+                String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
 
-            byte[] qrBytes = createQr(information);
+                byte[] qrBytes = createQr(information);
 
-            trainee.addQrCode(qrBytes);
+                trainee.addQrCode(qrBytes);
 
-            Message message = createMessage(qrBytes, sendQrEvent);
+                Message message = createMessage(qrBytes, sendQrEvent);
 
-            response = messageService.sendOne(new SingleMessageSendingRequest(message));
+                response = messageService.sendOne(new SingleMessageSendingRequest(message));
+            }
+        } catch (Exception e) {
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
 
-        return response;
+        return CompletableFuture.completedFuture(response);
     }
 
     private byte[] createQr(String information) {
