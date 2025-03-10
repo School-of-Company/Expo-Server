@@ -17,6 +17,8 @@ import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
+import team.startup.expo.global.exception.ErrorCode;
+import team.startup.expo.global.exception.GlobalException;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -40,7 +42,11 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
 
         saveTrainee(dto, expo);
 
-        applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_TRAINEE));
+        try {
+            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_TRAINEE));
+        } catch (Exception e) {
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo) {

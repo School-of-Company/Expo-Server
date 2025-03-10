@@ -19,6 +19,8 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
+import team.startup.expo.global.exception.ErrorCode;
+import team.startup.expo.global.exception.GlobalException;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -45,7 +47,11 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
 
         saveParticipant(expo, dto);
 
-        applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
+        try {
+            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
+        } catch (Exception e) {
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
