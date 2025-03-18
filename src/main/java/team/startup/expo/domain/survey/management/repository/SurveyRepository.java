@@ -13,4 +13,5 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
     Optional<Survey> findByExpoAndParticipationType(Expo expo, ParticipationType participationType);
     List<Survey> findByExpo(Expo expo);
     void deleteByExpo(Expo expo);
+    boolean existsByExpo(Expo expo);
 }
