@@ -41,9 +41,4 @@ public class DynamicForm {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Form form;
-
-    @ManyToOne
-    @JoinColumn(name = "expo_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Expo expo;
 }
