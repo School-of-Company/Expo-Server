@@ -13,4 +13,5 @@ public interface FormRepository extends JpaRepository<Form, Long> {
     Boolean existsByExpoAndParticipationType(Expo expo, ParticipationType participationType);
     Optional<Form> findByExpoAndParticipationType(Expo expo, ParticipationType participationType);
     void deleteByExpo(Expo expo);
+    boolean existsByExpo(Expo expo);
 }

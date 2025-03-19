@@ -120,6 +120,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/expo/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/expo").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/expo/valid/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // attendance
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/training/{trainingPro_id}").permitAll()
