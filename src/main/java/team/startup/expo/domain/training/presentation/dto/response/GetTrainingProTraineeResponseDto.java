@@ -8,8 +8,6 @@ import lombok.Getter;
 public class GetTrainingProTraineeResponseDto {
     private Long id;
     private String name;
-    private String organization;
-    private String position;
     private String programName;
     private Boolean status;
     private String entryTime;

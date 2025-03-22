@@ -2,8 +2,8 @@ package team.startup.expo.domain.auth.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import team.startup.expo.domain.admin.Admin;
-import team.startup.expo.domain.admin.Status;
+import team.startup.expo.domain.admin.entity.Admin;
+import team.startup.expo.domain.admin.entity.Status;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.auth.exception.DuplicateEmailException;
 import team.startup.expo.domain.auth.exception.DuplicateNicknameException;
@@ -11,7 +11,7 @@ import team.startup.expo.domain.auth.exception.DuplicatePhoneNumberException;
 import team.startup.expo.domain.auth.exception.NotFoundSmsAuthException;
 import team.startup.expo.domain.auth.presentation.dto.request.SignUpRequestDto;
 import team.startup.expo.domain.auth.service.SignUpService;
-import team.startup.expo.domain.sms.SmsAuthEntity;
+import team.startup.expo.domain.sms.entity.SmsAuthEntity;
 import team.startup.expo.domain.sms.repository.SmsAuthRepository;
 import team.startup.expo.global.annotation.TransactionService;
 

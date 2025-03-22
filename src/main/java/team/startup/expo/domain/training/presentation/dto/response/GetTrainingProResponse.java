@@ -2,7 +2,7 @@ package team.startup.expo.domain.training.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import team.startup.expo.domain.training.Category;
+import team.startup.expo.domain.training.entity.Category;
 
 @Getter
 @Builder

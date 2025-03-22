@@ -1,20 +1,22 @@
 package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.attendance.exception.AlreadyLeaveProgramUserException;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
-import team.startup.expo.domain.participant.ExpoParticipant;
-import team.startup.expo.domain.participant.repository.ParticipantRepository;
+import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
-import team.startup.expo.domain.standard.StandardProgram;
-import team.startup.expo.domain.standard.StandardProgramUser;
+import team.startup.expo.domain.standard.entity.StandardProgram;
+import team.startup.expo.domain.standard.entity.StandardProgramUser;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;
+import team.startup.expo.global.date.DateUtil;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
@@ -22,36 +24,63 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCodeService {
 
-    private final ParticipantRepository participantRepository;
+    private final StandardParticipantRepository standardParticipantRepository;
     private final StandardProgramRepository standardProgramRepository;
     private final StandardProgramUserRepository standardProgramUserRepository;
+    private final DateUtil dateUtil;
 
     public void execute(Long standardProId, ScanStandardProRequestDto dto) {
-        ExpoParticipant expoParticipant = participantRepository.findById(dto.getParticipantId())
+        StandardParticipant standardParticipant = standardParticipantRepository.findById(dto.getParticipantId())
                 .orElseThrow(NotFoundParticipantException::new);
 
         StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
                 .orElseThrow(NotFoundStandardProgramException::new);
 
-        if (standardProgramUserRepository.existsByExpoParticipantAndStandardProgram(expoParticipant, standardProgram)) {
-            StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndExpoParticipant(standardProgram, expoParticipant)
-                    .orElseThrow(NotFoundStandardProgramUserException::new);
+        if (!dateUtil.dateComparison(standardProgram.getExpo().getStartedDay(), standardProgram.getExpo().getFinishedDay()))
+            throw new NotInProgressExpoException();
 
-            if (standardProgramUser.getLeaveTime() != null)
-                throw new AlreadyLeaveProgramUserException();
+        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
+                .orElse(StandardProgramUser.builder()
+                        .status(false)
+                        .attendanceDate(LocalDate.now())
+                        .standardProgram(standardProgram)
+                        .standardParticipant(standardParticipant)
+                        .build()
+                );
 
-            standardProgramUser.addLeaveTime(String.valueOf(LocalTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        } else {
-            saveStandardProgramUser(standardProgram, expoParticipant);
+        if (standardProgramUser.getEntryTime() == null) {
+            saveEntryStandardProgramUser(standardProgramUser, standardProgram, standardParticipant);
+        } else if (standardProgramUser.getLeaveTime() == null) {
+            saveLeaveStandardProgramUser(standardProgramUser, standardProgram, standardParticipant);
         }
     }
 
-    private void saveStandardProgramUser(StandardProgram standardProgram, ExpoParticipant expoParticipant) {
+    private void saveEntryStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, StandardParticipant standardParticipant) {
+        LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
+                .id(user.getId())
                 .status(true)
-                .entryTime(String.valueOf(LocalTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .attendanceDate(LocalDate.now())
+                .entryTime(String.valueOf(now))
                 .standardProgram(standardProgram)
-                .expoParticipant(expoParticipant)
+                .standardParticipant(standardParticipant)
+                .build();
+
+        standardProgramUserRepository.save(standardProgramUser);
+    }
+
+    private void saveLeaveStandardProgramUser(StandardProgramUser user,StandardProgram standardProgram, StandardParticipant standardParticipant) {
+        LocalTime now = LocalTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        StandardProgramUser standardProgramUser = StandardProgramUser.builder()
+                .id(user.getId())
+                .status(true)
+                .attendanceDate(LocalDate.now())
+                .entryTime(user.getEntryTime())
+                .leaveTime(String.valueOf(now))
+                .standardProgram(standardProgram)
+                .standardParticipant(standardParticipant)
                 .build();
 
         standardProgramUserRepository.save(standardProgramUser);

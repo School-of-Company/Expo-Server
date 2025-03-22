@@ -2,10 +2,7 @@ package team.startup.expo.domain.trainee.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.trainee.presentation.dto.response.GetTraineeInformationResponseDto;
 import team.startup.expo.domain.trainee.service.GetTrainingInformationService;
 
@@ -19,8 +16,8 @@ public class TraineeController {
     private final GetTrainingInformationService getTrainingInformationService;
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<List<GetTraineeInformationResponseDto>> getTraineeInformation(@PathVariable("expo_id") String expoId) {
-        List<GetTraineeInformationResponseDto> result = getTrainingInformationService.execute(expoId);
+    public ResponseEntity<List<GetTraineeInformationResponseDto>> getTraineeInformation(@PathVariable("expo_id") String expoId, @RequestParam(required = false) String name) {
+        List<GetTraineeInformationResponseDto> result = getTrainingInformationService.execute(expoId, name);
         return ResponseEntity.ok(result);
     }
 }

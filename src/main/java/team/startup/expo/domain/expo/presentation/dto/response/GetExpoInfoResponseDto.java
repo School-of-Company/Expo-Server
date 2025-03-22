@@ -12,6 +12,6 @@ public class GetExpoInfoResponseDto {
     private String finishedDay;
     private String location;
     private String coverImage;
-    private Float x;
-    private Float y;
+    private String x;
+    private String y;
 }

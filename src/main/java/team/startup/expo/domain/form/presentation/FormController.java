@@ -5,44 +5,45 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.startup.expo.domain.form.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.form.presentation.dto.request.ApplicationForTraineeRequestDto;
-import team.startup.expo.domain.form.service.FieldApplicationForParticipantService;
-import team.startup.expo.domain.form.service.FieldApplicationForTraineeService;
-import team.startup.expo.domain.form.service.PreApplicationForParticipantService;
-import team.startup.expo.domain.form.service.PreApplicationForTraineeService;
+import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDto;
+import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
+import team.startup.expo.domain.form.service.CreateFormService;
+import team.startup.expo.domain.form.service.DeleteFormService;
+import team.startup.expo.domain.form.service.GetFormService;
+import team.startup.expo.domain.form.service.UpdateFormService;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/form")
+@RequiredArgsConstructor
 public class FormController {
 
-    private final PreApplicationForTraineeService preApplicationForTraineeService;
-    private final PreApplicationForParticipantService preApplicationForParticipantService;
-    private final FieldApplicationForTraineeService fieldApplicationForTraineeService;
-    private final FieldApplicationForParticipantService fieldApplicationForParticipantService;
+    private final CreateFormService createFormService;
+    private final UpdateFormService updateFormService;
+    private final DeleteFormService deleteFormService;
+    private final GetFormService getFormService;
 
     @PostMapping("/{expo_id}")
-    public ResponseEntity<Void> preApplicationForTrainee(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForTraineeRequestDto dto) {
-        preApplicationForTraineeService.execute(expoId, dto);
+    public ResponseEntity<Void> createForm(@PathVariable("expo_id") String expoId, @RequestBody @Valid FormRequestDto dto) {
+        createFormService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/pre-standard/{expo_id}")
-    public ResponseEntity<Void> preApplicationForParticipant(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForParticipantRequestDto dto) {
-        preApplicationForParticipantService.execute(expoId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PatchMapping("/{expo_id}")
+    public ResponseEntity<Void> updateForm(@PathVariable("expo_id") String expoId, @RequestBody @Valid FormRequestDto dto) {
+        updateFormService.execute(expoId, dto);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/field/{expo_id}")
-    public ResponseEntity<Void> fieldApplicationForTrainee(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForTraineeRequestDto dto) {
-        fieldApplicationForTraineeService.execute(expoId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @DeleteMapping("/{expo_id}/{participationType}")
+    public ResponseEntity<Void> deleteForm(@PathVariable("expo_id") String expoId, @PathVariable ParticipationType participationType) {
+        deleteFormService.execute(expoId, participationType);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PostMapping("/field/standard/{expo_id}")
-    public ResponseEntity<Void> fieldApplicationForParticipant(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForParticipantRequestDto dto) {
-        fieldApplicationForParticipantService.execute(expoId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @GetMapping("/{expo_id}")
+    public ResponseEntity<GetFormResponseDto> getForm(@PathVariable("expo_id") String expoId, @RequestParam("type") ParticipationType participationType) {
+        GetFormResponseDto result = getFormService.execute(expoId, participationType);
+        return ResponseEntity.ok(result);
     }
 }

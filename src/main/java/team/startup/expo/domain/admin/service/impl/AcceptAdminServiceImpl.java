@@ -1,9 +1,9 @@
 package team.startup.expo.domain.admin.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Admin;
-import team.startup.expo.domain.admin.Authority;
-import team.startup.expo.domain.admin.Status;
+import team.startup.expo.domain.admin.entity.Admin;
+import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.admin.entity.Status;
 import team.startup.expo.domain.admin.exception.NotFoundUserException;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.admin.service.AcceptAdminService;

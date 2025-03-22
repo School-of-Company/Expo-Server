@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.10"
 	id("io.spring.dependency-management") version "1.1.6"
+	kotlin("jvm")
 }
 
 group = "java.team.startup"
@@ -43,9 +44,13 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
 	implementation("com.google.zxing:core:3.5.0")
 	implementation("com.google.zxing:javase:3.5.0")
+	annotationProcessor ("org.springframework.boot:spring-boot-configuration-processor")
 	implementation("com.google.code.gson:gson:2.8.9")
 	implementation("org.apache.poi:poi:5.3.0")
 	implementation("org.apache.poi:poi-ooxml:5.3.0")
+	implementation(kotlin("stdlib-jdk8"))
+	implementation ("org.springframework.boot:spring-boot-starter-actuator")
+	runtimeOnly ("io.micrometer:micrometer-registry-prometheus")
 }
 
 tasks.withType<Test> {

@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
-import team.startup.expo.domain.admin.Authority;
+import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.global.filter.ExceptionFilter;
 import team.startup.expo.global.filter.JwtFilter;
 import team.startup.expo.global.filter.RequestLogFilter;
@@ -60,6 +60,12 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
+                                // actuator
+                                .requestMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll()
+
+                                // health
+                                .requestMatchers(HttpMethod.GET, "/health").permitAll()
+
                                 // sms
                                 .requestMatchers(HttpMethod.POST, "/sms").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/sms").permitAll()
@@ -70,9 +76,12 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PATCH, "/admin/{admin_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/admin").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/admin").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/admin/{admin_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/admin/my").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // excel
                                 .requestMatchers(HttpMethod.GET, "/excel/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/excel/standard/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // auth
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
@@ -103,6 +112,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/standard/program/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/standard/{standardPro_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "standard/application/{expo_id}").permitAll()
 
                                 // expo
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
@@ -110,17 +120,35 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/expo/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/expo").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/expo/valid/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // attendance
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/training/{trainingPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/standard/{standardPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/attendance/{expo_id}").permitAll()
 
+                                // application
+                                .requestMatchers(HttpMethod.POST, "/application/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/pre-standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/temporary/{expo_id}").permitAll()
+
                                 // form
-                                .requestMatchers(HttpMethod.POST, "/form/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/pre-standard/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/field/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/form/field/standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.PATCH, "/form/{form_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/form/{form_id}/{participationType}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/form/{expo_id}").permitAll()
+
+                                // survey
+                                .requestMatchers(HttpMethod.POST, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/survey/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.PATCH, "/survey/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/survey/{expo_id}/{participationType}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+
+                                // surveyAnswer
+                                .requestMatchers(HttpMethod.POST, "/survey/answer/standard/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/survey/answer/trainee/{expo_id}").permitAll()
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
@@ -128,10 +156,10 @@ public class SecurityConfig {
                                 .anyRequest().denyAll()
                 )
 
-                .addFilterBefore(new RequestLogFilter(applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new ExceptionFilter(objectMapper, applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtFilter(jwtProvider, tokenParser), UsernamePasswordAuthenticationFilter.class);
 
+                .addFilterBefore(new JwtFilter(jwtProvider, tokenParser), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new ExceptionFilter(objectMapper, applicationEventPublisher), JwtFilter.class)
+                .addFilterBefore(new RequestLogFilter(applicationEventPublisher), ExceptionFilter.class);
 
         return http.build();
 

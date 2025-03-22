@@ -1,7 +1,7 @@
 package team.startup.expo.domain.admin.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.Status;
+import team.startup.expo.domain.admin.entity.Status;
 import team.startup.expo.domain.admin.presentation.dto.response.GetPendingAdminResponseDto;
 import team.startup.expo.domain.admin.repository.AdminRepository;
 import team.startup.expo.domain.admin.service.GetPendingAdminsService;

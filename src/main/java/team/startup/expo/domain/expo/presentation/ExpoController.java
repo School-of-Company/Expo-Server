@@ -10,6 +10,7 @@ import team.startup.expo.domain.expo.presentation.dto.request.UpdateExpoRequestD
 import team.startup.expo.domain.expo.presentation.dto.response.GenerateExpoResponseDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoInfoResponseDto;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoResponseDto;
+import team.startup.expo.domain.expo.presentation.dto.response.GetExpoValidationStatusResponseDto;
 import team.startup.expo.domain.expo.service.*;
 
 import java.util.List;
@@ -24,6 +25,8 @@ public class ExpoController {
     private final DeleteExpoService deleteExpoService;
     private final GetExpoInfoService getExpoInfoService;
     private final GetExpoListService getExpoListService;
+    private final GetExpoValidationStatusService getExpoValidationStatusService;
+
 
     @PostMapping
     public ResponseEntity<GenerateExpoResponseDto> generateExpo(@RequestBody @Valid GenerateExpoRequestDto dto) {
@@ -52,6 +55,12 @@ public class ExpoController {
     @GetMapping
     public ResponseEntity<List<GetExpoResponseDto>> getExpoList() {
         List<GetExpoResponseDto> response = getExpoListService.execute();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/valid/{expo_id}")
+    public ResponseEntity<GetExpoValidationStatusResponseDto> getExpoValidationStatus(@PathVariable("expo_id") String expoId) {
+        GetExpoValidationStatusResponseDto response = getExpoValidationStatusService.execute(expoId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

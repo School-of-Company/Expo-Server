@@ -29,6 +29,7 @@ public enum ErrorCode {
     NOT_MATCH_ADMIN(403, "관리자가 일치하지 않습니다."),
     ALREADY_LEAVE_PROGRAM_USER(400, "이미 프로그램을 퇴실한 유저입니다."),
     ALREADY_APPLICATION_USER(409, "이미 신청한 유저입니다."),
+    ALREADY_ACCEPT_USER(409, "이미 수락한 유저입니다."),
 
     // auth
     NOT_MATCH_PASSWORD(400, "비밀번호가 일치하지 않습니다."),
@@ -42,10 +43,14 @@ public enum ErrorCode {
     NOT_FOUND_STANDARD_PROGRAM(404, "일반 프로그램을 찾지 못 했습니다."),
     NOT_FOUND_STANDARD_PROGRAM_USER(404, "일반 프로그램을 참가 중인 유저를 찾지 못 했습니다."),
 
+    // application
+    NOT_ENTER_SCHOOL_DETAIL(400, "상세한 학교 이름을 입력하지 않았습니다."),
+
     // expo
     NOT_FOUND_EXPO(404, "박람회를 찾지 못 했습니다."),
     NOT_EXIST_TRAINEE_AT_EXPO(404, "해당 박람회에 연수자가 존재하지 않습니다."),
     NOT_EXIST_PARTICIPANT_AT_EXPO(404, "해당 박람회에 관람객이 존재하지 않습니다."),
+    NOT_IN_PROGRESS_EXPO(400, "해당 박람회는 진행 중인 상태가 아닙니다."),
 
     // participant
     NOT_FOUND_PARTICIPANT(404, "행사 참가자를 찾지 못 했습니다."),
@@ -55,6 +60,15 @@ public enum ErrorCode {
 
     // trainee
     NOT_FOUND_TRAINEE(404, "연수자를 찾지 못 했습니다."),
+
+    // form
+    ALREADY_EXIST_FORM(409, "이미 폼이 존재합니다."),
+    NOT_FOUND_FORM(404, "폼을 찾을 수 없습니다."),
+
+    // survey
+    ALREADY_EXIST_SURVEY(409, "이미 설문조사 폼이 존재합니다."),
+    NOT_FOUND_SURVEY(404, "설문조사 폼을 찾을 수 없습니다."),
+    ALREADY_EXIST_SURVEY_ANSWER(409, "이미 설문조사를 참여하였습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");

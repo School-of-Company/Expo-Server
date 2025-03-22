@@ -5,9 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.expo.Expo;
+import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.standard.presentation.dto.request.AddStandardProRequestDto;
+import team.startup.expo.domain.standard.presentation.dto.request.UpdateStandardProRequestDto;
+import team.startup.expo.domain.training.presentation.dto.request.AddTrainingProRequestDto;
+import team.startup.expo.domain.training.presentation.dto.request.UpdateTrainingProRequestDto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -21,11 +26,11 @@ public class UpdateExpoRequestDto {
 
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime startedDay;
+    private LocalDate startedDay;
 
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDateTime finishedDay;
+    private LocalDate finishedDay;
 
     @NotNull
     private String location;
@@ -34,10 +39,16 @@ public class UpdateExpoRequestDto {
     private String coverImage;
 
     @NotNull
-    private Float x;
+    private String x;
 
     @NotNull
-    private Float y;
+    private String y;
+
+    @NotNull
+    private List<UpdateStandardProRequestDto> updateStandardProRequestDto;
+
+    @NotNull
+    private List<UpdateTrainingProRequestDto> updateTrainingProRequestDto;
 
     public Expo toEntity(Expo expo) {
         return Expo.builder()
@@ -50,7 +61,6 @@ public class UpdateExpoRequestDto {
                 .coverImage(coverImage)
                 .x(x)
                 .y(y)
-                .admin(expo.getAdmin())
                 .build();
     }
 }
