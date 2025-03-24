@@ -49,14 +49,10 @@ public class RedisConfig {
                 .entryTtl(Duration.ofMinutes(120L))
                 .disableCachingNullValues();
 
-        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put("Form", cacheConfig.prefixCacheNameWith("Form::"));
-
         return RedisCacheManager
                 .RedisCacheManagerBuilder
                 .fromConnectionFactory(factory)
                 .cacheDefaults(cacheConfig)
-                .withInitialCacheConfigurations(cacheConfigurations)
                 .build();
     }
 }
