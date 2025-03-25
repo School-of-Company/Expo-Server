@@ -70,6 +70,9 @@ public enum ErrorCode {
     NOT_FOUND_SURVEY(404, "설문조사 폼을 찾을 수 없습니다."),
     ALREADY_EXIST_SURVEY_ANSWER(409, "이미 설문조사를 참여하였습니다."),
 
+    // date
+    INVALID_DATE_FORMAT(400, "잘못된 날짜 형식입니다."),
+
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
 
