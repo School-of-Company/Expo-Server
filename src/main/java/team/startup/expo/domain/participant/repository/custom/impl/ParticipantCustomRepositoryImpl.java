@@ -7,12 +7,11 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
-import team.startup.expo.domain.participant.repository.custom.ParticipantRepositoryCustom;
+import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
+import team.startup.expo.domain.participant.repository.custom.ParticipantCustomRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDate;
@@ -24,10 +23,10 @@ import static team.startup.expo.domain.participant.entity.QStandardParticipantPa
 
 @Repository
 @RequiredArgsConstructor
-public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
+public class ParticipantCustomRepositoryImpl implements ParticipantCustomRepository {
     private final JPAQueryFactory queryFactory;
 
-    public Page<GetParticipantInfoResponseDto> searchParticipants(String expoId, ApplicationType type, String name, Pageable pageable, LocalDate date) {
+    public ParticipantResponseDto searchParticipants(String expoId, ApplicationType type, String name, Pageable pageable, LocalDate date) {
         List<GetParticipantInfoResponseDto> participants = queryFactory
                 .select(Projections.constructor(GetParticipantInfoResponseDto.class,
                         standardParticipant.id,
@@ -58,7 +57,16 @@ public class ParticipantRepositoryImpl implements ParticipantRepositoryCustom {
                         nameContains(name))
                 .fetchOne();
 
-        return new PageImpl<>(participants, pageable, total != null ? total : 0L);
+        int totalElements = total != null ? total.intValue() : 0;
+        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+
+        return ParticipantResponseDto.builder()
+                .info(ParticipantResponseDto.Info.builder()
+                        .totalPage(totalPages)
+                        .totalElement(totalElements)
+                        .build())
+                .participants(participants)
+                .build();
     }
 
     private BooleanExpression expoIdEq(String expoId) {
