@@ -71,10 +71,10 @@ public enum ErrorCode {
     ALREADY_EXIST_SURVEY_ANSWER(409, "이미 설문조사를 참여하였습니다."),
 
     // participant
-    INVALID_EXPO_ID(401, "expoId가 유효하지 않습니다."),
+    INVALID_EXPO_ID(401, "엑스포 아이디가 유효하지 않습니다."),
     INVALID_APPLICATION_TYPE(401, "애플리케이션 타입이 유효하지 않습니다."),
     INVALID_PAGE_NUMBER(401, "페이지 넘버가 유효하지 않습니다."),
-
+    INVALID_PAGE_SIZE(401, "페이지 사이즈가 유효하지 않습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
