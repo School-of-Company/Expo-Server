@@ -1,12 +1,11 @@
 package team.startup.expo.domain.participant.presentation;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
+import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
@@ -20,17 +19,19 @@ public class ParticipantController {
     private final GetParticipantInfoService getParticipantInfoService;
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<Page<GetParticipantInfoResponseDto>> getParticipantInfo(
+    public ResponseEntity<ParticipantResponseDto> getParticipantInfo(
             @PathVariable("expo_id") String expoId,
             @RequestParam(value = "type") ApplicationType type,
             @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "size", defaultValue = "7") int size,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+            @RequestParam(value = "size", defaultValue = "80", required = false) int size,
+            @RequestParam(value = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        PageRequest pageable = PageRequest.of(page, size);
+        PageRequest pageable = PageRequest.of(page - 1, size);
 
-        Page<GetParticipantInfoResponseDto> response = getParticipantInfoService.execute(expoId, type, name, pageable, date);
+
+
+        ParticipantResponseDto response = getParticipantInfoService.execute(expoId, type, name, pageable, date != null ? date : LocalDate.now());
         return ResponseEntity.ok(response);
     }
 }
