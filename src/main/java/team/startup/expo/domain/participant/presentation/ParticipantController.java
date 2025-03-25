@@ -29,7 +29,6 @@ public class ParticipantController {
     ) {
         PageRequest pageable = PageRequest.of(page - 1 >= 0 ? page : 0, size);
 
-        LocalDate targetDate = date != null ? date : LocalDate.now();
         ParticipantResponseDto response = getParticipantInfoService.execute(expoId, type, name, pageable, date);
         return ResponseEntity.ok(response);
     }
