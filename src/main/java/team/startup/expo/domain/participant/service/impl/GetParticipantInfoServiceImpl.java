@@ -1,45 +1,25 @@
 package team.startup.expo.domain.participant.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.expo.entity.Expo;
-import team.startup.expo.domain.expo.exception.NotFoundExpoException;
-import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.entity.StandardParticipant;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
-import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
+import team.startup.expo.domain.participant.repository.custom.ParticipantRepositoryCustom;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
 public class GetParticipantInfoServiceImpl implements GetParticipantInfoService {
 
-    private final StandardParticipantRepository standardParticipantRepository;
-    private final ExpoRepository expoRepository;
+    private final ParticipantRepositoryCustom participantRepositoryCustom;
 
-    public List<GetParticipantInfoResponseDto> execute(String expoId, ApplicationType type, String name) {
-        Expo expo = expoRepository.findById(expoId)
-                .orElseThrow(NotFoundExpoException::new);
-
-        List<StandardParticipant> participantList;
-
-        if (name == null) {
-            participantList = standardParticipantRepository.findByExpoAndApplicationType(expo, type);
-        } else {
-            participantList = standardParticipantRepository.findByExpoAndApplicationTypeAndName(expo, type, name);
-        }
-
-        return participantList.stream()
-                .map(standardParticipant -> GetParticipantInfoResponseDto.builder()
-                        .id(standardParticipant.getId())
-                        .name(standardParticipant.getName())
-                        .phoneNumber(standardParticipant.getPhoneNumber())
-                        .informationStatus(standardParticipant.getPersonalInformationStatus())
-                        .build()
-                ).toList();
+    public Page<GetParticipantInfoResponseDto> execute(
+            String expoId, ApplicationType type, String name, Pageable pageable, LocalDate date) {
+        return participantRepositoryCustom.searchParticipants(expoId, type, name, pageable, date);
 
     }
 }
