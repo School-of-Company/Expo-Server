@@ -11,7 +11,6 @@ import team.startup.expo.domain.participant.service.GetParticipantInfoService;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
