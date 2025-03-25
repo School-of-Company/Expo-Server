@@ -72,6 +72,7 @@ public enum ErrorCode {
 
     // participant
     INVALID_EXPO_ID(401, "expoId가 유효하지 않습니다."),
+    INVALID_APPLICATION_TYPE(401, "애플리케이션 타입이 유효하지 않습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
