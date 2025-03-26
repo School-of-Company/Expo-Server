@@ -35,12 +35,12 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
                         standardParticipant.personalInformationStatus))
                 .from(standardParticipant)
                 .join(standardParticipant.expo, expo)
-                .leftJoin(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant)
-                        .and(dateEq(date, expo.startedDay, expo.finishedDay)))
+                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
                 .where(
                         expoIdEq(expoId),
                         typeEq(type),
-                        nameContains(name))
+                        nameContains(name),
+                        dateEq(date, expo.startedDay, expo.finishedDay))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -49,12 +49,12 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
                 .select(standardParticipant.count())
                 .from(standardParticipant)
                 .join(standardParticipant.expo, expo)
-                .leftJoin(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant)
-                        .and(dateEq(date, expo.startedDay, expo.finishedDay)))
+                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
                 .where(
                         expoIdEq(expoId),
                         typeEq(type),
-                        nameContains(name))
+                        nameContains(name),
+                        dateEq(date, expo.startedDay, expo.finishedDay))
                 .fetchOne();
 
         int totalElements = total != null ? total.intValue() : 0;
