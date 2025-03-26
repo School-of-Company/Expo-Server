@@ -51,9 +51,14 @@ public enum ErrorCode {
     NOT_EXIST_TRAINEE_AT_EXPO(404, "해당 박람회에 연수자가 존재하지 않습니다."),
     NOT_EXIST_PARTICIPANT_AT_EXPO(404, "해당 박람회에 관람객이 존재하지 않습니다."),
     NOT_IN_PROGRESS_EXPO(400, "해당 박람회는 진행 중인 상태가 아닙니다."),
+    INVALID_EXPO_ID(401, "엑스포 아이디가 유효하지 않습니다."),
 
-    // participant
+    // participant,
     NOT_FOUND_PARTICIPANT(404, "행사 참가자를 찾지 못 했습니다."),
+    INVALID_APPLICATION_TYPE(401, "애플리케이션 타입이 유효하지 않습니다."),
+    INVALID_PAGE_NUMBER(401, "페이지 넘버가 유효하지 않습니다."),
+    INVALID_PAGE_SIZE(401, "페이지 사이즈가 유효하지 않습니다."),
+    INVALID_DATE_RANGE(401, "요청한 날짜가 엑스포 기간 밖에 있습니다."),
 
     // attendance
     ALREADY_ENTER_EXPO_USER(400, "이미 박람회에 입장한 유저입니다."),
@@ -69,12 +74,6 @@ public enum ErrorCode {
     ALREADY_EXIST_SURVEY(409, "이미 설문조사 폼이 존재합니다."),
     NOT_FOUND_SURVEY(404, "설문조사 폼을 찾을 수 없습니다."),
     ALREADY_EXIST_SURVEY_ANSWER(409, "이미 설문조사를 참여하였습니다."),
-
-    // participant
-    INVALID_EXPO_ID(401, "엑스포 아이디가 유효하지 않습니다."),
-    INVALID_APPLICATION_TYPE(401, "애플리케이션 타입이 유효하지 않습니다."),
-    INVALID_PAGE_NUMBER(401, "페이지 넘버가 유효하지 않습니다."),
-    INVALID_PAGE_SIZE(401, "페이지 사이즈가 유효하지 않습니다."),
 
     // server
     INTERNAL_SERVER_ERROR(500, "예기치 못한 서버 에러");
