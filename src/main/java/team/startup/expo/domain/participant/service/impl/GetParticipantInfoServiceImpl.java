@@ -1,45 +1,63 @@
 package team.startup.expo.domain.participant.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
-import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
+import team.startup.expo.domain.participant.exception.InvalidDateRangeException;
+import team.startup.expo.domain.participant.exception.InvalidPageNumberException;
+import team.startup.expo.domain.participant.exception.InvalidPageSizeException;
+import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
+import team.startup.expo.domain.participant.repository.custom.ParticipantCustomRepository;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
 public class GetParticipantInfoServiceImpl implements GetParticipantInfoService {
 
-    private final StandardParticipantRepository standardParticipantRepository;
+    private final ParticipantCustomRepository participantRepositoryCustom;
     private final ExpoRepository expoRepository;
 
-    public List<GetParticipantInfoResponseDto> execute(String expoId, ApplicationType type, String name) {
+    public ParticipantResponseDto execute(
+            String expoId, ApplicationType type, String name, Pageable pageable, LocalDate date) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        List<StandardParticipant> participantList;
+        validateParameters(pageable);
 
-        if (name == null) {
-            participantList = standardParticipantRepository.findByExpoAndApplicationType(expo, type);
-        } else {
-            participantList = standardParticipantRepository.findByExpoAndApplicationTypeAndName(expo, type, name);
+        LocalDate targetDate = date != null ? date : LocalDate.now();
+
+        validateDateRange(expoId, date);
+
+        return participantRepositoryCustom.searchParticipants(expoId, type, name, pageable, targetDate);
+
+    }
+
+    private void validateDateRange(String expoId, LocalDate date) {
+        Expo expo = expoRepository.findById(expoId)
+                .orElseThrow(NotFoundExpoException::new);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startedDate = LocalDate.parse(expo.getStartedDay(), formatter);
+        LocalDate finishedDate = LocalDate.parse(expo.getFinishedDay(), formatter);
+
+        if (date.isBefore(startedDate) || date.isAfter(finishedDate)) {
+            throw new InvalidDateRangeException();
         }
+    }
 
-        return participantList.stream()
-                .map(standardParticipant -> GetParticipantInfoResponseDto.builder()
-                        .id(standardParticipant.getId())
-                        .name(standardParticipant.getName())
-                        .phoneNumber(standardParticipant.getPhoneNumber())
-                        .informationStatus(standardParticipant.getPersonalInformationStatus())
-                        .build()
-                ).toList();
-
+    private void validateParameters(Pageable pageable) {
+        if (pageable.getPageNumber() < 0) {
+            throw new InvalidPageNumberException();
+        }
+        if (pageable.getPageSize() < 0) {
+            throw new InvalidPageSizeException();
+        }
     }
 }
