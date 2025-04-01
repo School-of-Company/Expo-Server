@@ -23,7 +23,7 @@ public class DeleteFormServiceImpl implements DeleteFormService {
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
 
-    @CacheEvict(key = "#expoId + '_' + #participationType")
+    @CacheEvict(key = "#expoId + '_' + #participationType", cacheNames = "cacheManager")
     public void execute(String expoId, ParticipationType participationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
