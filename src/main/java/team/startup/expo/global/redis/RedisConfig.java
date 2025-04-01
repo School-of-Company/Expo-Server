@@ -42,11 +42,11 @@ public class RedisConfig {
     }
 
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory) {
+        public CacheManager cacheManager(RedisConnectionFactory factory) {
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofMinutes(120L))
+                .entryTtl(Duration.ofHours(2))
                 .disableCachingNullValues();
 
         return RedisCacheManager
