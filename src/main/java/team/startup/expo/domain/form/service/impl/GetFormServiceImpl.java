@@ -27,7 +27,7 @@ public class GetFormServiceImpl implements GetFormService {
     private final ExpoRepository expoRepository;
     private final DynamicFormRepository dynamicFormRepository;
 
-    @Cacheable(key = "#expoId + '_' + #participationType")
+    @Cacheable(key = "#expoId + '_' + #participationType", cacheManager = "cacheManager")
     public GetFormResponseDto execute(String expoId, ParticipationType participationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);

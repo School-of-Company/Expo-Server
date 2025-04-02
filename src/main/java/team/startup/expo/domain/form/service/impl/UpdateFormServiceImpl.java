@@ -23,7 +23,7 @@ public class UpdateFormServiceImpl implements UpdateFormService {
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
 
-    @CacheEvict(key = "#expoId + '_' + #dto.participantType")
+    @CacheEvict(key = "#expoId + '_' + #dto.participantType", cacheManager = "cacheManager")
     public void execute(String expoId, FormRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundFormException::new);
