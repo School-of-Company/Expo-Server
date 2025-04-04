@@ -64,11 +64,9 @@ public class SendQrEventHandler {
             if (sendQrEvent.getAuthority() == Authority.ROLE_STANDARD) {
                 StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundParticipantException::new);
-
+                
                 String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
                 byte[] qrBytes = createQr(information);
-
-                participant.addQrCode(qrBytes);
 
                 Message message = createMessage(qrBytes, sendQrEvent);
 
@@ -80,8 +78,6 @@ public class SendQrEventHandler {
                 String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
 
                 byte[] qrBytes = createQr(information);
-
-                trainee.addQrCode(qrBytes);
 
                 Message message = createMessage(qrBytes, sendQrEvent);
 

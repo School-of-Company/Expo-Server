@@ -60,8 +60,6 @@ public class SendQrServiceImpl implements SendQrService {
             String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
             byte[] qrBytes = createQr(information);
 
-            participant.addQrCode(qrBytes);
-
             Message message = createMessage(qrBytes, dto);
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
@@ -73,7 +71,6 @@ public class SendQrServiceImpl implements SendQrService {
 
             byte[] qrBytes = createQr(information);
 
-            trainee.addQrCode(qrBytes);
 
             Message message = createMessage(qrBytes, dto);
 

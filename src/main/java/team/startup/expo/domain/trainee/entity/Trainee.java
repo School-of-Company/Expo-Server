@@ -45,16 +45,8 @@ public class Trainee {
     @Column(nullable = false)
     private ApplicationType applicationType;
 
-    @Lob
-    @Column(columnDefinition = "LONGBLOB")
-    private byte[] qrCode;
-
     @ManyToOne
     @JoinColumn(name = "expo_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
-
-    public void addQrCode(byte[] qrCode) {
-        this.qrCode = qrCode;
-    }
 }
