@@ -41,7 +41,7 @@ public class GetStandardStatsServiceImpl implements GetStandardStatsService {
                 .count();
 
         int allCount = participants.size();
-        int elementaryPercent = elementaryCount * 100 / allCount;
+        float elementaryPercent = (float) Math.round((elementaryCount * 100.0 / allCount));
 
         return StandardParticipantStatsResponse.ElementaryDto.builder()
                 .number(elementaryCount)
@@ -55,7 +55,7 @@ public class GetStandardStatsServiceImpl implements GetStandardStatsService {
                 .count();
 
         int allCount = participants.size();
-        int middlePercent = middleCount * 100 / allCount;
+        float middlePercent = (float) Math.round(middleCount * 100.0 / allCount);
 
         return StandardParticipantStatsResponse.MiddleDto.builder()
                 .number(middleCount)
@@ -69,7 +69,7 @@ public class GetStandardStatsServiceImpl implements GetStandardStatsService {
                 .count();
 
         int allCount = participants.size();
-        int highPercent = highCount * 100 / allCount;
+        float highPercent = (float) Math.round(highCount * 100.0 / allCount);
 
         return StandardParticipantStatsResponse.HighDto.builder()
                 .number(highCount)
@@ -83,7 +83,7 @@ public class GetStandardStatsServiceImpl implements GetStandardStatsService {
                 .count();
 
         int allCount = participants.size();
-        int kindergartenPercent = kindergartenCount * 100 / allCount;
+        float kindergartenPercent = (float) Math.round(kindergartenCount * 100.0 / allCount);
 
         return StandardParticipantStatsResponse.KindergartenDto.builder()
                 .number(kindergartenCount)
@@ -97,7 +97,7 @@ public class GetStandardStatsServiceImpl implements GetStandardStatsService {
                 .count();
 
         int allCount = participants.size();
-        int otherPercent = otherCount * 100 / allCount;
+        float otherPercent = (float) Math.round(otherCount * 100.0 / allCount);
 
         return StandardParticipantStatsResponse.OtherDto.builder()
                 .number(otherCount)

@@ -16,34 +16,34 @@ public class StandardParticipantStatsResponse {
     @Builder
     public static class ElementaryDto {
         private Integer number;
-        private Integer percent;
+        private Float percent;
     }
 
     @Getter
     @Builder
     public static class MiddleDto {
         private Integer number;
-        private Integer percent;
+        private Float percent;
     }
 
     @Getter
     @Builder
     public static class HighDto {
         private Integer number;
-        private Integer percent;
+        private Float percent;
     }
 
     @Getter
     @Builder
     public static class KindergartenDto {
         private Integer number;
-        private Integer percent;
+        private Float percent;
     }
 
     @Getter
     @Builder
     public static class OtherDto {
         private Integer number;
-        private Integer percent;
+        private Float percent;
     }
 }
