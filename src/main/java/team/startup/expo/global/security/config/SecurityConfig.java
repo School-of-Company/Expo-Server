@@ -87,7 +87,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/signin").permitAll()
                                 .requestMatchers(HttpMethod.PATCH, "/auth").permitAll()
-                                .requestMatchers(HttpMethod.DELETE, "/auth").authenticated()
+                                .requestMatchers(HttpMethod.DELETE, "/auth").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // trainee
                                 .requestMatchers(HttpMethod.GET, "/trainee/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
@@ -118,8 +118,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.PATCH, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.DELETE, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/expo/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/expo").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/expo/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/expo").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/expo/valid/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // attendance
@@ -149,6 +149,9 @@ public class SecurityConfig {
                                 // surveyAnswer
                                 .requestMatchers(HttpMethod.POST, "/survey/answer/standard/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/survey/answer/trainee/{expo_id}").permitAll()
+
+                                // stat
+                                .requestMatchers(HttpMethod.GET, "/stat/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 //image
                                 .requestMatchers(HttpMethod.POST, "/image").authenticated()
