@@ -36,6 +36,7 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
     private Survey saveSurvey(SurveyRequestDto dto, Expo expo) {
         Survey survey = Survey.builder()
                 .participationType(dto.getParticipationType())
+                .informationText(dto.getInformationText())
                 .expo(expo)
                 .build();
 

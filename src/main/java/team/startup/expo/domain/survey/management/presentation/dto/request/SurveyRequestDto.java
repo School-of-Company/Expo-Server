@@ -15,6 +15,9 @@ public class SurveyRequestDto {
     private ParticipationType participationType;
 
     @NotNull
+    private String informationText;
+
+    @NotNull
     private List<DynamicSurveyRequestDto> dynamicSurveyRequestDto;
 
     @Getter

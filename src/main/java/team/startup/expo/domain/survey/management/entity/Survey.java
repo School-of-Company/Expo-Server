@@ -26,8 +26,16 @@ public class Survey {
     @Column(nullable = false)
     private ParticipationType participationType;
 
+    @Column(nullable = false, length = 500)
+    private String informationText;
+
     @ManyToOne
     @JoinColumn(name = "expo_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
+
+    public void update(String informationText) {
+        this.informationText = informationText;
+    }
 }
+
