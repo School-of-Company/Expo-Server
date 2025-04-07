@@ -35,7 +35,7 @@ public class CreateFormServiceImpl implements CreateFormService {
 
     private Form saveForm(FormRequestDto formRequestDto, Expo expo) {
         Form form = Form.builder()
-                .informationImage(formRequestDto.getInformationImage())
+                .informationText(formRequestDto.getInformationText())
                 .participationType(formRequestDto.getParticipantType())
                 .expo(expo)
                 .build();

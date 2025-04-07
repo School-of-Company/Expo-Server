@@ -32,6 +32,7 @@ public class UpdateSurveyServiceImpl implements UpdateSurveyService {
         Survey survey = surveyRepository.findByExpoAndParticipationType(expo, dto.getParticipationType())
                 .orElseThrow(NotFoundSurveyException::new);
 
+        survey.update(dto.getInformationText());
         dynamicSurveyRepository.deleteBySurvey(survey);
         dto.getDynamicSurveyRequestDto().forEach(dynamicSurveyRequestDto -> saveDynamicSurvey(dynamicSurveyRequestDto, survey));
     }

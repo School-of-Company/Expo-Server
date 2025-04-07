@@ -48,7 +48,7 @@ public class GetFormServiceImpl implements GetFormService {
                 ).toList();
 
         return GetFormResponseDto.builder()
-                .informationImage(form.getInformationImage())
+                .informationText(form.getInformationText())
                 .participantType(form.getParticipationType())
                 .dynamicForm(dynamicFormRequestDtoList)
                 .build();

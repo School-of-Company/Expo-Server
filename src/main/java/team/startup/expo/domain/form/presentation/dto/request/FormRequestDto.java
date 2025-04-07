@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FormRequestDto {
     @NotNull
-    private String informationImage;
+    private String informationText;
 
     @NotNull
     private ParticipationType participantType;
