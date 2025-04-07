@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GetFormResponseDto {
-    private String informationImage;
+    private String informationText;
     private ParticipationType participantType;
     private List<GetFormResponseDto.DynamicFormRequestDto> dynamicForm;
 

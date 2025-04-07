@@ -22,8 +22,8 @@ public class Form {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT")
-    private String informationImage;
+    @Column(nullable = false, length = 500)
+    private String informationText;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -35,7 +35,7 @@ public class Form {
     private Expo expo;
 
     public void updateForm(FormRequestDto dto) {
-        this.informationImage = dto.getInformationImage();
+        this.informationText = dto.getInformationText();
         this.participationType = dto.getParticipantType();
     }
 }
