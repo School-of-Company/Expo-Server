@@ -48,6 +48,7 @@ public class GetSurveyServiceImpl implements GetSurveyService {
                 ).toList();
 
         return SurveyResponseDto.builder()
+                .informationText(survey.getInformationText())
                 .participationType(participationType)
                 .dynamicSurveyResponseDto(dynamicSurveyResponseDto)
                 .build();
