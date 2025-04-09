@@ -9,6 +9,7 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.entity.StandardParticipantParticipation;
 import team.startup.expo.domain.participant.repository.StandardParticipantParticipationRepository;
@@ -81,9 +82,11 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
+                .id(standardParticipant.getId())
                 .name(standardParticipant.getName())
                 .phoneNumber(standardParticipant.getPhoneNumber())
                 .personalInformationStatus(standardParticipant.getPersonalInformationStatus())
+                .participationType(ParticipationType.STANDARD)
                 .build();
     }
 
@@ -113,9 +116,11 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
+                .id(trainee.getId())
                 .name(trainee.getName())
                 .phoneNumber(trainee.getPhoneNumber())
                 .personalInformationStatus(trainee.getPersonalInformationStatus())
+                .participationType(ParticipationType.TRAINEE)
                 .build();
     }
 }
