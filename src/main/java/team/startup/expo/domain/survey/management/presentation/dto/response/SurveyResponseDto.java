@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SurveyResponseDto {
+    private String informationText;
     private ParticipationType participationType;
     private List<DynamicSurveyResponseDto> dynamicSurveyResponseDto;
 
