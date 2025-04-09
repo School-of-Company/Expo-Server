@@ -23,31 +23,46 @@ public class ApplicationController {
     private final FieldApplicationTemporaryQrService fieldApplicationTemporaryQrService;
 
     @PostMapping("/{expo_id}")
-    public ResponseEntity<Void> preApplicationForTrainee(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForTraineeRequestDto dto) {
+    public ResponseEntity<Void> preApplicationForTrainee(
+        @PathVariable("expo_id") String expoId,
+        @RequestBody @Valid ApplicationForTraineeRequestDto dto
+    ) {
         preApplicationForTraineeService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/pre-standard/{expo_id}")
-    public ResponseEntity<Void> preApplicationForParticipant(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForParticipantRequestDto dto) {
+    public ResponseEntity<Void> preApplicationForParticipant(
+        @PathVariable("expo_id") String expoId,
+        @RequestBody @Valid ApplicationForParticipantRequestDto dto
+    ) {
         preApplicationForParticipantService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/field/{expo_id}")
-    public ResponseEntity<Void> fieldApplicationForTrainee(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForTraineeRequestDto dto) {
+    public ResponseEntity<Void> fieldApplicationForTrainee(
+        @PathVariable("expo_id") String expoId,
+        @RequestBody @Valid ApplicationForTraineeRequestDto dto
+    ) {
         fieldApplicationForTraineeService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/field/standard/{expo_id}")
-    public ResponseEntity<Void> fieldApplicationForParticipant(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationForParticipantRequestDto dto) {
+    public ResponseEntity<Void> fieldApplicationForParticipant(
+        @PathVariable("expo_id") String expoId,
+        @RequestBody @Valid ApplicationForParticipantRequestDto dto
+    ) {
         fieldApplicationForParticipantService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/field/temporary/{expo_id}")
-    public ResponseEntity<ApplicationTemporaryQrResponseDto> fieldApplicationTemporaryQr(@PathVariable("expo_id") String expoId, @RequestBody @Valid ApplicationTemporaryQrRequestDto dto) {
+    public ResponseEntity<ApplicationTemporaryQrResponseDto> fieldApplicationTemporaryQr(
+        @PathVariable("expo_id") String expoId,
+        @RequestBody @Valid ApplicationTemporaryQrRequestDto dto
+    ) {
         ApplicationTemporaryQrResponseDto response = fieldApplicationTemporaryQrService.execute(expoId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
