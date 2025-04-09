@@ -50,16 +50,17 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
     }
 
     private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo) {
-        Trainee trainee = Trainee.builder()
-                .trainingId(dto.getTrainingId())
-                .phoneNumber(dto.getPhoneNumber())
-                .authority(Authority.ROLE_TRAINEE)
-                .name(dto.getName())
-                .applicationType(ApplicationType.FIELD)
-                .informationJson(dto.getInformationJson())
-                .personalInformationStatus(dto.getPersonalInformationStatus())
-                .expo(expo)
-                .build();
+        Trainee trainee = traineeRepository.findByPhoneNumberAndExpoForWrite(dto.getPhoneNumber(), expo)
+                .orElse(Trainee.builder()
+                        .trainingId(dto.getTrainingId())
+                        .phoneNumber(dto.getPhoneNumber())
+                        .authority(Authority.ROLE_TRAINEE)
+                        .name(dto.getName())
+                        .applicationType(ApplicationType.PRE)
+                        .informationJson(dto.getInformationJson())
+                        .personalInformationStatus(dto.getPersonalInformationStatus())
+                        .expo(expo)
+                        .build());
 
         traineeRepository.save(trainee);
     }

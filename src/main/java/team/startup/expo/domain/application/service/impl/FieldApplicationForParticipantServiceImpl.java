@@ -55,18 +55,19 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     }
 
     private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
-        StandardParticipant standardParticipant = StandardParticipant.builder()
-                .name(dto.getName())
-                .phoneNumber(dto.getPhoneNumber())
-                .authority(Authority.ROLE_STANDARD)
-                .affiliation(dto.getAffiliation())
-                .schoolLevel(dto.getSchoolLevel())
-                .schoolDetail(dto.getSchoolDetail())
-                .informationJson(dto.getInformationJson())
-                .applicationType(ApplicationType.FIELD)
-                .personalInformationStatus(dto.getPersonalInformationStatus())
-                .expo(expo)
-                .build();
+        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForWrite(dto.getPhoneNumber(), expo)
+                .orElse(StandardParticipant.builder()
+                        .name(dto.getName())
+                        .phoneNumber(dto.getPhoneNumber())
+                        .authority(Authority.ROLE_STANDARD)
+                        .affiliation(dto.getAffiliation())
+                        .schoolLevel(dto.getSchoolLevel())
+                        .schoolDetail(dto.getSchoolDetail())
+                        .informationJson(dto.getInformationJson())
+                        .applicationType(ApplicationType.FIELD)
+                        .personalInformationStatus(dto.getPersonalInformationStatus())
+                        .expo(expo)
+                        .build());
 
         standardParticipantRepository.save(standardParticipant);
     }
