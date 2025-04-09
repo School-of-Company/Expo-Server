@@ -39,7 +39,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         if (!dateUtil.dateComparison(standardProgram.getExpo().getStartedDay(), standardProgram.getExpo().getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipant(standardProgram, standardParticipant)
+        StandardProgramUser standardProgramUser = standardProgramUserRepository.findByStandardProgramAndStandardParticipantForWrite(standardProgram, standardParticipant)
                 .orElse(StandardProgramUser.builder()
                         .status(false)
                         .attendanceDate(LocalDate.now())
@@ -61,7 +61,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
                 .id(user.getId())
                 .status(true)
-                .attendanceDate(LocalDate.now())
+                .attendanceDate(user.getAttendanceDate())
                 .entryTime(String.valueOf(now))
                 .standardProgram(standardProgram)
                 .standardParticipant(standardParticipant)
@@ -76,7 +76,7 @@ public class ScanStandardProByQrCodeServiceImpl implements ScanStandardProByQrCo
         StandardProgramUser standardProgramUser = StandardProgramUser.builder()
                 .id(user.getId())
                 .status(true)
-                .attendanceDate(LocalDate.now())
+                .attendanceDate(user.getAttendanceDate())
                 .entryTime(user.getEntryTime())
                 .leaveTime(String.valueOf(now))
                 .standardProgram(standardProgram)
