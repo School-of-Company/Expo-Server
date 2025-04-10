@@ -58,9 +58,9 @@ public class ExpoController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/valid/{expo_id}")
-    public ResponseEntity<GetExpoValidationStatusResponseDto> getExpoValidationStatus(@PathVariable("expo_id") String expoId) {
-        GetExpoValidationStatusResponseDto response = getExpoValidationStatusService.execute(expoId);
+    @GetMapping("/valid")
+    public ResponseEntity<GetExpoValidationStatusResponseDto> getExpoValidationStatus() {
+        GetExpoValidationStatusResponseDto response = getExpoValidationStatusService.execute();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }

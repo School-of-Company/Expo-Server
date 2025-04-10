@@ -6,9 +6,12 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.presentation.dto.response.GetExpoValidationStatusResponseDto;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.GetExpoValidationStatusService;
+import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.survey.management.repository.SurveyRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
+
+import java.util.List;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
@@ -18,16 +21,21 @@ public class GetExpoValidationStatusServiceImpl implements GetExpoValidationStat
     private final FormRepository formRepository;
     private final SurveyRepository surveyRepository;
 
-    public GetExpoValidationStatusResponseDto execute(String expoId) {
-        Expo expo = expoRepository.findById(expoId)
-                .orElseThrow(NotFoundExpoException::new);
+    public GetExpoValidationStatusResponseDto execute() {
+        List<Expo> allExpo = expoRepository.findAll();
 
-        boolean formExists = formRepository.existsByExpo(expo);
-        boolean surveyExists = surveyRepository.existsByExpo(expo);
+        List<GetExpoValidationStatusResponseDto.ExpoValidDto> expoValidDto = allExpo.stream().map(expo ->
+                GetExpoValidationStatusResponseDto.ExpoValidDto.builder()
+                        .expoId(expo.getId())
+                        .standardFormCreatedStatus(formRepository.existsByExpoAndParticipationType(expo, ParticipationType.STANDARD))
+                        .traineeFormCreatedStatus(formRepository.existsByExpoAndParticipationType(expo, ParticipationType.TRAINEE))
+                        .StandardSurveyCreatedStatus(surveyRepository.existsByExpoAndParticipationType(expo, ParticipationType.STANDARD))
+                        .traineeSurveyCreatedStatus(surveyRepository.existsByExpoAndParticipationType(expo, ParticipationType.TRAINEE))
+                        .build()
+        ).toList();
 
         return GetExpoValidationStatusResponseDto.builder()
-                .dynamicFormCreatedStatus(formExists)
-                .surveyCreatedStatus(surveyExists)
+                .expoValid(expoValidDto)
                 .build();
     }
 }
