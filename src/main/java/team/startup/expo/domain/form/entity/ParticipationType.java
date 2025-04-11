@@ -1,5 +1,10 @@
 package team.startup.expo.domain.form.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum ParticipationType {
-    TRAINEE, STANDARD
+    @JsonProperty("TRAINEE")
+    TRAINEE,
+    @JsonProperty("STANDARD")
+    STANDARD
 }
