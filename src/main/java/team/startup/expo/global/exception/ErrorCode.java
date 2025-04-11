@@ -62,6 +62,7 @@ public enum ErrorCode {
 
     // attendance
     ALREADY_ENTER_EXPO_USER(400, "이미 박람회에 입장한 유저입니다."),
+    NOT_ENTER_AFTER_THIRTY_SECOND(401, "입장 후 30초가 지나지 않았습니다."),
 
     // trainee
     NOT_FOUND_TRAINEE(404, "연수자를 찾지 못 했습니다."),
