@@ -112,7 +112,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                 .orElseThrow(NotFoundTraineeException::new);
 
         Optional<TraineeParticipation> traineeParticipation =
-                traineeParticipationRepository.findByExpoAndTraineeAndAttendanceDate(expo, trainee, LocalDate.now());
+                traineeParticipationRepository.findByExpoAndTraineeAndAttendanceDateForWrite(expo, trainee, LocalDate.now());
 
         if (leaveManagerRepository.existsById(trainee.getPhoneNumber())) {
             throw new NotEnterAfterThirtySecondException();
