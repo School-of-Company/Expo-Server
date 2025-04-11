@@ -61,7 +61,11 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                 .orElseThrow(NotFoundParticipantException::new);
 
         Optional<StandardParticipantParticipation> standardParticipantParticipation =
-                standardParticipantParticipationRepository.findByExpoAndStandardParticipantAndAttendanceDate(expo, standardParticipant, LocalDate.now());
+                standardParticipantParticipationRepository.findByExpoAndStandardParticipantAndAttendanceDateForWrite(expo, standardParticipant, LocalDate.now());
+
+        if (leaveManagerRepository.existsById(standardParticipant.getPhoneNumber())) {
+            throw new NotEnterAfterThirtySecondException();
+        }
 
         if (standardParticipantParticipation.isPresent()) {
             StandardParticipantParticipation getStandardParticipantParticipation = standardParticipantParticipation.get();
