@@ -16,14 +16,6 @@ public class ApplicationForParticipantRequestDto {
     private String phoneNumber;
 
     @NotNull
-    private String affiliation;
-
-    @NotNull
-    private SchoolLevel schoolLevel;
-
-    private String schoolDetail;
-
-    @NotNull
     private String informationJson;
 
     @NotNull
