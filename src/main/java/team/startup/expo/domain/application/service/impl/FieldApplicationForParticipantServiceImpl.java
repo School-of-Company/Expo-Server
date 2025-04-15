@@ -42,8 +42,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
         if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
-        if (dto.getSchoolDetail() == null && dto.getSchoolLevel() != SchoolLevel.KINDERGARTEN && dto.getSchoolLevel() != SchoolLevel.OTHER)
-            throw new NotEnterSchoolDetailException();
 
         saveParticipant(expo, dto);
 

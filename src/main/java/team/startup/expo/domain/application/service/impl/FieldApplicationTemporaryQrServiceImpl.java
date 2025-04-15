@@ -34,9 +34,6 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        if (dto.getSchoolDetail() == null && dto.getSchoolLevel() != SchoolLevel.KINDERGARTEN && dto.getSchoolLevel() != SchoolLevel.OTHER)
-            throw new NotEnterSchoolDetailException();
-
         StandardParticipant standardParticipant = saveParticipant(expo, dto);
 
         return ApplicationTemporaryQrResponseDto.builder()
