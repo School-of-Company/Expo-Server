@@ -2,7 +2,6 @@ package team.startup.expo.domain.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.admin.entity.Authority;
-import team.startup.expo.domain.application.exception.NotEnterSchoolDetailException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationTemporaryQrRequestDto;
 import team.startup.expo.domain.application.presentation.dto.response.ApplicationTemporaryQrResponseDto;
 import team.startup.expo.domain.application.service.FieldApplicationTemporaryQrService;
@@ -10,7 +9,6 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.entity.SchoolLevel;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -53,7 +51,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
                 .phoneNumber(phoneNumber)
                 .authority(Authority.ROLE_STANDARD)
                 .informationJson(dto.getInformationJson())
-                .applicationType(ApplicationType.PRE)
+                .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())
                 .expo(expo)
                 .build();

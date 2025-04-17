@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDate;
 
@@ -21,15 +20,13 @@ public class ParticipantController {
     @GetMapping("/{expo_id}")
     public ResponseEntity<ParticipantResponseDto> getParticipantInfo(
             @PathVariable("expo_id") String expoId,
-            @RequestParam(value = "type") ApplicationType type,
-            @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "size", defaultValue = "80", required = false) int size,
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         PageRequest pageable = PageRequest.of(page - 1 >= 0 ? page : 0, size);
 
-        ParticipantResponseDto response = getParticipantInfoService.execute(expoId, type, name, pageable, date);
+        ParticipantResponseDto response = getParticipantInfoService.execute(expoId, pageable, date);
         return ResponseEntity.ok(response);
     }
 }
