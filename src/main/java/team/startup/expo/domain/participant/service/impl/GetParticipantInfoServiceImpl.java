@@ -11,7 +11,6 @@ import team.startup.expo.domain.participant.exception.InvalidPageSizeException;
 import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
 import team.startup.expo.domain.participant.repository.custom.ParticipantCustomRepository;
 import team.startup.expo.domain.participant.service.GetParticipantInfoService;
-import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.time.LocalDate;
@@ -25,7 +24,7 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
     private final ExpoRepository expoRepository;
 
     public ParticipantResponseDto execute(
-            String expoId, ApplicationType type, String name, Pageable pageable, LocalDate date) {
+            String expoId, Pageable pageable, LocalDate date) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
@@ -35,7 +34,7 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
 
         validateDateRange(expoId, date);
 
-        return participantRepositoryCustom.searchParticipants(expoId, type, name, pageable, targetDate);
+        return participantRepositoryCustom.searchParticipants(expo.getId(), pageable, targetDate);
 
     }
 
