@@ -1,10 +1,10 @@
 package team.startup.expo.domain.participant.repository.custom.impl;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
 import team.startup.expo.domain.participant.repository.custom.ParticipantCustomRepository;
@@ -19,43 +19,51 @@ import static team.startup.expo.domain.participant.entity.QStandardParticipantPa
 @Repository
 @RequiredArgsConstructor
 public class ParticipantCustomRepositoryImpl implements ParticipantCustomRepository {
+
     private final JPAQueryFactory queryFactory;
 
     public ParticipantResponseDto searchParticipants(String expoId, Pageable pageable, LocalDate date) {
-        List<GetParticipantInfoResponseDto> participants = queryFactory
-                .select(Projections.constructor(GetParticipantInfoResponseDto.class,
-                        standardParticipant.id,
-                        standardParticipant.name,
-                        standardParticipant.phoneNumber,
-                        standardParticipant.personalInformationStatus))
+        int size = pageable.getPageSize();
+
+        Long totalElement = queryFactory
+                .select(standardParticipant.count())
                 .from(standardParticipant)
-                .join(standardParticipant.expo, expo)
+                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
+                .where(
+                        standardParticipant.expo.id.eq(expoId)
+                                .and(standardParticipantParticipation.attendanceDate.eq(date))
+                )
+                .fetchOne();
+
+        int totalPage = (int) ((totalElement + size - 1) / size);
+
+        List<StandardParticipant> participants = queryFactory
+                .selectFrom(standardParticipant)
                 .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
                 .where(
                         standardParticipant.expo.id.eq(expoId)
                                 .and(standardParticipantParticipation.attendanceDate.eq(date))
                 )
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
+                .limit(size)
                 .fetch();
 
-        Long total = queryFactory
-                .select(standardParticipant.count())
-                .from(standardParticipant)
-                .join(standardParticipant.expo, expo)
-                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
-                .where()
-                .fetchOne();
-
-        int totalElements = total != null ? total.intValue() : 0;
-        int totalPages = (int) Math.ceil((double) totalElements / pageable.getPageSize());
+        List<GetParticipantInfoResponseDto> getParticipantInfoResponseDto = participants.stream()
+                .map(participant -> GetParticipantInfoResponseDto.builder()
+                        .id(participant.getId())
+                        .name(participant.getName())
+                        .informationStatus(participant.getPersonalInformationStatus())
+                        .phoneNumber(participant.getPhoneNumber())
+                        .build())
+                .toList();
 
         return ParticipantResponseDto.builder()
                 .info(ParticipantResponseDto.Info.builder()
-                        .totalPage(totalPages)
-                        .totalElement(totalElements)
+                        .totalPage(totalPage)
+                        .totalElement(totalElement.intValue())
                         .build())
-                .participants(participants)
+                .participants(getParticipantInfoResponseDto)
                 .build();
+
     }
 }

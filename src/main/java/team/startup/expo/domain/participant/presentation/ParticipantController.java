@@ -24,7 +24,7 @@ public class ParticipantController {
             @RequestParam(value = "page", defaultValue = "0", required = false) int page,
             @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        PageRequest pageable = PageRequest.of(page - 1 >= 0 ? page : 0, size);
+        PageRequest pageable = PageRequest.of(page, size);
 
         ParticipantResponseDto response = getParticipantInfoService.execute(expoId, pageable, date);
         return ResponseEntity.ok(response);
