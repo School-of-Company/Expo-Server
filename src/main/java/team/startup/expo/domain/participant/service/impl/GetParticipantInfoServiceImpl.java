@@ -23,8 +23,7 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
     private final ParticipantCustomRepository participantRepositoryCustom;
     private final ExpoRepository expoRepository;
 
-    public ParticipantResponseDto execute(
-            String expoId, Pageable pageable, LocalDate date) {
+    public ParticipantResponseDto execute(String expoId, Pageable pageable, LocalDate date) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
@@ -32,7 +31,7 @@ public class GetParticipantInfoServiceImpl implements GetParticipantInfoService 
 
         LocalDate targetDate = date != null ? date : LocalDate.now();
 
-        validateDateRange(expoId, date);
+        validateDateRange(expoId, targetDate);
 
         return participantRepositoryCustom.searchParticipants(expo.getId(), pageable, targetDate);
 
