@@ -32,13 +32,14 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
         if (standardparticipantSurveyAnswerRepository.existsByStandardParticipant(standardParticipant))
             throw new AlreadyExistSurveyAnswerException();
 
-        saveSurveyAnswer(dto.getAnswerJson(), standardParticipant);
+        saveSurveyAnswer(dto, standardParticipant);
     }
 
-    private void saveSurveyAnswer(String answer, StandardParticipant standardParticipant) {
+    private void saveSurveyAnswer(SurveyAnswerRequestDto dto, StandardParticipant standardParticipant) {
         StandardParticipantSurveyAnswer surveyAnswer = StandardParticipantSurveyAnswer.builder()
-                .answerJson(answer)
+                .answerJson(dto.getAnswerJson())
                 .standardParticipant(standardParticipant)
+                .personalInformationStatus(dto.getPersonalInformationStatus())
                 .build();
 
         standardparticipantSurveyAnswerRepository.save(surveyAnswer);
