@@ -1,7 +1,10 @@
 package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.attendance.entity.LeaveManager;
+import team.startup.expo.domain.attendance.event.LeaveSmsEvent;
 import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
 import team.startup.expo.domain.attendance.exception.NotEnterAfterThirtySecondException;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
@@ -42,6 +45,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
     private final StandardParticipantParticipationRepository standardParticipantParticipationRepository;
     private final DateUtil dateUtil;
     private final LeaveManagerRepository leaveManagerRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public PreEnterScanQrCodeResponseDto execute(String expoId, PreEnterScanQrCodeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -79,6 +83,8 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
             getStandardParticipantParticipation.addLeaveTime();
 
+            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(),
+                    getStandardParticipantParticipation.getStandardParticipant().getPhoneNumber(), Authority.ROLE_STANDARD));
         } else {
             StandardParticipantParticipation newStandardParticipantParticipation = StandardParticipantParticipation.builder()
                     .entryTime(LocalDateTime.now())
@@ -125,6 +131,8 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                 throw new AlreadyEnterExpoUserException();
 
             getTraineeParticipation.addLeaveTime();
+
+            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(), getTraineeParticipation.getTrainee().getPhoneNumber(), Authority.ROLE_TRAINEE));
         } else {
             TraineeParticipation newTraineeParticipation = TraineeParticipation.builder()
                     .entryTime(LocalDateTime.now())
