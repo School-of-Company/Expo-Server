@@ -11,7 +11,7 @@ import team.startup.expo.domain.application.exception.AlreadyApplicationUserExce
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
 import team.startup.expo.domain.application.service.FieldApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.sms.event.SendQrEvent;
+import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;

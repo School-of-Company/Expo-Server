@@ -1,4 +1,4 @@
-package team.startup.expo.domain.sms.event;
+package team.startup.expo.domain.application.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

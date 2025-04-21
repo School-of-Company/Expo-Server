@@ -1,4 +1,4 @@
-package team.startup.expo.domain.sms.event.handler;
+package team.startup.expo.domain.application.event.handler;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -22,7 +22,7 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.sms.event.SendQrEvent;
+import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.trainee.entity.Trainee;
