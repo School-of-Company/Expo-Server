@@ -31,13 +31,14 @@ public class TraineeSurveyAnswerServiceImpl implements TraineeSurveyAnswerServic
         if (traineeSurveyAnswerRepository.existsByTrainee(trainee))
             throw new AlreadyExistSurveyAnswerException();
 
-        saveTraineeSurveyAnswer(dto.getAnswerJson(), trainee);
+        saveTraineeSurveyAnswer(dto, trainee);
     }
 
-    private void saveTraineeSurveyAnswer(String answerJson, Trainee trainee) {
+    private void saveTraineeSurveyAnswer(SurveyAnswerRequestDto dto, Trainee trainee) {
         TraineeSurveyAnswer answer = TraineeSurveyAnswer.builder()
-                .answerJson(answerJson)
+                .answerJson(dto.getAnswerJson())
                 .trainee(trainee)
+                .personalInformationStatus(dto.getPersonalInformationStatus())
                 .build();
 
         traineeSurveyAnswerRepository.save(answer);

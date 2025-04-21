@@ -28,4 +28,7 @@ public class StandardParticipantSurveyAnswer {
     @JoinColumn(name = "standard_participant_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private StandardParticipant standardParticipant;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean personalInformationStatus;
 }

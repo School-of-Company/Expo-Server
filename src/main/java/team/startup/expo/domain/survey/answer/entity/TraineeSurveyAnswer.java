@@ -28,4 +28,7 @@ public class TraineeSurveyAnswer {
     @JoinColumn(name = "trainee_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Trainee trainee;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    private Boolean personalInformationStatus;
 }
