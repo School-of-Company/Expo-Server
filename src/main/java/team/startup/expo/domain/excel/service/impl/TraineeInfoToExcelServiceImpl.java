@@ -62,14 +62,22 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             // 기본 헤더
             List<String> headers = new ArrayList<>(List.of("이름", "연수원아이디", "전화번호", "신청방식"));
 
-            String escapedJson = traineeList.get(0).getInformationJson();
-
-            String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
-            Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
-            Set<String> dynamicKeys = new LinkedHashSet<>(jsonMap.keySet());
+            // 모든 Trainee의 JSON key를 모아서 dynamicKeys 생성
+            Set<String> dynamicKeys = new LinkedHashSet<>();
+            for (Trainee trainee : traineeList) {
+                String escapedJson = trainee.getInformationJson();
+                if (escapedJson != null) {
+                    try {
+                        String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
+                        Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
+                        dynamicKeys.addAll(jsonMap.keySet());
+                    } catch (Exception ignored) {}
+                }
+            }
 
             headers.addAll(dynamicKeys);
 
+            // 헤더 생성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
@@ -85,14 +93,23 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
                 row.createCell(2).setCellValue(trainee.getPhoneNumber());
                 row.createCell(3).setCellValue(trainee.getApplicationType().toString());
 
-                // JSON 데이터를 엑셀에 추가
+                Map<String, String> jsonMap = new HashMap<>();
+                String escapedJson = trainee.getInformationJson();
+                if (escapedJson != null) {
+                    try {
+                        String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
+                        jsonMap = objectMapper.readValue(unescapedJson, Map.class);
+                    } catch (Exception ignored) {}
+                }
+
                 int cellIndex = 4;
-                for (String key : jsonMap.keySet()) {
-                    row.createCell(cellIndex++).setCellValue(jsonMap.get(key));
+                for (String key : dynamicKeys) {
+                    String value = jsonMap.getOrDefault(key, "");
+                    row.createCell(cellIndex++).setCellValue(value);
                 }
             }
 
-            String fileName = "Trainee Information";
+            String fileName = "Trainee_Information";
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
 
