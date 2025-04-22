@@ -60,13 +60,13 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
             // 기본 헤더
-            List<String> headers = new ArrayList<>(List.of("이름", "전화번호", "소속", "학교급", "학교 이름", "개인정보 동의 여부", "신청 방식"));
+            List<String> headers = new ArrayList<>(List.of("이름", "전화번호", "개인정보 동의 여부", "신청 방식"));
 
-            String escapedJson = standardParticipantList.get(0).getInformationJson();
+            String headerJson = standardParticipantList.get(0).getInformationJson();
 
-            String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
-            Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
-            Set<String> dynamicKeys = new LinkedHashSet<>(jsonMap.keySet());
+            String unescapedHeaderJson = StringEscapeUtils.unescapeJson(headerJson);
+            Map<String, String> headerJsonMap = objectMapper.readValue(unescapedHeaderJson, Map.class);
+            Set<String> dynamicKeys = new LinkedHashSet<>(headerJsonMap.keySet());
 
             headers.addAll(dynamicKeys);
 
@@ -80,23 +80,27 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             int rowCount = 1;
             for (StandardParticipant participant : standardParticipantList) {
                 Row row = sheet.createRow(rowCount++);
-                Cell cell3 = row.createCell(3);
-                Cell cell6 = row.createCell(6);
 
-                switch (participant.getApplicationType()) { // 신청방식 Enum 구분
-                    case PRE -> cell6.setCellValue("사전신청");
-                    case FIELD -> cell6.setCellValue("현장신청");
-                }
                 row.createCell(0).setCellValue(participant.getName());
                 row.createCell(1).setCellValue(participant.getPhoneNumber());
                 row.createCell(2).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
 
-                // JSON 데이터를 엑셀에 추가
-                int cellIndex = 7;
-                for (String key : jsonMap.keySet()) {
-                    row.createCell(cellIndex++).setCellValue(jsonMap.get(key));
+                Cell cell3 = row.createCell(3);
+                switch (participant.getApplicationType()) {
+                    case PRE -> cell3.setCellValue("사전신청");
+                    case FIELD -> cell3.setCellValue("현장신청");
+                }
+
+                String escapedJson = participant.getInformationJson();
+                String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
+                Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
+
+                int cellIndex = 4;
+                for (String key : dynamicKeys) {
+                    row.createCell(cellIndex++).setCellValue(jsonMap.getOrDefault(key, ""));
                 }
             }
+
 
             String fileName = "Participant Information";
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
