@@ -17,6 +17,8 @@ import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
+import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
+import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.*;
@@ -28,6 +30,7 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
+    private final StandardParticipantSurveyAnswerRepository standardParticipantSurveyAnswerRepository;
 
     public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
         try {
@@ -36,10 +39,26 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
 
             List<StandardParticipant> standardParticipantList = standardParticipantRepository.findByExpo(expo);
 
+            if (standardParticipantList.isEmpty()) {
+                throw new RuntimeException("참가자 정보가 존재하지 않습니다.");
+            }
+
+            List<Long> standardParticipantIds =
+                    standardParticipantList.stream().map(StandardParticipant::getId).toList();
+
+            List<StandardParticipantSurveyAnswer> standardParticipantSurveyAnswerList =
+                    standardParticipantSurveyAnswerRepository.findStandardParticipantSurveyAnswersByStandardParticipantIds(standardParticipantIds);
+
+            Map<Long, StandardParticipantSurveyAnswer> participantSurveyAnswerMap = new HashMap<>();
+            for (StandardParticipantSurveyAnswer answer : standardParticipantSurveyAnswerList) {
+                participantSurveyAnswerMap.put(answer.getStandardParticipant().getId(), answer);
+            }
+
             Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("박람회 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
+            // 스타일 설정
             XSSFFont headerFont = (XSSFFont) workbook.createFont();
             headerFont.setBold(true);
             headerFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}));
@@ -59,17 +78,23 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             bodyStyle.setBorderLeft(BorderStyle.THIN);
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
-            // 기본 헤더
+            // 헤더 설정
             List<String> headers = new ArrayList<>(List.of("이름", "전화번호", "개인정보 동의 여부", "신청 방식"));
 
-            String headerJson = standardParticipantList.get(0).getInformationJson();
+            String infoHeaderJson = standardParticipantList.get(0).getInformationJson();
+            String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
+            Map<String, String> infoHeaderJsonMap = objectMapper.readValue(unescapedInfoHeaderJson, Map.class);
+            Set<String> infoDynamicKeys = new LinkedHashSet<>(infoHeaderJsonMap.keySet());
 
-            String unescapedHeaderJson = StringEscapeUtils.unescapeJson(headerJson);
-            Map<String, String> headerJsonMap = objectMapper.readValue(unescapedHeaderJson, Map.class);
-            Set<String> dynamicKeys = new LinkedHashSet<>(headerJsonMap.keySet());
+            String surveyHeaderJson = participantSurveyAnswerMap.get(standardParticipantList.get(0).getId()).getAnswerJson();
+            String unescapedSurveyHeaderJson = StringEscapeUtils.unescapeJson(surveyHeaderJson);
+            Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(unescapedSurveyHeaderJson, Map.class);
+            Set<String> surveyDynamicKeys = new LinkedHashSet<>(surveyHeaderJsonMap.keySet());
 
-            headers.addAll(dynamicKeys);
+            headers.addAll(infoDynamicKeys);
+            headers.addAll(surveyDynamicKeys);
 
+            // 실제 엑셀 작성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
@@ -81,28 +106,46 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             for (StandardParticipant participant : standardParticipantList) {
                 Row row = sheet.createRow(rowCount++);
 
-                row.createCell(0).setCellValue(participant.getName());
-                row.createCell(1).setCellValue(participant.getPhoneNumber());
-                row.createCell(2).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+                int cellIndex = 0;
 
-                Cell cell3 = row.createCell(3);
+                // 기본 정보
+                row.createCell(cellIndex++).setCellValue(participant.getName());
+                row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
+                row.createCell(cellIndex++).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+
+                Cell applyTypeCell = row.createCell(cellIndex++);
                 switch (participant.getApplicationType()) {
-                    case PRE -> cell3.setCellValue("사전신청");
-                    case FIELD -> cell3.setCellValue("현장신청");
+                    case PRE -> applyTypeCell.setCellValue("사전신청");
+                    case FIELD -> applyTypeCell.setCellValue("현장신청");
                 }
 
-                String escapedJson = participant.getInformationJson();
-                String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
-                Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
+                String escapedInfoJson = participant.getInformationJson();
+                String unescapedInfoJson = StringEscapeUtils.unescapeJson(escapedInfoJson);
+                Map<String, String> infoJsonMap = objectMapper.readValue(unescapedInfoJson, Map.class);
 
-                int cellIndex = 4;
-                for (String key : dynamicKeys) {
-                    row.createCell(cellIndex++).setCellValue(jsonMap.getOrDefault(key, ""));
+                for (String key : infoDynamicKeys) {
+                    row.createCell(cellIndex++).setCellValue(infoJsonMap.getOrDefault(key, ""));
+                }
+
+                StandardParticipantSurveyAnswer surveyAnswer = participantSurveyAnswerMap.get(participant.getId());
+                if (surveyAnswer != null) {
+                    String escapedAnswerJson = surveyAnswer.getAnswerJson();
+                    String unescapedAnswerJson = StringEscapeUtils.unescapeJson(escapedAnswerJson);
+                    Map<String, String> answerJsonMap = objectMapper.readValue(unescapedAnswerJson, Map.class);
+
+                    for (String key : surveyDynamicKeys) {
+                        row.createCell(cellIndex++).setCellValue(answerJsonMap.getOrDefault(key, ""));
+                    }
+                } else {
+                    for (int i = 0; i < surveyDynamicKeys.size(); i++) {
+                        row.createCell(cellIndex++).setCellValue("");
+                    }
                 }
             }
 
+            // 파일명 설정
+            String fileName = "Participant_Information";
 
-            String fileName = "Participant Information";
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
 
@@ -110,7 +153,7 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             workbook.write(outputStream);
             workbook.close();
         } catch (Exception e) {
-            throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage());
+            throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage(), e);
         }
     }
 }
