@@ -52,7 +52,7 @@ public class SendQrEventHandler {
     private final TraineeRepository traineeRepository;
     private final SmsProperties smsProperties;
 
-    @Async
+    @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<SingleMessageSentResponse> sendQrHandler(SendQrEvent sendQrEvent) {
         SingleMessageSentResponse response = null;
