@@ -51,8 +51,8 @@ public class EnterSmsEventHandler {
                 StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(event.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundParticipantException::new);
 
-                String information = "2025 AI•SW체험축전 설문조사 바로가기 \n 2025 광주AISW체험축전을 방문해주셔서 감사합니다.\n" +
-                        "클릭하면 체험 후 꼭 설문에 응답해주세요. ==> https://startup-expo.kr/application/" + expo.getId()
+                String information = "2025 AI•SW체험축전 설문조사 \n 2025 광주AI•SW체험축전을 방문해주셔서 감사합니다. " +
+                        "체험 후 꼭 설문에 응답해주세요. ==> https://startup-expo.kr/application/" + expo.getId()
                         + "?formType=survey&userType=STANDARD&applicationType=register&name=" + participant.getName() + "&phoneNumber=" + participant.getPhoneNumber();
 
                 Message message = createMessage(event, information);
