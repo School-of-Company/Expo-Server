@@ -37,6 +37,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
         return ApplicationTemporaryQrResponseDto.builder()
                 .participantId(standardParticipant.getId())
                 .phoneNumber(standardParticipant.getPhoneNumber())
+                .expoId(expo.getId())
                 .build();
     }
 

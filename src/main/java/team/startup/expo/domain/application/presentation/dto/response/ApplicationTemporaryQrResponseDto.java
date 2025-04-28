@@ -8,4 +8,5 @@ import lombok.Getter;
 public class ApplicationTemporaryQrResponseDto {
     private Long participantId;
     private String phoneNumber;
+    private String expoId;
 }
