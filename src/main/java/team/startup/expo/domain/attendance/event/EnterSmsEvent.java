@@ -6,7 +6,7 @@ import team.startup.expo.domain.admin.entity.Authority;
 
 @Getter
 @AllArgsConstructor
-public class LeaveSmsEvent {
+public class EnterSmsEvent {
     private String expoId;
     private String phoneNumber;
     private Authority authority;

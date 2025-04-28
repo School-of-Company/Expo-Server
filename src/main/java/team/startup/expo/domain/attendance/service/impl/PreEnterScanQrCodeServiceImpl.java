@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.attendance.entity.LeaveManager;
-import team.startup.expo.domain.attendance.event.LeaveSmsEvent;
-import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
+import team.startup.expo.domain.attendance.event.EnterSmsEvent;
 import team.startup.expo.domain.attendance.exception.NotEnterAfterThirtySecondException;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
@@ -29,7 +28,6 @@ import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -92,6 +90,8 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                     .build();
 
             leaveManagerRepository.save(leaveManager);
+
+            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), standardParticipant.getPhoneNumber(), Authority.ROLE_STANDARD));
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
@@ -131,6 +131,8 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
                     .build();
 
             leaveManagerRepository.save(leaveManager);
+
+            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), trainee.getPhoneNumber(), Authority.ROLE_TRAINEE));
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
