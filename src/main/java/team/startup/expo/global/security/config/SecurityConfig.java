@@ -132,7 +132,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/application/pre-standard/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/application/field/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/application/field/standard/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/application/field/temporary/{expo_id}").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/application/field/temporary/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // form
                                 .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
