@@ -124,6 +124,7 @@ public class SendQrEventHandler {
             message.setFrom(smsProperties.getFromNumber());
             message.setTo(sendQrEvent.getPhoneNumber());
             message.setText("QR 코드가 포함된 메시지입니다.");
+
             message.setImageId(imageId);
 
             return message;

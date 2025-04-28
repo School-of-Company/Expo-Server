@@ -3,13 +3,10 @@ package team.startup.expo.domain.attendance.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
-import team.startup.expo.domain.attendance.entity.LeaveManager;
-import team.startup.expo.domain.attendance.event.LeaveSmsEvent;
+import team.startup.expo.domain.attendance.event.EnterSmsEvent;
 import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
-import team.startup.expo.domain.attendance.exception.NotEnterAfterThirtySecondException;
 import team.startup.expo.domain.attendance.presentation.dto.request.PreEnterScanQrCodeRequestDto;
 import team.startup.expo.domain.attendance.presentation.dto.response.PreEnterScanQrCodeResponseDto;
-import team.startup.expo.domain.attendance.repository.LeaveManagerRepository;
 import team.startup.expo.domain.attendance.service.PreEnterScanQrCodeService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
@@ -29,7 +26,6 @@ import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -44,7 +40,6 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
     private final TraineeParticipationRepository traineeParticipationRepository;
     private final StandardParticipantParticipationRepository standardParticipantParticipationRepository;
     private final DateUtil dateUtil;
-    private final LeaveManagerRepository leaveManagerRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public PreEnterScanQrCodeResponseDto execute(String expoId, PreEnterScanQrCodeRequestDto dto) {
@@ -71,21 +66,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         Optional<StandardParticipantParticipation> standardParticipantParticipation =
                 standardParticipantParticipationRepository.findByExpoAndStandardParticipantAndAttendanceDateForWrite(expo, standardParticipant, LocalDate.now());
 
-        if (leaveManagerRepository.existsById(standardParticipant.getPhoneNumber())) {
-            throw new NotEnterAfterThirtySecondException();
-        }
-
-        if (standardParticipantParticipation.isPresent()) {
-            StandardParticipantParticipation getStandardParticipantParticipation = standardParticipantParticipation.get();
-
-            if (getStandardParticipantParticipation.getLeaveTime() != null)
-                throw new AlreadyEnterExpoUserException();
-
-            getStandardParticipantParticipation.addLeaveTime();
-
-            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(),
-                    getStandardParticipantParticipation.getStandardParticipant().getPhoneNumber(), Authority.ROLE_STANDARD));
-        } else {
+        if (standardParticipantParticipation.isEmpty()) {
             StandardParticipantParticipation newStandardParticipantParticipation = StandardParticipantParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())
@@ -95,13 +76,9 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
             standardParticipantParticipationRepository.save(newStandardParticipantParticipation);
 
-            LeaveManager leaveManager = LeaveManager.builder()
-                    .phoneNumber(standardParticipant.getPhoneNumber())
-                    .expoId(expo.getId())
-                    .participationType(ParticipationType.STANDARD)
-                    .build();
-
-            leaveManagerRepository.save(leaveManager);
+            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), standardParticipant.getPhoneNumber(), Authority.ROLE_STANDARD));
+        } else {
+            throw new AlreadyEnterExpoUserException();
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
@@ -120,20 +97,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         Optional<TraineeParticipation> traineeParticipation =
                 traineeParticipationRepository.findByExpoAndTraineeAndAttendanceDateForWrite(expo, trainee, LocalDate.now());
 
-        if (leaveManagerRepository.existsById(trainee.getPhoneNumber())) {
-            throw new NotEnterAfterThirtySecondException();
-        }
-
-        if (traineeParticipation.isPresent()) {
-            TraineeParticipation getTraineeParticipation = traineeParticipation.get();
-
-            if (getTraineeParticipation.getLeaveTime() != null)
-                throw new AlreadyEnterExpoUserException();
-
-            getTraineeParticipation.addLeaveTime();
-
-            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(), getTraineeParticipation.getTrainee().getPhoneNumber(), Authority.ROLE_TRAINEE));
-        } else {
+        if (traineeParticipation.isEmpty()) {
             TraineeParticipation newTraineeParticipation = TraineeParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())
@@ -143,13 +107,9 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
 
             traineeParticipationRepository.save(newTraineeParticipation);
 
-            LeaveManager leaveManager = LeaveManager.builder()
-                    .phoneNumber(trainee.getPhoneNumber())
-                    .expoId(expo.getId())
-                    .participationType(ParticipationType.TRAINEE)
-                    .build();
-
-            leaveManagerRepository.save(leaveManager);
+            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), trainee.getPhoneNumber(), Authority.ROLE_TRAINEE));
+        } else {
+            throw new AlreadyEnterExpoUserException();
         }
 
         return PreEnterScanQrCodeResponseDto.builder()
