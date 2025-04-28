@@ -75,17 +75,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
             throw new NotEnterAfterThirtySecondException();
         }
 
-        if (standardParticipantParticipation.isPresent()) {
-            StandardParticipantParticipation getStandardParticipantParticipation = standardParticipantParticipation.get();
-
-            if (getStandardParticipantParticipation.getLeaveTime() != null)
-                throw new AlreadyEnterExpoUserException();
-
-            getStandardParticipantParticipation.addLeaveTime();
-
-            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(),
-                    getStandardParticipantParticipation.getStandardParticipant().getPhoneNumber(), Authority.ROLE_STANDARD));
-        } else {
+        if (standardParticipantParticipation.isEmpty()) {
             StandardParticipantParticipation newStandardParticipantParticipation = StandardParticipantParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())
@@ -124,16 +114,7 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
             throw new NotEnterAfterThirtySecondException();
         }
 
-        if (traineeParticipation.isPresent()) {
-            TraineeParticipation getTraineeParticipation = traineeParticipation.get();
-
-            if (getTraineeParticipation.getLeaveTime() != null)
-                throw new AlreadyEnterExpoUserException();
-
-            getTraineeParticipation.addLeaveTime();
-
-            applicationEventPublisher.publishEvent(new LeaveSmsEvent(expo.getId(), getTraineeParticipation.getTrainee().getPhoneNumber(), Authority.ROLE_TRAINEE));
-        } else {
+        if (traineeParticipation.isEmpty()) {
             TraineeParticipation newTraineeParticipation = TraineeParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())

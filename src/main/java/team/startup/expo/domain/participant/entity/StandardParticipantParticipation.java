@@ -27,8 +27,6 @@ public class StandardParticipantParticipation {
     @Column(nullable = false)
     private LocalDateTime entryTime;
 
-    private LocalDateTime leaveTime;
-
     @Column(nullable = false)
     private LocalDate attendanceDate;
 
@@ -41,8 +39,4 @@ public class StandardParticipantParticipation {
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
-
-    public void addLeaveTime() {
-        this.leaveTime = LocalDateTime.now();
-    }
 }
