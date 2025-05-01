@@ -34,8 +34,14 @@ public class Survey {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
 
+    private Integer totalAnswers;
+
     public void update(String informationText) {
         this.informationText = informationText;
+    }
+
+    public void plusTotalAnswer() {
+        this.totalAnswers++;
     }
 }
 

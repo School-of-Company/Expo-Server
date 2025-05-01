@@ -38,7 +38,7 @@ public class EnterSmsEventHandler {
     private final StandardParticipantRepository standardParticipantRepository;
     private final TraineeRepository traineeRepository;
 
-    @Async
+    @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<SingleMessageSentResponse> sendLeaveSmsHandler(EnterSmsEvent event) {
         SingleMessageSentResponse response = null;

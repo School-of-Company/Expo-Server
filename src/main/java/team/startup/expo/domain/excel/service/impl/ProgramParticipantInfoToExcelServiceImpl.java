@@ -40,7 +40,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             List<StandardParticipant> standardParticipants = standardProgramUsers.stream().map(StandardProgramUser::getStandardParticipant).toList();
 
             Workbook workbook = new XSSFWorkbook();
-            Sheet sheet = workbook.createSheet("박람회 참가자 정보");
+            Sheet sheet = workbook.createSheet("프로그램 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
             // 스타일 설정
@@ -64,7 +64,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
             // 헤더 설정
-            List<String> headers = new ArrayList<>(List.of("이름", "전화번호", "개인정보 동의 여부"));
+            List<String> headers = new ArrayList<>(List.of("순위", "이름", "전화번호", "개인정보 동의 여부"));
 
             String infoHeaderJson = standardParticipants.get(0).getInformationJson();
             String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
@@ -73,7 +73,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
 
             headers.addAll(infoDynamicKeys);
 
-            Set<String> additionHeader = Set.of("학번", "비고");
+            List<String> additionHeader = new ArrayList<>(List.of("학번", "서명", "비고"));
             headers.addAll(additionHeader);
 
             Row headerRow = sheet.createRow(0);
@@ -87,7 +87,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             for (StandardParticipant participant : standardParticipants) {
                 Row row = sheet.createRow(rowCount++);
 
-                int cellIndex = 0;
+                int cellIndex = 1;
 
                 // 기본 정보
                 row.createCell(cellIndex++).setCellValue(participant.getName());
