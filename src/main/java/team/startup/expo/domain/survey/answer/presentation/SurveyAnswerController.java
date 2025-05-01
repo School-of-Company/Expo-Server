@@ -2,11 +2,11 @@ package team.startup.expo.domain.survey.answer.presentation;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.survey.answer.presentation.dto.request.SurveyAnswerRequestDto;
-import team.startup.expo.domain.survey.answer.presentation.dto.response.StandardSurveyAnswerResponseDto;
 import team.startup.expo.domain.survey.answer.service.StandardSurveyAnswerService;
 import team.startup.expo.domain.survey.answer.service.TraineeSurveyAnswerService;
 
@@ -19,9 +19,9 @@ public class SurveyAnswerController {
     private final TraineeSurveyAnswerService traineeSurveyAnswerService;
 
     @PostMapping("/standard/{expo_id}")
-    public ResponseEntity<StandardSurveyAnswerResponseDto> standardSurveyAnswer(@PathVariable("expo_id") String expoId, @Valid @RequestBody SurveyAnswerRequestDto dto) {
-        StandardSurveyAnswerResponseDto response = standardSurveyAnswerService.execute(expoId, dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<Void> standardSurveyAnswer(@PathVariable("expo_id") String expoId, @Valid @RequestBody SurveyAnswerRequestDto dto) {
+        standardSurveyAnswerService.execute(expoId, dto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/trainee/{expo_id}")
