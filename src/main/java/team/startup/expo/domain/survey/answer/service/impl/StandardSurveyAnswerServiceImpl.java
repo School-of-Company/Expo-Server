@@ -1,6 +1,7 @@
 package team.startup.expo.domain.survey.answer.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
@@ -10,9 +11,9 @@ import team.startup.expo.domain.participant.repository.StandardParticipantReposi
 import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.survey.answer.entity.Draw;
 import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
+import team.startup.expo.domain.survey.answer.event.SendDrawResultEvent;
 import team.startup.expo.domain.survey.answer.exception.AlreadyExistSurveyAnswerException;
 import team.startup.expo.domain.survey.answer.presentation.dto.request.SurveyAnswerRequestDto;
-import team.startup.expo.domain.survey.answer.presentation.dto.response.StandardSurveyAnswerResponseDto;
 import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.domain.survey.answer.service.StandardSurveyAnswerService;
 import team.startup.expo.domain.survey.management.entity.Survey;
@@ -28,8 +29,9 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
     private final StandardParticipantRepository participantRepository;
     private final ExpoRepository expoRepository;
     private final SurveyRepository surveyRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public StandardSurveyAnswerResponseDto execute(String expoId, SurveyAnswerRequestDto dto) {
+    public void execute(String expoId, SurveyAnswerRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
@@ -41,8 +43,7 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
 
         saveSurveyAnswer(dto, standardParticipant);
 
-        return processDraw(expo);
-
+        processDraw(expo, standardParticipant);
     }
 
     private void saveSurveyAnswer(
@@ -65,7 +66,7 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
 
     }
 
-    private StandardSurveyAnswerResponseDto processDraw(Expo expo) {
+    private void processDraw(Expo expo, StandardParticipant standardParticipant) {
         Survey survey = surveyRepository.findByExpoAndParticipationType(expo, ParticipationType.STANDARD)
                 .orElseThrow(NotFoundSurveyException::new);
 
@@ -75,26 +76,11 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
 
         int nowNumber = survey.getTotalAnswers();
 
-        StandardSurveyAnswerResponseDto responseDto = null;
         for (Draw draw : Draw.values()) {
             if (draw.getNumber().equals(nowNumber)) {
-                responseDto = StandardSurveyAnswerResponseDto.builder()
-                        .drawStatus(true)
-                        .drawNumber(draw.getNumber())
-                        .drawReason(draw.getReason())
-                        .build();
+                applicationEventPublisher.publishEvent(
+                        new SendDrawResultEvent(standardParticipant.getPhoneNumber(),draw.getNumber()));
             }
         }
-
-        if (responseDto == null) {
-            responseDto = StandardSurveyAnswerResponseDto.builder()
-                    .drawStatus(false)
-                    .drawNumber(nowNumber)
-                    .drawReason("아쉽게 행운의 숫자에 당첨되지 않았습니다.")
-                    .build();
-        }
-
-        return responseDto;
-
     }
 }
