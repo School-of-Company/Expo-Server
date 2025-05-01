@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin 080606613505.dkr.ecr.ap-northeast-2.amazonaws.com
+      - REPOSITORY_URI=080606613505.dkr.ecr.ap-northeast-2.amazonaws.com/expo-ecr
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t $REPOSITORY_URI:lastest . --no-cache
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:lastest
+      - export IMAGE_URI=$(cat imageDetail.json | jq -r '.[0].imageUri')
+      - echo "[{\"name\":\"expo-container\",\"imageUri\":\"$IMAGE_URI\"}]" > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinition.json
