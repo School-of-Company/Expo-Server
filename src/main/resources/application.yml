@@ -35,7 +35,8 @@ cloud:
     region:
       static: ${AWS_STATIC}
     s3:
-      bucket: ${AWS_S3_BUCKET}
+      image-bucket: ${AWS_S3_IMAGE_BUCKET}
+      qr-bucket: ${AWS_S3_QR_BUCKET}
     stack:
       auto: false
 

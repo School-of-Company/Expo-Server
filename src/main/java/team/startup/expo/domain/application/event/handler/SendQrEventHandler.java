@@ -8,7 +8,6 @@ import com.google.zxing.common.BitMatrix;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.model.StorageType;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
@@ -30,6 +29,7 @@ import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
 import team.startup.expo.global.sms.SmsProperties;
+import team.startup.expo.global.thirdparty.aws.S3Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -51,6 +51,7 @@ public class SendQrEventHandler {
     private final DefaultMessageService messageService;
     private final TraineeRepository traineeRepository;
     private final SmsProperties smsProperties;
+    private final S3Util s3Util;
 
     @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -113,19 +114,15 @@ public class SendQrEventHandler {
             Files.write(tempFilePath, qrBytes);
             File tempFile = tempFilePath.toFile();
 
-            String imageId;
-            try {
-                imageId = messageService.uploadFile(tempFile, StorageType.MMS, null);
-            } finally {
-                tempFile.delete();
-            }
+            String objectUrl = s3Util.qrUpload(tempFile);
 
             Message message = new Message();
             message.setFrom(smsProperties.getFromNumber());
             message.setTo(sendQrEvent.getPhoneNumber());
-            message.setText("QR 코드가 포함된 메시지입니다.");
-
-            message.setImageId(imageId);
+            message.setText("2025 AI·SW체험축전 사전 등록 완료\n" +
+                    "2025 광주광역시교육청 AI·SW체험축전 사전 등록이 완료되었습니다. 링크 클릭 시 출입 QR코드로 연결됩니다. 감사합니다. ⇒ \n" +
+                    objectUrl +
+                    " ★☆ 행사장 입장 시각: 9시  (문의) ☎062-380-4769");
 
             return message;
         } catch (IOException e) {}
