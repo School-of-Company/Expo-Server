@@ -62,7 +62,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
 
     public String generateUniquePhoneNumber() {
         String temporaryPhoneNumber = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8);
-        return "000-" + temporaryPhoneNumber.substring(0, 4) + "-" + temporaryPhoneNumber.substring(4);
+        return "000" + temporaryPhoneNumber.substring(0, 4) + temporaryPhoneNumber.substring(4);
     }
 
 }
