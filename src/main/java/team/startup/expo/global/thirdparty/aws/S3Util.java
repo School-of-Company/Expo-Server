@@ -54,7 +54,6 @@ public class S3Util {
 
     public String qrUpload(File image) throws IOException {
         String filename = image.getName();
-
         String[] splitFile = filename.split("\\.");
 
         if (splitFile.length != 2)
@@ -66,13 +65,17 @@ public class S3Util {
         if (allowedExtensions.stream().noneMatch(it -> it.equals(extension)))
             throw new FileExtensionInvalidException();
 
-        String profileName = qrBucket + "/" + UUID.randomUUID() + filename;
+        String savedFileName = UUID.randomUUID() + filename;
+        String objectKey = qrBucket + "/" + savedFileName;
+
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(Files.size(image.toPath()));
         metadata.setContentType("image/" + extension);
 
-        amazonS3.putObject(qrBucket, profileName, new FileInputStream(image), metadata);
-        return amazonS3.getUrl(qrBucket, profileName).toString();
+        amazonS3.putObject(qrBucket, objectKey, new FileInputStream(image), metadata);
+
+        return savedFileName;
+
     }
 
 
