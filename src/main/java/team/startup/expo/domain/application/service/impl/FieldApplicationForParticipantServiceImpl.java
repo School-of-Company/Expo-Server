@@ -42,6 +42,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
 
 
         saveParticipant(expo, dto);
+        expo.plusApplicationPerson();
 
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));

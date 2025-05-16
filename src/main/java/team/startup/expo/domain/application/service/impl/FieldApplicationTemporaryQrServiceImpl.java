@@ -34,6 +34,8 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
 
         StandardParticipant standardParticipant = saveParticipant(expo, dto);
 
+        expo.plusApplicationPerson();
+
         return ApplicationTemporaryQrResponseDto.builder()
                 .participantId(standardParticipant.getId())
                 .phoneNumber(standardParticipant.getPhoneNumber())
