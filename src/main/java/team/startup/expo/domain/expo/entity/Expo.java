@@ -42,4 +42,18 @@ public class Expo {
 
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String y;
+
+    @Column(nullable = false)
+    private Long applicationPerson;
+
+    @Column(nullable = false)
+    private Long yesterdayApplicationPerson;
+
+    public void saveYesterdayApplicationPerson(Long person) {
+        yesterdayApplicationPerson = person;
+    }
+
+    public void plusApplicationPerson() {
+        applicationPerson++;
+    }
 }
