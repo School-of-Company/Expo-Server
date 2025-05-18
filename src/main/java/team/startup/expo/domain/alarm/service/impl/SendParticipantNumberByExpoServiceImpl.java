@@ -37,13 +37,13 @@ public class SendParticipantNumberByExpoServiceImpl implements SendParticipantNu
             yesterdayPersonField.add("value", new JsonPrimitive(expo.getYesterdayApplicationPerson()));
 
             JsonObject nowPersonField = new JsonObject();
-            nowPersonField.add("name", new JsonPrimitive(LocalDate.now() + " 기준 현재 박람회 등록 인원"));
+            nowPersonField.add("name", new JsonPrimitive(LocalDate.now() + " 박람회 등록 인원"));
             nowPersonField.add("value", new JsonPrimitive(expo.getApplicationPerson()));
 
             String yesterdayAndTodayPersonDifference = String.valueOf(expo.getApplicationPerson() - expo.getYesterdayApplicationPerson());
 
             JsonObject yesterdayAndTodayPersonDifferenceField = new JsonObject();
-            yesterdayAndTodayPersonDifferenceField.add("name", new JsonPrimitive("현재 어제와 등록 인원 차이"));
+            yesterdayAndTodayPersonDifferenceField.add("name", new JsonPrimitive("추가 등록 인원"));
             yesterdayAndTodayPersonDifferenceField.add("value", new JsonPrimitive("+" + yesterdayAndTodayPersonDifference));
 
             JsonArray fields = new JsonArray();
