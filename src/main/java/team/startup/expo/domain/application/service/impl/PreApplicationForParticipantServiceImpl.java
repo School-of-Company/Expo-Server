@@ -57,7 +57,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                         .phoneNumber(dto.getPhoneNumber())
                         .authority(Authority.ROLE_STANDARD)
                         .informationJson(dto.getInformationJson())
-                        .applicationType(ApplicationType.FIELD)
+                        .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .build());
