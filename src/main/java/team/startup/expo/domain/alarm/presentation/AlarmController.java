@@ -13,13 +13,13 @@ public class AlarmController {
     private final SendParticipantNumberByExpoService sendParticipantNumberByExpoService;
     private final SaveYesterdayPersonService saveYesterdayPersonService;
 
-    @Scheduled(cron = "0 0 8,12,16,20 * * *")
+    @Scheduled(cron = "0 0 * * * *", zone = "Asia/Seoul")
     public void sendParticipantNumberByExpo() {
         sendParticipantNumberByExpoService.execute();
     }
 
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void saveYesterdayPerson() {
         saveYesterdayPersonService.execute();
     }
