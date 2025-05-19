@@ -42,6 +42,7 @@ cloud:
 
 discord:
   errorUrl: ${DISCORD_ERROR_URL}
+  participantNumberUrl: ${DISCORD_PARTICIPANT_URL}
 
 management:
   endpoints:

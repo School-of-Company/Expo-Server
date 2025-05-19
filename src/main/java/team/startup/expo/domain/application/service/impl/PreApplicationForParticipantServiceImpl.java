@@ -41,6 +41,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
             throw new AlreadyApplicationUserException();
 
         saveParticipant(expo, dto);
+        expo.plusApplicationPerson();
 
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
@@ -56,7 +57,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                         .phoneNumber(dto.getPhoneNumber())
                         .authority(Authority.ROLE_STANDARD)
                         .informationJson(dto.getInformationJson())
-                        .applicationType(ApplicationType.FIELD)
+                        .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .build());

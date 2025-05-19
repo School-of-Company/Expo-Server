@@ -9,4 +9,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("discord")
 public class DiscordProperties {
     private final String errorURL;
+    private final String participantNumberURL;
 }

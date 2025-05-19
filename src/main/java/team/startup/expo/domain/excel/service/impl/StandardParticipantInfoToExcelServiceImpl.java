@@ -58,7 +58,6 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             Sheet sheet = workbook.createSheet("박람회 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
-            // 스타일 설정
             XSSFFont headerFont = (XSSFFont) workbook.createFont();
             headerFont.setBold(true);
             headerFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}));
@@ -78,23 +77,29 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             bodyStyle.setBorderLeft(BorderStyle.THIN);
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
-            // 헤더 설정
             List<String> headers = new ArrayList<>(List.of("이름", "전화번호", "개인정보 동의 여부", "신청 방식"));
 
-            String infoHeaderJson = standardParticipantList.get(0).getInformationJson();
-            String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
-            Map<String, String> infoHeaderJsonMap = objectMapper.readValue(unescapedInfoHeaderJson, Map.class);
-            Set<String> infoDynamicKeys = new LinkedHashSet<>(infoHeaderJsonMap.keySet());
+            StandardParticipant firstParticipant = standardParticipantList.get(0);
 
-            String surveyHeaderJson = participantSurveyAnswerMap.get(standardParticipantList.get(0).getId()).getAnswerJson();
-            String unescapedSurveyHeaderJson = StringEscapeUtils.unescapeJson(surveyHeaderJson);
-            Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(unescapedSurveyHeaderJson, Map.class);
-            Set<String> surveyDynamicKeys = new LinkedHashSet<>(surveyHeaderJsonMap.keySet());
+            Set<String> infoDynamicKeys = new LinkedHashSet<>();
+            String infoHeaderJson = firstParticipant.getInformationJson();
+            if (infoHeaderJson != null) {
+                String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
+                Map<String, String> infoHeaderJsonMap = objectMapper.readValue(unescapedInfoHeaderJson, Map.class);
+                infoDynamicKeys.addAll(infoHeaderJsonMap.keySet());
+            }
+
+            Set<String> surveyDynamicKeys = new LinkedHashSet<>();
+            StandardParticipantSurveyAnswer firstAnswer = participantSurveyAnswerMap.get(firstParticipant.getId());
+            if (firstAnswer != null && firstAnswer.getAnswerJson() != null) {
+                String unescapedSurveyHeaderJson = StringEscapeUtils.unescapeJson(firstAnswer.getAnswerJson());
+                Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(unescapedSurveyHeaderJson, Map.class);
+                surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
+            }
 
             headers.addAll(infoDynamicKeys);
             headers.addAll(surveyDynamicKeys);
 
-            // 실제 엑셀 작성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
@@ -105,10 +110,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             int rowCount = 1;
             for (StandardParticipant participant : standardParticipantList) {
                 Row row = sheet.createRow(rowCount++);
-
                 int cellIndex = 0;
 
-                // 기본 정보
                 row.createCell(cellIndex++).setCellValue(participant.getName());
                 row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
                 row.createCell(cellIndex++).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
@@ -119,31 +122,29 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                     case FIELD -> applyTypeCell.setCellValue("현장신청");
                 }
 
+                Map<String, String> infoJsonMap = new HashMap<>();
                 String escapedInfoJson = participant.getInformationJson();
-                String unescapedInfoJson = StringEscapeUtils.unescapeJson(escapedInfoJson);
-                Map<String, String> infoJsonMap = objectMapper.readValue(unescapedInfoJson, Map.class);
+                if (escapedInfoJson != null) {
+                    String unescapedInfoJson = StringEscapeUtils.unescapeJson(escapedInfoJson);
+                    infoJsonMap = objectMapper.readValue(unescapedInfoJson, Map.class);
+                }
 
                 for (String key : infoDynamicKeys) {
                     row.createCell(cellIndex++).setCellValue(infoJsonMap.getOrDefault(key, ""));
                 }
 
+                Map<String, String> answerJsonMap = new HashMap<>();
                 StandardParticipantSurveyAnswer surveyAnswer = participantSurveyAnswerMap.get(participant.getId());
-                if (surveyAnswer != null) {
-                    String escapedAnswerJson = surveyAnswer.getAnswerJson();
-                    String unescapedAnswerJson = StringEscapeUtils.unescapeJson(escapedAnswerJson);
-                    Map<String, String> answerJsonMap = objectMapper.readValue(unescapedAnswerJson, Map.class);
+                if (surveyAnswer != null && surveyAnswer.getAnswerJson() != null) {
+                    String unescapedAnswerJson = StringEscapeUtils.unescapeJson(surveyAnswer.getAnswerJson());
+                    answerJsonMap = objectMapper.readValue(unescapedAnswerJson, Map.class);
+                }
 
-                    for (String key : surveyDynamicKeys) {
-                        row.createCell(cellIndex++).setCellValue(answerJsonMap.getOrDefault(key, ""));
-                    }
-                } else {
-                    for (int i = 0; i < surveyDynamicKeys.size(); i++) {
-                        row.createCell(cellIndex++).setCellValue("");
-                    }
+                for (String key : surveyDynamicKeys) {
+                    row.createCell(cellIndex++).setCellValue(answerJsonMap.getOrDefault(key, ""));
                 }
             }
 
-            // 파일명 설정
             String fileName = "Participant_Information";
 
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
