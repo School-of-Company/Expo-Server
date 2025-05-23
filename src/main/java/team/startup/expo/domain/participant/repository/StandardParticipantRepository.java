@@ -15,17 +15,12 @@ public interface StandardParticipantRepository extends JpaRepository<StandardPar
 
     Optional<StandardParticipant> findByPhoneNumberAndExpo(String phoneNumber, Expo expo);
 
-    void deleteByExpo(Expo expo);
-
     @Query("SELECT sp FROM StandardParticipant sp " +
-            "JOIN sp.expo e " +
-            "WHERE e = :expo " +
-            "AND sp.applicationType = :applicationType " +
-            "AND sp.name LIKE %:name%")
-    List<StandardParticipant> findByExpoAndApplicationTypeAndName(Expo expo, ApplicationType applicationType, String name);
+            "WHERE sp.phoneNumber = :phoneNumber " +
+            "AND sp.expo=:expo")
+    StandardParticipant findByPhoneNumberAndExpoForNullCheck(String phoneNumber, Expo expo);
 
-    List<StandardParticipant> findByExpoAndApplicationType(Expo expo, ApplicationType applicationType);
-
+    void deleteByExpo(Expo expo);
 
     Boolean existsByPhoneNumberAndExpo(String phoneNumber, Expo expo);
 
