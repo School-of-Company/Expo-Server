@@ -26,6 +26,7 @@ import team.startup.expo.domain.sms.exception.NotFoundParticipantException;
 import team.startup.expo.domain.sms.exception.NotFoundTraineeException;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
+import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
 import team.startup.expo.global.sms.SmsProperties;
@@ -41,6 +42,7 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@TransactionService
 public class SendQrEventHandler {
 
     private final static int WIDTH = 200;
@@ -70,6 +72,10 @@ public class SendQrEventHandler {
                 byte[] qrBytes = createQr(information);
 
                 Message message = createMessage(qrBytes, sendQrEvent);
+
+                participant.plusSmsTryTime();
+
+                standardParticipantRepository.save(participant);
 
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
             } else if (sendQrEvent.getAuthority() == Authority.ROLE_TRAINEE) {
