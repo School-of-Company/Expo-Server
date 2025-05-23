@@ -22,7 +22,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
     private static final String AUTHORITIES_KEY = "auth";
-    private static final long ACCESS_TOKEN_TIME = 60L * 15 * 4;
+    private static final long ACCESS_TOKEN_TIME = 60L * 60 * 24;
     public static final long REFRESH_TOKEN_TIME = 60L * 60 * 24 * 7;
 
     private final JwtProperties jwtProperties;

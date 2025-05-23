@@ -47,4 +47,11 @@ public class StandardParticipant {
     @JoinColumn(name = "expo_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Expo expo;
+
+    @Column(nullable = false)
+    private Integer smsTryTime;
+
+    public void plusSmsTryTime() {
+        smsTryTime++;
+    }
 }

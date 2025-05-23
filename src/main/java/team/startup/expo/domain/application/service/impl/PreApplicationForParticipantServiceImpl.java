@@ -37,11 +37,16 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
-            throw new AlreadyApplicationUserException();
+        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(dto.getPhoneNumber(), expo);
 
-        saveParticipant(expo, dto);
-        expo.plusApplicationPerson();
+        if (standardParticipant != null) {
+            if (standardParticipant.getSmsTryTime() >= 2) {
+                throw new AlreadyApplicationUserException();
+            }
+        } else {
+            saveParticipant(expo, dto);
+            expo.plusApplicationPerson();
+        }
 
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));

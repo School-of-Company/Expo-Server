@@ -26,7 +26,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
 
     private final ExpoRepository expoRepository;
     private final StandardParticipantRepository standardParticipantRepository;
-    private final TraineeRepository traineeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
 
@@ -37,12 +36,17 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
-            throw new AlreadyApplicationUserException();
+        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(dto.getPhoneNumber(), expo);
 
+        if (standardParticipant != null) {
+            if (standardParticipant.getSmsTryTime() >= 2) {
+                throw new AlreadyApplicationUserException();
+            }
+        } else {
+            saveParticipant(expo, dto);
+            expo.plusApplicationPerson();
+        }
 
-        saveParticipant(expo, dto);
-        expo.plusApplicationPerson();
 
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
