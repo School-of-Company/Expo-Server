@@ -21,6 +21,8 @@ import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAn
 import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @ReadOnlyTransactionService
@@ -32,14 +34,19 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
     private final ExpoRepository expoRepository;
     private final StandardParticipantSurveyAnswerRepository standardParticipantSurveyAnswerRepository;
 
-    // JSON 문자열 내부 개행문자 등 문제있는 문자 치환 함수
     private String sanitizeJson(String json) {
         if (json == null) return null;
+
         String unescaped = StringEscapeUtils.unescapeJson(json);
-        // 개행문자를 공백으로 치환 (필요시 "\\n"으로 치환 가능)
-        return unescaped.replaceAll("\\r?\\n", " ");
+
+        unescaped = unescaped.replaceAll("\\r?\\n", " ");
+
+        unescaped = unescaped.replace("\\", "\\\\");
+
+        return unescaped;
     }
 
+    @Override
     public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
         try {
             Expo expo = expoRepository.findById(expoId)
@@ -68,10 +75,10 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
 
             XSSFFont headerFont = (XSSFFont) workbook.createFont();
             headerFont.setBold(true);
-            headerFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}));
+            headerFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}, null));
 
             XSSFCellStyle headerStyle = (XSSFCellStyle) workbook.createCellStyle();
-            headerStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 34, (byte) 37, (byte) 41}));
+            headerStyle.setFillForegroundColor(new XSSFColor(new byte[]{(byte) 34, (byte) 37, (byte) 41}, null));
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             headerStyle.setBorderTop(BorderStyle.THIN);
             headerStyle.setBorderBottom(BorderStyle.THIN);
@@ -120,15 +127,24 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 Row row = sheet.createRow(rowCount++);
                 int cellIndex = 0;
 
-                row.createCell(cellIndex++).setCellValue(participant.getName());
-                row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
-                row.createCell(cellIndex++).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+                Cell nameCell = row.createCell(cellIndex++);
+                nameCell.setCellValue(participant.getName());
+                nameCell.setCellStyle(bodyStyle);
+
+                Cell phoneCell = row.createCell(cellIndex++);
+                phoneCell.setCellValue(participant.getPhoneNumber());
+                phoneCell.setCellStyle(bodyStyle);
+
+                Cell consentCell = row.createCell(cellIndex++);
+                consentCell.setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+                consentCell.setCellStyle(bodyStyle);
 
                 Cell applyTypeCell = row.createCell(cellIndex++);
                 switch (participant.getApplicationType()) {
                     case PRE -> applyTypeCell.setCellValue("사전신청");
                     case FIELD -> applyTypeCell.setCellValue("현장신청");
                 }
+                applyTypeCell.setCellStyle(bodyStyle);
 
                 Map<String, String> infoJsonMap = new HashMap<>();
                 String escapedInfoJson = participant.getInformationJson();
@@ -138,7 +154,9 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 }
 
                 for (String key : infoDynamicKeys) {
-                    row.createCell(cellIndex++).setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    Cell cell = row.createCell(cellIndex++);
+                    cell.setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    cell.setCellStyle(bodyStyle);
                 }
 
                 Map<String, String> answerJsonMap = new HashMap<>();
@@ -149,18 +167,22 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 }
 
                 for (String key : surveyDynamicKeys) {
-                    row.createCell(cellIndex++).setCellValue(answerJsonMap.getOrDefault(key, ""));
+                    Cell cell = row.createCell(cellIndex++);
+                    cell.setCellValue(answerJsonMap.getOrDefault(key, ""));
+                    cell.setCellStyle(bodyStyle);
                 }
             }
 
-            String fileName = "Participant_Information";
+            String fileName = URLEncoder.encode("Participant_Information", StandardCharsets.UTF_8) + ".xlsx";
 
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
+            res.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
 
             ServletOutputStream outputStream = res.getOutputStream();
             workbook.write(outputStream);
             workbook.close();
+            outputStream.flush();
+            outputStream.close();
         } catch (Exception e) {
             throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage(), e);
         }
