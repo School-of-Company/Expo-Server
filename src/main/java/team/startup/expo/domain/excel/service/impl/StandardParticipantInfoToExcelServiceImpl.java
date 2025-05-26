@@ -32,6 +32,14 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
     private final ExpoRepository expoRepository;
     private final StandardParticipantSurveyAnswerRepository standardParticipantSurveyAnswerRepository;
 
+    // JSON 문자열 내부 개행문자 등 문제있는 문자 치환 함수
+    private String sanitizeJson(String json) {
+        if (json == null) return null;
+        String unescaped = StringEscapeUtils.unescapeJson(json);
+        // 개행문자를 공백으로 치환 (필요시 "\\n"으로 치환 가능)
+        return unescaped.replaceAll("\\r?\\n", " ");
+    }
+
     public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
         try {
             Expo expo = expoRepository.findById(expoId)
@@ -84,16 +92,16 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             Set<String> infoDynamicKeys = new LinkedHashSet<>();
             String infoHeaderJson = firstParticipant.getInformationJson();
             if (infoHeaderJson != null) {
-                String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
-                Map<String, String> infoHeaderJsonMap = objectMapper.readValue(unescapedInfoHeaderJson, Map.class);
+                String sanitizedInfoHeaderJson = sanitizeJson(infoHeaderJson);
+                Map<String, String> infoHeaderJsonMap = objectMapper.readValue(sanitizedInfoHeaderJson, Map.class);
                 infoDynamicKeys.addAll(infoHeaderJsonMap.keySet());
             }
 
             Set<String> surveyDynamicKeys = new LinkedHashSet<>();
             StandardParticipantSurveyAnswer firstAnswer = participantSurveyAnswerMap.get(firstParticipant.getId());
             if (firstAnswer != null && firstAnswer.getAnswerJson() != null) {
-                String unescapedSurveyHeaderJson = StringEscapeUtils.unescapeJson(firstAnswer.getAnswerJson());
-                Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(unescapedSurveyHeaderJson, Map.class);
+                String sanitizedSurveyHeaderJson = sanitizeJson(firstAnswer.getAnswerJson());
+                Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
                 surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
             }
 
@@ -125,8 +133,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 Map<String, String> infoJsonMap = new HashMap<>();
                 String escapedInfoJson = participant.getInformationJson();
                 if (escapedInfoJson != null) {
-                    String unescapedInfoJson = StringEscapeUtils.unescapeJson(escapedInfoJson);
-                    infoJsonMap = objectMapper.readValue(unescapedInfoJson, Map.class);
+                    String sanitizedInfoJson = sanitizeJson(escapedInfoJson);
+                    infoJsonMap = objectMapper.readValue(sanitizedInfoJson, Map.class);
                 }
 
                 for (String key : infoDynamicKeys) {
@@ -136,8 +144,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 Map<String, String> answerJsonMap = new HashMap<>();
                 StandardParticipantSurveyAnswer surveyAnswer = participantSurveyAnswerMap.get(participant.getId());
                 if (surveyAnswer != null && surveyAnswer.getAnswerJson() != null) {
-                    String unescapedAnswerJson = StringEscapeUtils.unescapeJson(surveyAnswer.getAnswerJson());
-                    answerJsonMap = objectMapper.readValue(unescapedAnswerJson, Map.class);
+                    String sanitizedAnswerJson = sanitizeJson(surveyAnswer.getAnswerJson());
+                    answerJsonMap = objectMapper.readValue(sanitizedAnswerJson, Map.class);
                 }
 
                 for (String key : surveyDynamicKeys) {
