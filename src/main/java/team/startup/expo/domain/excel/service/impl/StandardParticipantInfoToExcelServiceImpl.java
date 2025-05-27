@@ -105,11 +105,15 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             }
 
             Set<String> surveyDynamicKeys = new LinkedHashSet<>();
-            StandardParticipantSurveyAnswer firstAnswer = participantSurveyAnswerMap.get(firstParticipant.getId());
-            if (firstAnswer != null && firstAnswer.getAnswerJson() != null) {
-                String sanitizedSurveyHeaderJson = sanitizeJson(firstAnswer.getAnswerJson());
-                Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
-                surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
+
+            for (StandardParticipant participant : standardParticipantList) {
+                StandardParticipantSurveyAnswer answer = participantSurveyAnswerMap.get(participant.getId());
+                if (answer != null && answer.getAnswerJson() != null) {
+                    String sanitizedSurveyHeaderJson = sanitizeJson(answer.getAnswerJson());
+                    Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
+                    surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
+                    break;
+                }
             }
 
             headers.addAll(infoDynamicKeys);
