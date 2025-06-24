@@ -38,13 +38,18 @@ public class RequestLogFilter extends OncePerRequestFilter {
             log.info("=========================");
         } catch (Exception e) {
             log.error("=========================");
-            log.error(e.getCause().toString());
-            log.error(e.getMessage());
-            log.error(e.getCause().getMessage());
+            if (e.getCause() != null) {
+                log.error(e.getCause().toString());
+                log.error(e.getCause().getMessage());
+                applicationEventPublisher.publishEvent(new ErrorLoggingEvent(response.getStatus(), e.getCause().toString()));
+            } else {
+                log.error(e.toString());
+                log.error(e.getMessage());
+                applicationEventPublisher.publishEvent(new ErrorLoggingEvent(response.getStatus(), e.toString()));
+            }
             log.error("=========================");
-
-            applicationEventPublisher.publishEvent(new ErrorLoggingEvent(response.getStatus(), e.getCause().toString()));
         }
+
     }
 }
 
