@@ -50,13 +50,11 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
             throw new NotInProgressExpoException();
         }
 
-        PreEnterScanQrCodeResponseDto responseDto = null;
-        switch (dto.getAuthority()){
-            case ROLE_STANDARD -> responseDto = standardParticipantEnterProcess(expo, dto);
-            case ROLE_TRAINEE -> responseDto = traineeEnterProcess(expo, dto);
-        }
-
-        return responseDto;
+        return switch (dto.getAuthority()) {
+            case ROLE_ADMIN -> null;
+            case ROLE_STANDARD -> standardParticipantEnterProcess(expo, dto);
+            case ROLE_TRAINEE -> traineeEnterProcess(expo, dto);
+        };
     }
 
     private PreEnterScanQrCodeResponseDto standardParticipantEnterProcess(Expo expo, PreEnterScanQrCodeRequestDto dto) {
