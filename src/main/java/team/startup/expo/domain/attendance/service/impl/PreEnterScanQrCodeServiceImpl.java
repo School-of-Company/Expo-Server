@@ -2,6 +2,7 @@ package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.attendance.event.EnterSmsEvent;
 import team.startup.expo.domain.attendance.exception.AlreadyEnterExpoUserException;
@@ -28,7 +29,6 @@ import team.startup.expo.global.date.DateUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -63,23 +63,20 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundParticipantException::new);
 
-        Optional<StandardParticipantParticipation> standardParticipantParticipation =
-                standardParticipantParticipationRepository.findByExpoAndStandardParticipantAndAttendanceDateForWrite(expo, standardParticipant, LocalDate.now());
-
-        if (standardParticipantParticipation.isEmpty()) {
-            StandardParticipantParticipation newStandardParticipantParticipation = StandardParticipantParticipation.builder()
+        try {
+            standardParticipantParticipationRepository.save(StandardParticipantParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())
                     .standardParticipant(standardParticipant)
                     .expo(expo)
-                    .build();
+                    .build());
 
-            standardParticipantParticipationRepository.save(newStandardParticipantParticipation);
-
-            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), standardParticipant.getPhoneNumber(), Authority.ROLE_STANDARD));
-        } else {
+            standardParticipantParticipationRepository.flush();
+        } catch (DataIntegrityViolationException e) {
             throw new AlreadyEnterExpoUserException();
         }
+
+        applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), standardParticipant.getPhoneNumber(), Authority.ROLE_STANDARD));
 
         return PreEnterScanQrCodeResponseDto.builder()
                 .id(standardParticipant.getId())
@@ -94,21 +91,16 @@ public class PreEnterScanQrCodeServiceImpl implements PreEnterScanQrCodeService 
         Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundTraineeException::new);
 
-        Optional<TraineeParticipation> traineeParticipation =
-                traineeParticipationRepository.findByExpoAndTraineeAndAttendanceDateForWrite(expo, trainee, LocalDate.now());
-
-        if (traineeParticipation.isEmpty()) {
-            TraineeParticipation newTraineeParticipation = TraineeParticipation.builder()
+        try {
+            traineeParticipationRepository.save(TraineeParticipation.builder()
                     .entryTime(LocalDateTime.now())
                     .attendanceDate(LocalDate.now())
                     .trainee(trainee)
                     .expo(expo)
-                    .build();
+                    .build());
 
-            traineeParticipationRepository.save(newTraineeParticipation);
-
-            applicationEventPublisher.publishEvent(new EnterSmsEvent(expo.getId(), trainee.getPhoneNumber(), Authority.ROLE_TRAINEE));
-        } else {
+            traineeParticipationRepository.flush();
+        } catch (DataIntegrityViolationException e) {
             throw new AlreadyEnterExpoUserException();
         }
 
