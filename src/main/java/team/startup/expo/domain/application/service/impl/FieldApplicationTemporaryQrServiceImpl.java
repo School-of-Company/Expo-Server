@@ -56,6 +56,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
                 .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())
+                .smsTryTime(0)
                 .expo(expo)
                 .build();
 

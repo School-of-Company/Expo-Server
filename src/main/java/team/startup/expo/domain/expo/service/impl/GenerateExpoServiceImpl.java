@@ -49,6 +49,8 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
                 .coverImage(dto.getCoverImage())
                 .x(dto.getX())
                 .y(dto.getY())
+                .applicationPerson(0L)
+                .yesterdayApplicationPerson(0L)
                 .build();
 
         expoRepository.save(expo);

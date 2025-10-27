@@ -65,6 +65,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
+                        .smsTryTime(0)
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
