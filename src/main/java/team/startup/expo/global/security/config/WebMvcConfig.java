@@ -11,7 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "https://school-expo.netlify.app/")
+                .allowedOrigins("http://localhost:3000", "https://school-expo.netlify.app/", "https://expo-client-flame.vercel.app/")
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .exposedHeaders("Authorization")
