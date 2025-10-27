@@ -60,6 +60,7 @@ public class UpdateExpoRequestDto {
                 .location(location)
                 .coverImage(coverImage)
                 .applicationPerson(expo.getApplicationPerson())
+                .yesterdayApplicationPerson(expo.getYesterdayApplicationPerson())
                 .x(x)
                 .y(y)
                 .build();
