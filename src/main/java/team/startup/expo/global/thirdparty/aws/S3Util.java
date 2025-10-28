@@ -60,7 +60,7 @@ public class S3Util {
 
             String encodedFileName = URLEncoder.encode(savedFileName, StandardCharsets.UTF_8);
 
-            return "https://api.startup-expo.kr/expo-image-bucket-9881/" + encodedFileName;
+            return "https://expo-image-bucket-9881.s3.ap-northeast-2.amazonaws.com/expo-image-bucket-9881/" + encodedFileName;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
