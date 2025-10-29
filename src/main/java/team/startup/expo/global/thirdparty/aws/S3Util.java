@@ -31,6 +31,8 @@ public class S3Util {
 
     private final AmazonS3 amazonS3;
 
+    private static final String IMAGE = "image";
+
     public String upload(MultipartFile image) {
         try {
             List<String> allowedExtensions = List.of("jpg", "jpeg", "png");
@@ -51,7 +53,7 @@ public class S3Util {
             }
 
             String savedFileName = UUID.randomUUID() + "_" + originalFilename;
-            String objectKey = imageBucket + "/" + savedFileName;
+            String objectKey = IMAGE + "/" + savedFileName;
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(image.getInputStream().available());
