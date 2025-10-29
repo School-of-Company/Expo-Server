@@ -29,6 +29,10 @@ public class Form {
     @Enumerated(EnumType.STRING)
     private ParticipationType participationType;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RegistrationType registrationType;
+
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
