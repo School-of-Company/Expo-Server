@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.entity.RegistrationType;
 import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDto;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.service.CreateFormService;
@@ -42,8 +43,12 @@ public class FormController {
     }
 
     @GetMapping("/{expo_id}")
-    public ResponseEntity<GetFormResponseDto> getForm(@PathVariable("expo_id") String expoId, @RequestParam("type") ParticipationType participationType) {
-        GetFormResponseDto result = getFormService.execute(expoId, participationType);
+    public ResponseEntity<GetFormResponseDto> getForm(
+            @PathVariable("expo_id") String expoId,
+            @RequestParam("type") ParticipationType participationType,
+            @RequestParam("registrationType")RegistrationType registrationType
+    ) {
+        GetFormResponseDto result = getFormService.execute(expoId, participationType, registrationType);
         return ResponseEntity.ok(result);
     }
 }

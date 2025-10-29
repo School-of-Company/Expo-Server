@@ -15,7 +15,8 @@ public class GetExpoValidationStatusResponseDto {
     @Builder
     public static class ExpoValidDto {
         private String expoId;
-        private Boolean standardFormCreatedStatus;
+        private Boolean preStandardFormCreatedStatus;
+        private Boolean siteStandardFormCreatedStatus;
         private Boolean traineeFormCreatedStatus;
         private Boolean StandardSurveyCreatedStatus;
         private Boolean traineeSurveyCreatedStatus;
