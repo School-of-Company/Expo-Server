@@ -31,7 +31,7 @@ public class S3Util {
 
     private final AmazonS3 amazonS3;
 
-    private static final String IMAGE = "image";
+    private static final String IMAGE = "image/";
 
     public String upload(MultipartFile image) {
         try {
@@ -53,7 +53,7 @@ public class S3Util {
             }
 
             String savedFileName = UUID.randomUUID() + "_" + originalFilename;
-            String objectKey = IMAGE + "/" + savedFileName;
+            String objectKey = IMAGE + savedFileName;
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(image.getInputStream().available());
@@ -62,7 +62,7 @@ public class S3Util {
 
             String encodedFileName = URLEncoder.encode(savedFileName, StandardCharsets.UTF_8);
 
-            return "https://expo-image-bucket-9881.s3.ap-northeast-2.amazonaws.com/expo-image-bucket-9881/" + encodedFileName;
+            return "https://expo-image-bucket-9881.s3.ap-northeast-2.amazonaws.com/" + IMAGE + encodedFileName;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
