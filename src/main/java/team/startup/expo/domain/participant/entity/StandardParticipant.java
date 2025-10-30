@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 @Entity
@@ -29,8 +30,8 @@ public class StandardParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String informationJson;
+    @Transient
+    private DynamicJsonData participantJson;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
