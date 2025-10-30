@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.entity.RegistrationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class FormRequestDto {
     private List<DynamicFormRequestDto> dynamicForm;
 
     @NotNull
-    private RegistrationType registrationType;
+    private ApplicationType applicationType;
 
     @Getter
     @NoArgsConstructor

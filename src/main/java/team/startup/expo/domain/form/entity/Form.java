@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 @Entity
 @NoArgsConstructor
@@ -31,7 +32,7 @@ public class Form {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private RegistrationType registrationType;
+    private ApplicationType applicationType;
 
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)

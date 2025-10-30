@@ -9,12 +9,12 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.entity.DynamicForm;
 import team.startup.expo.domain.form.entity.Form;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.entity.RegistrationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDto;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.GetFormService;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
@@ -29,11 +29,11 @@ public class GetFormServiceImpl implements GetFormService {
     private final DynamicFormRepository dynamicFormRepository;
 
     @Cacheable(key = "#expoId + '_' + #participationType + '-' + #registrationType", cacheManager = "cacheManager")
-    public GetFormResponseDto execute(String expoId, ParticipationType participationType, RegistrationType registrationType) {
+    public GetFormResponseDto execute(String expoId, ParticipationType participationType, ApplicationType applicationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        Form form = formRepository.findByExpoAndParticipationTypeAndRegistrationType(expo, participationType, registrationType)
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, participationType, applicationType)
                 .orElseThrow(NotFoundFormException::new);
 
         List<DynamicForm> dynamicFormList = dynamicFormRepository.findByForm(form);
@@ -51,7 +51,7 @@ public class GetFormServiceImpl implements GetFormService {
         return GetFormResponseDto.builder()
                 .informationText(form.getInformationText())
                 .participantType(form.getParticipationType())
-                .registrationType(form.getRegistrationType())
+                .applicationType(form.getApplicationType())
                 .dynamicForm(dynamicFormRequestDtoList)
                 .build();
     }
