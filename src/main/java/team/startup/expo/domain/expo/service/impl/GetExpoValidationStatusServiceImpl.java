@@ -60,8 +60,8 @@ public class GetExpoValidationStatusServiceImpl implements GetExpoValidationStat
 
             return GetExpoValidationStatusResponseDto.ExpoValidDto.builder()
                     .expoId(expo.getId())
-                    .preStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.PRE))
-                    .siteStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.SITE))
+                    .preStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.REGISTER))
+                    .siteStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.ONSITE))
                     .traineeFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.TRAINEE))
                     .StandardSurveyCreatedStatus(surveyList.stream().anyMatch(s -> s.getParticipationType() == ParticipationType.STANDARD))
                     .traineeSurveyCreatedStatus(surveyList.stream().anyMatch(s -> s.getParticipationType() == ParticipationType.TRAINEE))
