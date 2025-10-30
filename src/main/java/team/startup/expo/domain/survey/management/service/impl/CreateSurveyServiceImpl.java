@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.mongo.entity.DynamicSurveyJsonDoc;
+import team.startup.expo.domain.mongo.repository.DynamicSurveyJsonRepository;
 import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
 import team.startup.expo.domain.survey.management.entity.Survey;
 import team.startup.expo.domain.survey.management.exception.AlreadyExistSurveyException;
@@ -20,6 +22,7 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
     private final SurveyRepository surveyRepository;
     private final DynamicSurveyRepository dynamicSurveyRepository;
     private final ExpoRepository expoRepository;
+    private final DynamicSurveyJsonRepository dynamicSurveyJsonRepository;
 
     public void execute(String expoId, SurveyRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -46,14 +49,19 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
 
     private void saveDynamicSurvey(SurveyRequestDto.DynamicSurveyRequestDto dto, Survey survey) {
         DynamicSurvey dynamicSurvey = DynamicSurvey.builder()
+                .surveyId(survey.getId())
                 .title(dto.getTitle())
-                .jsonData(dto.getJsonData())
                 .formType(dto.getFormType())
                 .requiredStatus(dto.getRequiredStatus())
-                .otherJson(dto.getOtherJson())
-                .survey(survey)
                 .build();
+        dynamicSurvey = dynamicSurveyRepository.save(dynamicSurvey);
 
-        dynamicSurveyRepository.save(dynamicSurvey);
+        DynamicSurveyJsonDoc doc = new DynamicSurveyJsonDoc(
+                null,
+                dynamicSurvey.getId(),
+                dto.getJsonData(),
+                dto.getOtherJson()
+        );
+        dynamicSurveyJsonRepository.save(doc);
     }
 }
