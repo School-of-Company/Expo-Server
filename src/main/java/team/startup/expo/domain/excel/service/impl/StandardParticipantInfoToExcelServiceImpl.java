@@ -15,6 +15,9 @@ import team.startup.expo.domain.excel.service.StandardParticipantInfoToExcelServ
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
+import team.startup.expo.domain.mongo.entity.OwnerType;
+import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
@@ -33,6 +36,7 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
     private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
     private final StandardParticipantSurveyAnswerRepository standardParticipantSurveyAnswerRepository;
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
     private String sanitizeJson(String json) {
         if (json == null) return null;
@@ -97,11 +101,11 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             StandardParticipant firstParticipant = standardParticipantList.get(0);
 
             Set<String> infoDynamicKeys = new LinkedHashSet<>();
-            String infoHeaderJson = firstParticipant.getInformationJson();
-            if (infoHeaderJson != null) {
-                String sanitizedInfoHeaderJson = sanitizeJson(infoHeaderJson);
-                Map<String, String> infoHeaderJsonMap = objectMapper.readValue(sanitizedInfoHeaderJson, Map.class);
-                infoDynamicKeys.addAll(infoHeaderJsonMap.keySet());
+            DynamicJsonData firstInfo = dynamicJsonDataRepository
+                    .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, firstParticipant.getId())
+                    .orElse(null);
+            if (firstInfo != null && firstInfo.getAnswers() != null) {
+                infoDynamicKeys.addAll(firstInfo.getAnswers().keySet());
             }
 
             Set<String> surveyDynamicKeys = new LinkedHashSet<>();
@@ -151,10 +155,13 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 applyTypeCell.setCellStyle(bodyStyle);
 
                 Map<String, String> infoJsonMap = new HashMap<>();
-                String escapedInfoJson = participant.getInformationJson();
-                if (escapedInfoJson != null) {
-                    String sanitizedInfoJson = sanitizeJson(escapedInfoJson);
-                    infoJsonMap = objectMapper.readValue(sanitizedInfoJson, Map.class);
+                DynamicJsonData infoDoc = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, participant.getId())
+                        .orElse(null);
+                if (infoDoc != null && infoDoc.getAnswers() != null) {
+                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
+                        infoJsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+                    }
                 }
 
                 for (String key : infoDynamicKeys) {
