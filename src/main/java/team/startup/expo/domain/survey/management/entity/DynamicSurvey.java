@@ -5,9 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import team.startup.expo.domain.form.entity.FormType;
+import team.startup.expo.domain.mongo.entity.DynamicSurveyJsonDoc;
 
 @Entity
 @NoArgsConstructor
@@ -22,9 +21,12 @@ public class DynamicSurvey {
     private Long id;
 
     @Column(nullable = false)
+    private Long surveyId;
+
+    @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Transient
     private String jsonData;
 
     @Enumerated(EnumType.STRING)
@@ -34,11 +36,9 @@ public class DynamicSurvey {
     @Column(nullable = false)
     private Boolean requiredStatus;
 
-    @Column(columnDefinition = "TEXT")
+    @Transient
     private String otherJson;
 
-    @ManyToOne
-    @JoinColumn(name = "survey_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Survey survey;
+    @Transient
+    private DynamicSurveyJsonDoc dynamicSurveyJsonDoc;
 }
