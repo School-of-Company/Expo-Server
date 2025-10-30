@@ -43,7 +43,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: expo-ecr
         run: |
-          IMAGE_TAG=expo-$(date +%m%d)
+          IMAGE_TAG=expo-$(date +%Y%m%d%H%M%S)
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
