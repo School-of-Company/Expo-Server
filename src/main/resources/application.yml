@@ -1,6 +1,6 @@
 spring:
   datasource:
-    driver-class-name: ${DB_DRIVER_CLASS}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:expo}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:12345}
@@ -17,6 +17,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+    mongodb:
+      uri: ${MONGO_URI}
+      auto-index-creation: true
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
