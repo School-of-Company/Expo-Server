@@ -1,11 +1,8 @@
 package team.startup.expo.domain.excel.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -15,6 +12,9 @@ import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
+import team.startup.expo.domain.mongo.entity.OwnerType;
+import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
@@ -27,9 +27,9 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환기
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
-    public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
+    public void execute(String expoId, HttpServletResponse res) {
         try {
             Expo expo = expoRepository.findById(expoId)
                     .orElseThrow(NotFoundExpoException::new);
@@ -62,16 +62,14 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             // 기본 헤더
             List<String> headers = new ArrayList<>(List.of("이름", "연수원아이디", "전화번호", "신청방식"));
 
-            // 모든 Trainee의 JSON key를 모아서 dynamicKeys 생성
+            // 모든 Trainee의 Mongo answers key를 모아서 dynamicKeys 생성
             Set<String> dynamicKeys = new LinkedHashSet<>();
             for (Trainee trainee : traineeList) {
-                String escapedJson = trainee.getInformationJson();
-                if (escapedJson != null) {
-                    try {
-                        String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
-                        Map<String, String> jsonMap = objectMapper.readValue(unescapedJson, Map.class);
-                        dynamicKeys.addAll(jsonMap.keySet());
-                    } catch (Exception ignored) {}
+                DynamicJsonData infoDoc = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.TRAINEE, trainee.getId())
+                        .orElse(null);
+                if (infoDoc != null && infoDoc.getAnswers() != null) {
+                    dynamicKeys.addAll(infoDoc.getAnswers().keySet());
                 }
             }
 
@@ -94,12 +92,13 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
                 row.createCell(3).setCellValue(trainee.getApplicationType().toString());
 
                 Map<String, String> jsonMap = new HashMap<>();
-                String escapedJson = trainee.getInformationJson();
-                if (escapedJson != null) {
-                    try {
-                        String unescapedJson = StringEscapeUtils.unescapeJson(escapedJson);
-                        jsonMap = objectMapper.readValue(unescapedJson, Map.class);
-                    } catch (Exception ignored) {}
+                DynamicJsonData infoDoc = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.TRAINEE, trainee.getId())
+                        .orElse(null);
+                if (infoDoc != null && infoDoc.getAnswers() != null) {
+                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
+                        jsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+                    }
                 }
 
                 int cellIndex = 4;
