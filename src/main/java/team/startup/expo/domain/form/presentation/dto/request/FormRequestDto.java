@@ -1,12 +1,14 @@
 package team.startup.expo.domain.form.presentation.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @NoArgsConstructor
@@ -17,6 +19,7 @@ public class FormRequestDto {
     @NotNull
     private ParticipationType participantType;
 
+    @Valid
     @NotNull
     private List<DynamicFormRequestDto> dynamicForm;
 
@@ -30,11 +33,11 @@ public class FormRequestDto {
         private FormType formType;
 
         @NotNull
-        private String jsonData;
+        private Map<String, Object> jsonData;
 
         @NotNull
         private Boolean requiredStatus;
 
-        private String otherJson;
+        private Map<String, Object> otherJson;
     }
 }
