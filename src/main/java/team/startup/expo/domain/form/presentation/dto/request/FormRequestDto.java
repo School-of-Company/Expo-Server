@@ -46,11 +46,11 @@ public class FormRequestDto {
         private FormType formType;
 
         @NotNull
-        private String jsonData;
+        private Map<String, Object> jsonData;
 
         @NotNull
         private Boolean requiredStatus;
 
-        private String otherJson;
+        private Map<String, Object> otherJson;
     }
 }
