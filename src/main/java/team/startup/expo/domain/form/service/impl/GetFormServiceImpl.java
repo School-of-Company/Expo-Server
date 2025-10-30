@@ -16,6 +16,7 @@ import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.GetFormService;
 import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
 import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
@@ -30,12 +31,12 @@ public class GetFormServiceImpl implements GetFormService {
     private final DynamicFormRepository dynamicFormRepository;
     private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
-    @Cacheable(key = "#expoId + '_' + #participationType", cacheManager = "cacheManager")
-    public GetFormResponseDto execute(String expoId, ParticipationType participationType) {
+    @Cacheable(key = "#expoId + '_' + #participationType + '-' + #registrationType", cacheManager = "cacheManager")
+    public GetFormResponseDto execute(String expoId, ParticipationType participationType, ApplicationType applicationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        Form form = formRepository.findByExpoAndParticipationType(expo, participationType)
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, participationType, applicationType)
                 .orElseThrow(NotFoundFormException::new);
 
         List<DynamicForm> dynamicFormList = dynamicFormRepository.findByFormId(form.getId());
@@ -55,6 +56,7 @@ public class GetFormServiceImpl implements GetFormService {
         return GetFormResponseDto.builder()
                 .informationText(form.getInformationText())
                 .participantType(form.getParticipationType())
+                .applicationType(form.getApplicationType())
                 .dynamicForm(dynamicFormRequestDtoList)
                 .build();
     }

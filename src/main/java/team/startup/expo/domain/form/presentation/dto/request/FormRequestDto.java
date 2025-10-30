@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,6 @@ import java.util.Map;
 @Getter
 @NoArgsConstructor
 public class FormRequestDto {
-    @NotNull
     private String informationText;
 
     @NotNull
@@ -22,6 +22,9 @@ public class FormRequestDto {
     @Valid
     @NotNull
     private List<DynamicFormRequestDto> dynamicForm;
+
+    @NotNull
+    private ApplicationType applicationType;
 
     @Getter
     @NoArgsConstructor
