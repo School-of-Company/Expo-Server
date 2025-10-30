@@ -1,4 +1,10 @@
 package team.startup.expo.domain.application.service.impl;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Map;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
+import team.startup.expo.domain.mongo.entity.OwnerType;
+import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -14,7 +20,6 @@ import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
-import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
@@ -28,6 +33,8 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
+    private final ObjectMapper objectMapper;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -61,7 +68,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                         .name(dto.getName())
                         .phoneNumber(dto.getPhoneNumber())
                         .authority(Authority.ROLE_STANDARD)
-                        .informationJson(dto.getInformationJson())
                         .applicationType(ApplicationType.FIELD)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .smsTryTime(0)
@@ -69,5 +75,22 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
+        Map<String, Object> answers = parseJson(dto.getInformationJson());
+        DynamicJsonData doc = new DynamicJsonData(
+                null,
+                OwnerType.STANDARD_PARTICIPANT,
+                standardParticipant.getId(),
+                answers
+        );
+        dynamicJsonDataRepository.save(doc);
+    }
+
+    private Map<String, Object> parseJson(String raw) {
+        try {
+            if (raw == null || raw.isBlank()) return null;
+            return objectMapper.readValue(raw, new TypeReference<Map<String, Object>>() {});
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
