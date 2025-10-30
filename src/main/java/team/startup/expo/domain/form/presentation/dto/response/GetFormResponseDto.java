@@ -32,8 +32,8 @@ public class GetFormResponseDto {
     public static class DynamicFormRequestDto {
         private String title;
         private FormType formType;
-        private String jsonData;
+        private Map<String, Object> jsonData;
         private Boolean requiredStatus;
-        private String otherJson;
+        private Map<String, Object> otherJson;
     }
 }
