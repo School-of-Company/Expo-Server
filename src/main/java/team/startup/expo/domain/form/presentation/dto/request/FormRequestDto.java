@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class FormRequestDto {
-    @NotNull
     private String informationText;
 
     @NotNull
