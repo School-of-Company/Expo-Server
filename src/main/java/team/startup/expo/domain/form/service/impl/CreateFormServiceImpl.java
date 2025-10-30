@@ -25,7 +25,7 @@ public class CreateFormServiceImpl implements CreateFormService {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        if (formRepository.existsByExpoAndParticipationTypeAndRegistrationType(expo, formRequestDto.getParticipantType(), formRequestDto.getRegistrationType()))
+        if (formRepository.existsByExpoAndParticipationTypeAndApplicationType(expo, formRequestDto.getParticipantType(), formRequestDto.getApplicationType()))
             throw new AlreadyExistFormException();
 
         Form form = saveForm(formRequestDto, expo);
@@ -37,7 +37,7 @@ public class CreateFormServiceImpl implements CreateFormService {
         Form form = Form.builder()
                 .informationText(formRequestDto.getInformationText())
                 .participationType(formRequestDto.getParticipantType())
-                .registrationType(formRequestDto.getRegistrationType())
+                .applicationType(formRequestDto.getApplicationType())
                 .expo(expo)
                 .build();
 

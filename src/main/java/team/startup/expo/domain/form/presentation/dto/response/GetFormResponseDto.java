@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.entity.RegistrationType;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class GetFormResponseDto {
     private String informationText;
     private ParticipationType participantType;
-    private RegistrationType registrationType;
+    private ApplicationType applicationType;
     private List<GetFormResponseDto.DynamicFormRequestDto> dynamicForm;
 
     @Getter
