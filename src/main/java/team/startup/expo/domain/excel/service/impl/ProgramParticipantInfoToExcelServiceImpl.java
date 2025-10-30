@@ -43,7 +43,6 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             Sheet sheet = workbook.createSheet("프로그램 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
-            // 스타일 설정
             XSSFFont headerFont = (XSSFFont) workbook.createFont();
             headerFont.setBold(true);
             headerFont.setColor(new XSSFColor(new byte[]{(byte) 255, (byte) 255, (byte) 255}));
@@ -63,10 +62,8 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             bodyStyle.setBorderLeft(BorderStyle.THIN);
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
-            // 헤더 설정 (기본)
             List<String> headers = new ArrayList<>(List.of("순위", "이름", "전화번호", "개인정보 동의 여부"));
 
-            // 동적 헤더 키 수집 (Mongo answers 기준)
             Set<String> infoDynamicKeys = new LinkedHashSet<>();
             if (!standardParticipants.isEmpty()) {
                 StandardParticipant first = standardParticipants.get(0);
@@ -83,7 +80,6 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             List<String> additionHeader = new ArrayList<>(List.of("학번", "서명", "비고"));
             headers.addAll(additionHeader);
 
-            // 헤더 행 생성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
@@ -91,7 +87,6 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                 cell.setCellStyle(headerStyle);
             }
 
-            // 데이터 행
             int rowCount = 1;
             int rank = 1;
             for (StandardParticipant participant : standardParticipants) {
@@ -103,7 +98,6 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                 row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
                 row.createCell(cellIndex++).setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
 
-                // Mongo에서 동적 값 로드
                 Map<String, String> infoJsonMap = new HashMap<>();
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
                         .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, participant.getId())
@@ -114,14 +108,12 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                     }
                 }
 
-                // 동적 키 값 채우기
                 for (String key : infoDynamicKeys) {
                     Cell c = row.createCell(cellIndex++);
                     c.setCellValue(infoJsonMap.getOrDefault(key, ""));
                     c.setCellStyle(bodyStyle);
                 }
 
-                // 추가 컬럼 (학번, 서명, 비고) - 비워두기
                 for (int i = 0; i < 3; i++) {
                     Cell c = row.createCell(cellIndex++);
                     c.setCellValue("");
@@ -129,7 +121,6 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                 }
             }
 
-            // 파일명/헤더
             String fileName = "Program_Participant_Information";
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");

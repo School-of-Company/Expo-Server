@@ -59,10 +59,8 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             bodyStyle.setBorderLeft(BorderStyle.THIN);
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
-            // 기본 헤더
             List<String> headers = new ArrayList<>(List.of("이름", "연수원아이디", "전화번호", "신청방식"));
 
-            // 모든 Trainee의 Mongo answers key를 모아서 dynamicKeys 생성
             Set<String> dynamicKeys = new LinkedHashSet<>();
             for (Trainee trainee : traineeList) {
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
@@ -75,7 +73,6 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
             headers.addAll(dynamicKeys);
 
-            // 헤더 생성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
