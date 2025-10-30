@@ -6,13 +6,17 @@ import org.springframework.cache.annotation.CacheEvict;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.entity.DynamicForm;
 import team.startup.expo.domain.form.entity.Form;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.DeleteFormService;
+import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
+
+import java.util.List;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class DeleteFormServiceImpl implements DeleteFormService {
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
+    private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
     @CacheEvict(key = "#expoId + '_' + #participationType", cacheNames = "cacheManager")
     public void execute(String expoId, ParticipationType participationType) {
@@ -31,7 +36,11 @@ public class DeleteFormServiceImpl implements DeleteFormService {
         Form form = formRepository.findByExpoAndParticipationType(expo, participationType)
                 .orElseThrow(NotFoundFormException::new);
 
-        dynamicFormRepository.deleteByForm(form);
+        List<DynamicForm> dynamicForms = dynamicFormRepository.findByFormId(form.getId());
+        for (DynamicForm df : dynamicForms) {
+            dynamicFormJsonRepository.deleteByRecordId(df.getId());
+        }
+        dynamicFormRepository.deleteAll(dynamicForms);
         formRepository.delete(form);
     }
 }
