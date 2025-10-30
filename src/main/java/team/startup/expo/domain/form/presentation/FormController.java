@@ -46,7 +46,7 @@ public class FormController {
     public ResponseEntity<GetFormResponseDto> getForm(
             @PathVariable("expo_id") String expoId,
             @RequestParam("type") ParticipationType participationType,
-            @RequestParam("registrationType") ApplicationType applicationType
+            @RequestParam("applicationType") ApplicationType applicationType
     ) {
         GetFormResponseDto result = getFormService.execute(expoId, participationType, applicationType);
         return ResponseEntity.ok(result);
