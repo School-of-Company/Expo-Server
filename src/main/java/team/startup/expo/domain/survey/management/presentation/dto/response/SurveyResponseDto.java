@@ -8,6 +8,7 @@ import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -24,9 +25,9 @@ public class SurveyResponseDto {
     @NoArgsConstructor
     public static class DynamicSurveyResponseDto {
         private String title;
-        private String jsonData;
+        private Map<String, Object> jsonData;
         private FormType formType;
         private Boolean requiredStatus;
-        private String otherJson;
+        private Map<String, Object> otherJson;
     }
 }
