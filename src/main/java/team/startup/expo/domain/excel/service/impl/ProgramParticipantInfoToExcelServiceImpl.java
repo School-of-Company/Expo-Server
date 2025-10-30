@@ -1,11 +1,8 @@
 package team.startup.expo.domain.excel.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -13,6 +10,9 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
 import team.startup.expo.domain.excel.service.ProgramParticipantInfoToExcelService;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
+import team.startup.expo.domain.mongo.entity.OwnerType;
+import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
@@ -26,20 +26,20 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticipantInfoToExcelService {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final StandardProgramUserRepository standardProgramUserRepository;
     private final StandardProgramRepository standardProgramRepository;
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
-    public void execute(String expoId, Long programId, HttpServletResponse res) throws JsonProcessingException {
-        try {
+    public void execute(String expoId, Long programId, HttpServletResponse res) {
+        try (Workbook workbook = new XSSFWorkbook()) {
             StandardProgram standardProgram = standardProgramRepository.findByIdAndExpoId(programId, expoId)
                     .orElseThrow(NotFoundStandardProgramException::new);
 
             List<StandardProgramUser> standardProgramUsers = standardProgramUserRepository.findByStandardProgram(standardProgram);
+            List<StandardParticipant> standardParticipants = standardProgramUsers.stream()
+                    .map(StandardProgramUser::getStandardParticipant)
+                    .toList();
 
-            List<StandardParticipant> standardParticipants = standardProgramUsers.stream().map(StandardProgramUser::getStandardParticipant).toList();
-
-            Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("프로그램 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
@@ -63,19 +63,27 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             bodyStyle.setBorderLeft(BorderStyle.THIN);
             bodyStyle.setBorderRight(BorderStyle.THIN);
 
-            // 헤더 설정
+            // 헤더 설정 (기본)
             List<String> headers = new ArrayList<>(List.of("순위", "이름", "전화번호", "개인정보 동의 여부"));
 
-            String infoHeaderJson = standardParticipants.get(0).getInformationJson();
-            String unescapedInfoHeaderJson = StringEscapeUtils.unescapeJson(infoHeaderJson);
-            Map<String, String> infoHeaderJsonMap = objectMapper.readValue(unescapedInfoHeaderJson, Map.class);
-            Set<String> infoDynamicKeys = new LinkedHashSet<>(infoHeaderJsonMap.keySet());
+            // 동적 헤더 키 수집 (Mongo answers 기준)
+            Set<String> infoDynamicKeys = new LinkedHashSet<>();
+            if (!standardParticipants.isEmpty()) {
+                StandardParticipant first = standardParticipants.get(0);
+                DynamicJsonData firstInfo = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, first.getId())
+                        .orElse(null);
+                if (firstInfo != null && firstInfo.getAnswers() != null) {
+                    infoDynamicKeys.addAll(firstInfo.getAnswers().keySet());
+                }
+            }
 
             headers.addAll(infoDynamicKeys);
 
             List<String> additionHeader = new ArrayList<>(List.of("학번", "서명", "비고"));
             headers.addAll(additionHeader);
 
+            // 헤더 행 생성
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.size(); i++) {
                 Cell cell = headerRow.createCell(i);
@@ -83,38 +91,55 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                 cell.setCellStyle(headerStyle);
             }
 
+            // 데이터 행
             int rowCount = 1;
+            int rank = 1;
             for (StandardParticipant participant : standardParticipants) {
                 Row row = sheet.createRow(rowCount++);
 
-                int cellIndex = 1;
-
-                // 기본 정보
+                int cellIndex = 0;
+                row.createCell(cellIndex++).setCellValue(rank++); // 순위
                 row.createCell(cellIndex++).setCellValue(participant.getName());
                 row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
-                row.createCell(cellIndex++).setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+                row.createCell(cellIndex++).setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
 
-                String escapedInfoJson = participant.getInformationJson();
-                String unescapedInfoJson = StringEscapeUtils.unescapeJson(escapedInfoJson);
-                Map<String, String> infoJsonMap = objectMapper.readValue(unescapedInfoJson, Map.class);
+                // Mongo에서 동적 값 로드
+                Map<String, String> infoJsonMap = new HashMap<>();
+                DynamicJsonData infoDoc = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, participant.getId())
+                        .orElse(null);
+                if (infoDoc != null && infoDoc.getAnswers() != null) {
+                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
+                        infoJsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+                    }
+                }
 
+                // 동적 키 값 채우기
                 for (String key : infoDynamicKeys) {
-                    row.createCell(cellIndex++).setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    Cell c = row.createCell(cellIndex++);
+                    c.setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    c.setCellStyle(bodyStyle);
+                }
+
+                // 추가 컬럼 (학번, 서명, 비고) - 비워두기
+                for (int i = 0; i < 3; i++) {
+                    Cell c = row.createCell(cellIndex++);
+                    c.setCellValue("");
+                    c.setCellStyle(bodyStyle);
                 }
             }
 
-            // 파일명 설정
+            // 파일명/헤더
             String fileName = "Program_Participant_Information";
-
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
 
-            ServletOutputStream outputStream = res.getOutputStream();
-            workbook.write(outputStream);
-            workbook.close();
+            try (ServletOutputStream outputStream = res.getOutputStream()) {
+                workbook.write(outputStream);
+                outputStream.flush();
+            }
         } catch (Exception e) {
-            throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage(), e);
+            throw new RuntimeException("엑셀 파일 생성 중 오류 발생", e);
         }
-
     }
 }
