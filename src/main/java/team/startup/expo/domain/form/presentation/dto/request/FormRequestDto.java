@@ -12,6 +12,9 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class FormRequestDto {
+    @NotNull
+    private String title;
+
     private String informationText;
 
     @NotNull

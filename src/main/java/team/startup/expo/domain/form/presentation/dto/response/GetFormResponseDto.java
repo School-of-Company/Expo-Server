@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GetFormResponseDto {
+    private String title;
     private String informationText;
     private ParticipationType participantType;
     private ApplicationType applicationType;

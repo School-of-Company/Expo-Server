@@ -28,7 +28,7 @@ public class UpdateFormServiceImpl implements UpdateFormService {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundFormException::new);
 
-        Form form = formRepository.findByExpoAndParticipationType(expo, dto.getParticipantType())
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, dto.getParticipantType(), dto.getApplicationType())
                 .orElseThrow(NotFoundFormException::new);
 
         dynamicFormRepository.deleteByForm(form);
