@@ -49,6 +49,7 @@ public class GetFormServiceImpl implements GetFormService {
                 ).toList();
 
         return GetFormResponseDto.builder()
+                .title(form.getTitle())
                 .informationText(form.getInformationText())
                 .participantType(form.getParticipationType())
                 .applicationType(form.getApplicationType())

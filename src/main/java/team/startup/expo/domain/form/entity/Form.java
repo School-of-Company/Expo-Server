@@ -23,6 +23,9 @@ public class Form {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 100)
+    private String title;
+
     @Column(nullable = false, length = 500)
     private String informationText;
 
@@ -40,6 +43,7 @@ public class Form {
     private Expo expo;
 
     public void updateForm(FormRequestDto dto) {
+        this.title = dto.getTitle();
         this.informationText = dto.getInformationText();
         this.participationType = dto.getParticipantType();
     }
