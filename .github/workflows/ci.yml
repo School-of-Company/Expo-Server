@@ -75,6 +75,5 @@ jobs:
           git config --local user.name "GitHub Action"
           git add chart/values/values.yaml
           git commit -m "Update image tag to ${{ steps.ecr-push.outputs.image_tag }}"
+          git remote set-url origin https://git:${{ secrets.DEVOPS_GITHUB_TOKEN }}@github.com/School-of-Company/Expo-DevOps-V2.git
           git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
