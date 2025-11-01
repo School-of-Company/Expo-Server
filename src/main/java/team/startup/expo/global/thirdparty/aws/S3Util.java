@@ -32,6 +32,7 @@ public class S3Util {
     private final AmazonS3 amazonS3;
 
     private static final String IMAGE = "image/";
+    private static final String QR = "qr/";
 
     public String upload(MultipartFile image) {
         try {
@@ -83,7 +84,7 @@ public class S3Util {
             throw new FileExtensionInvalidException();
 
         String savedFileName = UUID.randomUUID() + filename;
-        String objectKey = qrBucket + "/" + savedFileName;
+        String objectKey = QR + savedFileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(Files.size(image.toPath()));
@@ -91,7 +92,7 @@ public class S3Util {
 
         amazonS3.putObject(qrBucket, objectKey, new FileInputStream(image), metadata);
 
-        return savedFileName;
+        return QR + savedFileName;
 
     }
 

@@ -28,7 +28,7 @@ public class SendSmsServiceImpl implements SendSmsService {
         Message message = new Message();
         String randomCode = createCode();
 
-        message.setFrom(smsProperties.getFromNumber());
+        message.setFrom(smsProperties.getFromStandardNumber());
         message.setTo(dto.getPhoneNumber());
         message.setText(randomCode);
 

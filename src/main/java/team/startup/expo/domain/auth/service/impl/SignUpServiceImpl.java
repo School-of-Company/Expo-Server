@@ -32,16 +32,16 @@ public class SignUpServiceImpl implements SignUpService {
         if (adminRepository.existsByEmail(dto.getEmail()))
             throw new DuplicateEmailException();
 
-        SmsAuthEntity smsAuthEntity = smsAuthRepository.findById(dto.getPhoneNumber())
-                .orElseThrow(NotFoundSmsAuthException::new);
-
-        if (!smsAuthEntity.getAuthentication())
-            throw new NotFoundSmsAuthException();
+//        SmsAuthEntity smsAuthEntity = smsAuthRepository.findById(dto.getPhoneNumber())
+//                .orElseThrow(NotFoundSmsAuthException::new);
+//
+//        if (!smsAuthEntity.getAuthentication())
+//            throw new NotFoundSmsAuthException();
 
         if (adminRepository.existsByNickname(dto.getNickname()))
             throw new DuplicateNicknameException();
 
-        smsAuthRepository.delete(smsAuthEntity);
+//        smsAuthRepository.delete(smsAuthEntity);
 
         saveAdmin(dto);
     }
