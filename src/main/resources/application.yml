@@ -21,11 +21,6 @@ spring:
       uri: ${MONGO_URI}
       auto-index-creation: true
 
-server:
-  ssl:
-    trust-store: classpath:documentdb-truststore.jks
-    trust-store-password: changeit
-
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
   refreshSecret: ${JWT_REFRESH_SECRET}
