@@ -7,7 +7,6 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
 import team.startup.expo.domain.survey.management.entity.Survey;
 import team.startup.expo.domain.survey.management.exception.NotFoundSurveyException;
 import team.startup.expo.domain.survey.management.repository.DynamicSurveyRepository;
@@ -36,11 +35,13 @@ public class DeleteSurveyServiceImpl implements DeleteSurveyService {
         Survey survey = surveyRepository.findByExpoAndParticipationType(expo, participationType)
                 .orElseThrow(NotFoundSurveyException::new);
 
-        List<DynamicSurvey> dynamicSurveys = dynamicSurveyRepository.findBySurveyId(survey.getId());
-        for (DynamicSurvey ds : dynamicSurveys) {
-            dynamicSurveyJsonRepository.deleteByRecordId(ds.getId());
+        List<Long> dynamicSurveyIds = dynamicSurveyRepository.findIdsBySurveyId(survey.getId());
+
+        if (!dynamicSurveyIds.isEmpty()) {
+            dynamicSurveyJsonRepository.deleteByRecordIdIn(dynamicSurveyIds);
         }
-        dynamicSurveyRepository.deleteAll(dynamicSurveys);
+
+        dynamicSurveyRepository.deleteBySurveyId(survey.getId());
         surveyRepository.delete(survey);
     }
 }
