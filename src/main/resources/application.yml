@@ -17,6 +17,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+    mongodb:
+      uri: ${MONGO_URI}
+      auto-index-creation: true
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}

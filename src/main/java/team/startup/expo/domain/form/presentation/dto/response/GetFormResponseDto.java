@@ -9,6 +9,7 @@ import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor

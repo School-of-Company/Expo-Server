@@ -12,7 +12,10 @@ import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.DeleteFormService;
+import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
+
+import java.util.List;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class DeleteFormServiceImpl implements DeleteFormService {
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
+    private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
     @CacheEvict(key = "#expoId + '_' + #participationType", cacheNames = "cacheManager")
     public void execute(String expoId, ParticipationType participationType) {
@@ -31,7 +35,14 @@ public class DeleteFormServiceImpl implements DeleteFormService {
         Form form = formRepository.findByExpoAndParticipationType(expo, participationType)
                 .orElseThrow(NotFoundFormException::new);
 
-        dynamicFormRepository.deleteByForm(form);
+        List<Long> dynamicFormIds = dynamicFormRepository.findIdsByFormId(form.getId());
+
+        if (!dynamicFormIds.isEmpty()) {
+            dynamicFormJsonRepository.deleteByRecordIdIn(dynamicFormIds);
+        }
+
+        dynamicFormRepository.deleteByFormId(form.getId());
+
         formRepository.delete(form);
     }
 }

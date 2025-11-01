@@ -12,6 +12,8 @@ import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.UpdateFormService;
+import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
+import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
@@ -22,6 +24,7 @@ public class UpdateFormServiceImpl implements UpdateFormService {
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
+    private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
     @CacheEvict(key = "#expoId + '_' + #dto.participantType", cacheManager = "cacheManager")
     public void execute(String expoId, FormRequestDto dto) {
@@ -31,22 +34,25 @@ public class UpdateFormServiceImpl implements UpdateFormService {
         Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, dto.getParticipantType(), dto.getApplicationType())
                 .orElseThrow(NotFoundFormException::new);
 
-        dynamicFormRepository.deleteByForm(form);
-
         form.updateForm(dto);
         dto.getDynamicForm().forEach(dynamicForm -> {saveDynamicForm(dynamicForm, form);});
     }
 
     private void saveDynamicForm(FormRequestDto.DynamicFormRequestDto dto, Form form) {
         DynamicForm updateDynamicForm = DynamicForm.builder()
+                .formId(form.getId())
                 .title(dto.getTitle())
                 .formType(dto.getFormType())
-                .jsonData(dto.getJsonData())
                 .requiredStatus(dto.getRequiredStatus())
-                .otherJson(dto.getOtherJson())
-                .form(form)
                 .build();
+        updateDynamicForm = dynamicFormRepository.save(updateDynamicForm);
 
-        dynamicFormRepository.save(updateDynamicForm);
+        DynamicFormJsonDoc doc = new DynamicFormJsonDoc(
+                null,
+                updateDynamicForm.getId(),
+                dto.getJsonData(),
+                dto.getOtherJson()
+        );
+        dynamicFormJsonRepository.save(doc);
     }
 }

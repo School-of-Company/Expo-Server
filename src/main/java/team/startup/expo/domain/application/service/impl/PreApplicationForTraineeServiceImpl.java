@@ -1,5 +1,7 @@
 package team.startup.expo.domain.application.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
@@ -12,6 +14,9 @@ import team.startup.expo.domain.application.presentation.dto.request.Application
 import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.application.event.SendQrEvent;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
+import team.startup.expo.domain.mongo.entity.OwnerType;
+import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -19,6 +24,8 @@ import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
+
+import java.util.Map;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -29,6 +36,8 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
+    private final ObjectMapper objectMapper;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -57,11 +66,18 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                         .authority(Authority.ROLE_TRAINEE)
                         .name(dto.getName())
                         .applicationType(ApplicationType.PRE)
-                        .informationJson(dto.getInformationJson())
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .build());
 
         traineeRepository.save(trainee);
+
+        DynamicJsonData doc = new DynamicJsonData(
+                null,
+                OwnerType.TRAINEE,
+                trainee.getId(),
+                dto.getInformationJson()
+        );
+        dynamicJsonDataRepository.save(doc);
     }
 }
