@@ -7,6 +7,5 @@ import team.startup.expo.domain.form.repository.custom.DynamicFormCustomReposito
 import java.util.List;
 
 public interface DynamicFormRepository extends JpaRepository<DynamicForm, Long>, DynamicFormCustomRepository {
-    long deleteByFormId(Long formId);
     List<DynamicForm> findByFormId(Long formId);
 }
