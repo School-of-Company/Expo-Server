@@ -21,7 +21,7 @@ public class DynamicSurveyJsonDoc {
     @Indexed(unique = true)
     private Long recordId;
 
-    private Map<String, Object> jsonData;
+    private String jsonData;
 
-    private Map<String, Object> otherJson;
+    private String otherJson;
 }

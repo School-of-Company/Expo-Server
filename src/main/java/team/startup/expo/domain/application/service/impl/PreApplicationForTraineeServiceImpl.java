@@ -72,22 +72,12 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
 
         traineeRepository.save(trainee);
 
-        Map<String, Object> answers = parseJson(dto.getInformationJson());
         DynamicJsonData doc = new DynamicJsonData(
                 null,
                 OwnerType.TRAINEE,
                 trainee.getId(),
-                answers
+                dto.getInformationJson()
         );
         dynamicJsonDataRepository.save(doc);
-    }
-
-    private Map<String, Object> parseJson(String raw) {
-        try {
-            if (raw == null || raw.isBlank()) return null;
-            return objectMapper.readValue(raw, new TypeReference<Map<String, Object>>() {});
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

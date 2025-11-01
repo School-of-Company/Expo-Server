@@ -1,6 +1,5 @@
 package team.startup.expo.domain.application.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.admin.entity.Authority;
@@ -20,7 +19,6 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
-import java.util.Map;
 import java.util.UUID;
 
 @TransactionService
@@ -69,7 +67,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
 
         standardParticipantRepository.save(standardParticipant);
 
-        Map<String, Object> answers = parseJson(dto.getInformationJson());
+        String answers = dto.getInformationJson();
         DynamicJsonData doc = new DynamicJsonData(
                 null,
                 OwnerType.STANDARD_PARTICIPANT,
@@ -84,15 +82,6 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
     public String generateUniquePhoneNumber() {
         String temporaryPhoneNumber = UUID.randomUUID().toString().replaceAll("[^0-9]", "").substring(0, 8);
         return "000" + temporaryPhoneNumber.substring(0, 4) + temporaryPhoneNumber.substring(4);
-    }
-
-    private Map<String, Object> parseJson(String raw) {
-        try {
-            if (raw == null || raw.isBlank()) return null;
-            return objectMapper.readValue(raw, new TypeReference<Map<String, Object>>() {});
-        } catch (Exception e) {
-            return null;
-        }
     }
 
 }

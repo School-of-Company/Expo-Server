@@ -30,7 +30,7 @@ public class SurveyRequestDto {
         private String title;
 
         @NotNull
-        private Map<String, Object> jsonData;
+        private String jsonData;
 
         @NotNull
         private FormType formType;
@@ -38,6 +38,6 @@ public class SurveyRequestDto {
         @NotNull
         private Boolean requiredStatus;
 
-        private Map<String, Object> otherJson;
+        private String otherJson;
     }
 }

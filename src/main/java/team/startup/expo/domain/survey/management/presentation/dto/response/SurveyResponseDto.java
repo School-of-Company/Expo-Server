@@ -25,9 +25,9 @@ public class SurveyResponseDto {
     @NoArgsConstructor
     public static class DynamicSurveyResponseDto {
         private String title;
-        private Map<String, Object> jsonData;
+        private String jsonData;
         private FormType formType;
         private Boolean requiredStatus;
-        private Map<String, Object> otherJson;
+        private String otherJson;
     }
 }

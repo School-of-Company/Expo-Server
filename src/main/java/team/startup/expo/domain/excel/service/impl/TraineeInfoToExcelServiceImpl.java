@@ -1,5 +1,6 @@
 package team.startup.expo.domain.excel.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,8 @@ import java.util.*;
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
 public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
@@ -66,8 +69,12 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
                         .findByOwnerTypeAndOwnerId(OwnerType.TRAINEE, trainee.getId())
                         .orElse(null);
-                if (infoDoc != null && infoDoc.getAnswers() != null) {
-                    dynamicKeys.addAll(infoDoc.getAnswers().keySet());
+                if (infoDoc != null && infoDoc.getAnswers() != null && !infoDoc.getAnswers().isBlank()) {
+                    Map<String, String> parsed = OBJECT_MAPPER.readValue(
+                            infoDoc.getAnswers(),
+                            Map.class
+                    );
+                    dynamicKeys.addAll(parsed.keySet());
                 }
             }
 
@@ -92,9 +99,13 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
                         .findByOwnerTypeAndOwnerId(OwnerType.TRAINEE, trainee.getId())
                         .orElse(null);
-                if (infoDoc != null && infoDoc.getAnswers() != null) {
-                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
-                        jsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+                if (infoDoc != null && infoDoc.getAnswers() != null && !infoDoc.getAnswers().isBlank()) {
+                    Map<String, String> parsed = OBJECT_MAPPER.readValue(
+                            infoDoc.getAnswers(),
+                            Map.class
+                    );
+                    for (Map.Entry<String, String> entry : parsed.entrySet()) {
+                        jsonMap.put(entry.getKey(), entry.getValue() != null ? entry.getValue() : "");
                     }
                 }
 

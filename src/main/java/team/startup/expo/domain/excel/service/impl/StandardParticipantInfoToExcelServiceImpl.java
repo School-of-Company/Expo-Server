@@ -105,7 +105,11 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                     .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, firstParticipant.getId())
                     .orElse(null);
             if (firstInfo != null && firstInfo.getAnswers() != null) {
-                infoDynamicKeys.addAll(firstInfo.getAnswers().keySet());
+                try {
+                    String sanitizedInfoHeaderJson = sanitizeJson(firstInfo.getAnswers());
+                    Map infoHeaderMap = objectMapper.readValue(sanitizedInfoHeaderJson, Map.class);
+                    infoDynamicKeys.addAll(infoHeaderMap.keySet());
+                } catch (Exception ignored) {}
             }
 
             Set<String> surveyDynamicKeys = new LinkedHashSet<>();
@@ -113,10 +117,11 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             for (StandardParticipant participant : standardParticipantList) {
                 StandardParticipantSurveyAnswer answer = participantSurveyAnswerMap.get(participant.getId());
                 if (answer != null && answer.getAnswerJson() != null) {
-                    String sanitizedSurveyHeaderJson = sanitizeJson(answer.getAnswerJson());
-                    Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
-                    surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
-                    break;
+                    try {
+                        String sanitizedSurveyHeaderJson = sanitizeJson(answer.getAnswerJson());
+                        Map surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
+                        surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
+                    } catch (Exception ignored) {}
                 }
             }
 
@@ -154,32 +159,37 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 }
                 applyTypeCell.setCellStyle(bodyStyle);
 
-                Map<String, String> infoJsonMap = new HashMap<>();
+                Map infoJsonMap = new HashMap();
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
                         .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, participant.getId())
                         .orElse(null);
                 if (infoDoc != null && infoDoc.getAnswers() != null) {
-                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
-                        infoJsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
-                    }
+                    try {
+                        String sanitizedInfoJson = sanitizeJson(infoDoc.getAnswers());
+                        infoJsonMap = objectMapper.readValue(sanitizedInfoJson, Map.class);
+                    } catch (Exception ignored) {}
                 }
 
                 for (String key : infoDynamicKeys) {
+                    Object v = infoJsonMap.containsKey(key) ? infoJsonMap.get(key) : "";
                     Cell cell = row.createCell(cellIndex++);
-                    cell.setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    cell.setCellValue(v != null ? String.valueOf(v) : "");
                     cell.setCellStyle(bodyStyle);
                 }
 
-                Map<String, String> answerJsonMap = new HashMap<>();
+                Map answerJsonMap = new HashMap();
                 StandardParticipantSurveyAnswer surveyAnswer = participantSurveyAnswerMap.get(participant.getId());
                 if (surveyAnswer != null && surveyAnswer.getAnswerJson() != null) {
-                    String sanitizedAnswerJson = sanitizeJson(surveyAnswer.getAnswerJson());
-                    answerJsonMap = objectMapper.readValue(sanitizedAnswerJson, Map.class);
+                    try {
+                        String sanitizedAnswerJson = sanitizeJson(surveyAnswer.getAnswerJson());
+                        answerJsonMap = objectMapper.readValue(sanitizedAnswerJson, Map.class);
+                    } catch (Exception ignored) {}
                 }
 
                 for (String key : surveyDynamicKeys) {
+                    Object v = answerJsonMap.containsKey(key) ? answerJsonMap.get(key) : "";
                     Cell cell = row.createCell(cellIndex++);
-                    cell.setCellValue(answerJsonMap.getOrDefault(key, ""));
+                    cell.setCellValue(v != null ? String.valueOf(v) : "");
                     cell.setCellStyle(bodyStyle);
                 }
             }

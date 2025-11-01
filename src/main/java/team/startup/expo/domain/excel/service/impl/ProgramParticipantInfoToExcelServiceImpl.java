@@ -1,4 +1,5 @@
 package team.startup.expo.domain.excel.service.impl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,6 +30,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
     private final StandardProgramUserRepository standardProgramUserRepository;
     private final StandardProgramRepository standardProgramRepository;
     private final DynamicJsonDataRepository dynamicJsonDataRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void execute(String expoId, Long programId, HttpServletResponse res) {
         try (Workbook workbook = new XSSFWorkbook()) {
@@ -65,13 +67,18 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             List<String> headers = new ArrayList<>(List.of("순위", "이름", "전화번호", "개인정보 동의 여부"));
 
             Set<String> infoDynamicKeys = new LinkedHashSet<>();
-            if (!standardParticipants.isEmpty()) {
-                StandardParticipant first = standardParticipants.get(0);
-                DynamicJsonData firstInfo = dynamicJsonDataRepository
-                        .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, first.getId())
+            for (StandardParticipant sp : standardParticipants) {
+                DynamicJsonData doc = dynamicJsonDataRepository
+                        .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, sp.getId())
                         .orElse(null);
-                if (firstInfo != null && firstInfo.getAnswers() != null) {
-                    infoDynamicKeys.addAll(firstInfo.getAnswers().keySet());
+                if (doc != null && doc.getAnswers() != null) {
+                    try {
+                        Map parsed = objectMapper.readValue(doc.getAnswers(), Map.class);
+                        for (Object k : parsed.keySet()) {
+                            infoDynamicKeys.add(String.valueOf(k));
+                        }
+                    } catch (Exception ignore) {
+                    }
                 }
             }
 
@@ -98,19 +105,25 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
                 row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
                 row.createCell(cellIndex++).setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
 
-                Map<String, String> infoJsonMap = new HashMap<>();
+                Map infoJsonMap = new HashMap();
                 DynamicJsonData infoDoc = dynamicJsonDataRepository
                         .findByOwnerTypeAndOwnerId(OwnerType.STANDARD_PARTICIPANT, participant.getId())
                         .orElse(null);
                 if (infoDoc != null && infoDoc.getAnswers() != null) {
-                    for (Map.Entry<String, Object> entry : infoDoc.getAnswers().entrySet()) {
-                        infoJsonMap.put(entry.getKey(), entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+                    try {
+                        Map parsed = objectMapper.readValue(infoDoc.getAnswers(), Map.class);
+                        for (Object k : parsed.keySet()) {
+                            Object v = parsed.get(k);
+                            infoJsonMap.put(k, v != null ? String.valueOf(v) : "");
+                        }
+                    } catch (Exception ignore) {
                     }
                 }
 
                 for (String key : infoDynamicKeys) {
                     Cell c = row.createCell(cellIndex++);
-                    c.setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    Object v = infoJsonMap.containsKey(key) ? infoJsonMap.get(key) : "";
+                    c.setCellValue(String.valueOf(v));
                     c.setCellStyle(bodyStyle);
                 }
 

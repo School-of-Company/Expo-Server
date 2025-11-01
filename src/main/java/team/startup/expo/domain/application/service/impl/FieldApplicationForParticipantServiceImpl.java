@@ -1,5 +1,4 @@
 package team.startup.expo.domain.application.service.impl;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Map;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
@@ -75,7 +74,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
-        Map<String, Object> answers = parseJson(dto.getInformationJson());
+        String answers = dto.getInformationJson();
         DynamicJsonData doc = new DynamicJsonData(
                 null,
                 OwnerType.STANDARD_PARTICIPANT,
@@ -83,14 +82,5 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 answers
         );
         dynamicJsonDataRepository.save(doc);
-    }
-
-    private Map<String, Object> parseJson(String raw) {
-        try {
-            if (raw == null || raw.isBlank()) return null;
-            return objectMapper.readValue(raw, new TypeReference<Map<String, Object>>() {});
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

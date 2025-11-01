@@ -25,5 +25,5 @@ public class DynamicJsonData {
     @Indexed
     private Long ownerId;
 
-    private Map<String, Object> answers;
+    private String answers;
 }
