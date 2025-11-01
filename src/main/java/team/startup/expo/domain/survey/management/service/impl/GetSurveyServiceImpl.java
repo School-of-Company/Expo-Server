@@ -19,6 +19,8 @@ import team.startup.expo.domain.survey.management.service.GetSurveyService;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
@@ -40,9 +42,15 @@ public class GetSurveyServiceImpl implements GetSurveyService {
 
         List<DynamicSurvey> dynamicSurveyList = dynamicSurveyRepository.findBySurveyId(survey.getId());
 
+        List<Long> ids = dynamicSurveyList.stream()
+                .map(DynamicSurvey::getId)
+                .toList();
+        Map<Long, DynamicSurveyJsonDoc> docMap = dynamicSurveyJsonRepository.findByRecordIdIn(ids).stream()
+                .collect(Collectors.toMap(DynamicSurveyJsonDoc::getRecordId, d -> d));
+
         List<SurveyResponseDto.DynamicSurveyResponseDto> dynamicSurveyResponseDto = dynamicSurveyList.stream()
                 .map(dynamicSurvey -> {
-                    DynamicSurveyJsonDoc doc = dynamicSurveyJsonRepository.findByRecordId(dynamicSurvey.getId()).orElse(null);
+                    DynamicSurveyJsonDoc doc = docMap.get(dynamicSurvey.getId());
                     return SurveyResponseDto.DynamicSurveyResponseDto.builder()
                         .title(dynamicSurvey.getTitle())
                         .jsonData(doc != null ? doc.getJsonData() : null)

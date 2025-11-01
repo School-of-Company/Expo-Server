@@ -20,6 +20,8 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
@@ -41,9 +43,16 @@ public class GetFormServiceImpl implements GetFormService {
 
         List<DynamicForm> dynamicFormList = dynamicFormRepository.findByFormId(form.getId());
 
+        List<Long> ids = dynamicFormList.stream()
+                .map(DynamicForm::getId)
+                .toList();
+
+        Map<Long, DynamicFormJsonDoc> docMap = dynamicFormJsonRepository.findByRecordIdIn(ids).stream()
+                .collect(Collectors.toMap(DynamicFormJsonDoc::getRecordId, d -> d));
+
         List<GetFormResponseDto.DynamicFormRequestDto> dynamicFormRequestDtoList = dynamicFormList.stream()
                 .map(dynamicForm -> {
-                    DynamicFormJsonDoc doc = dynamicFormJsonRepository.findByRecordId(dynamicForm.getId()).orElse(null);
+                    DynamicFormJsonDoc doc = docMap.get(dynamicForm.getId());
                     return GetFormResponseDto.DynamicFormRequestDto.builder()
                             .title(dynamicForm.getTitle())
                             .jsonData(doc != null ? doc.getJsonData() : null)
