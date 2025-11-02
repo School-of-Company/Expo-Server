@@ -46,17 +46,22 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
-            throw new AlreadyApplicationUserException();
+//        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
+//            throw new AlreadyApplicationUserException();
 
         ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
+
+        if (traineeRepository.existsByTrainingIdAndExpo(parsedInfo.trainingId, expo) || traineeRepository.existsByPhoneNumberAndExpo(parsedInfo.phoneNumber, expo)) {
+            throw new AlreadyApplicationUserException();
+        }
+
         saveTrainee(dto, expo, parsedInfo);
 
-        try {
-            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, parsedInfo.phoneNumber, Authority.ROLE_TRAINEE));
-        } catch (Exception e) {
-            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
-        }
+//        try {
+//            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, parsedInfo.phoneNumber, Authority.ROLE_TRAINEE));
+//        } catch (Exception e) {
+//            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+//        }
     }
 
     private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo, PreApplicationForTraineeServiceImpl.ParsedInfo parsedInfo) {
