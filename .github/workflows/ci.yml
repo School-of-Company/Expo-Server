@@ -47,4 +47,5 @@ jobs:
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+        
+
