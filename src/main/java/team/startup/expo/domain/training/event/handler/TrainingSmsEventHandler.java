@@ -40,6 +40,7 @@ public class TrainingSmsEventHandler {
     @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void sendTrainingSmsHandler(TrainingSmsEvent event) {
+
         try {
             Expo expo = expoRepository.findById(event.getExpoId())
                     .orElseThrow(NotFoundExpoException::new);
