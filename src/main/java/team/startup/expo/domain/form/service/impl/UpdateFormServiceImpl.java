@@ -16,6 +16,8 @@ import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
 import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
 
+import java.util.List;
+
 @TransactionService
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "Form")
@@ -33,6 +35,10 @@ public class UpdateFormServiceImpl implements UpdateFormService {
 
         Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, dto.getParticipantType(), dto.getApplicationType())
                 .orElseThrow(NotFoundFormException::new);
+
+        List<Long> dynamicFormIds = dynamicFormRepository.findIdsByFormId(form.getId());
+        dynamicFormRepository.deleteByFormId(form.getId());
+        dynamicFormJsonRepository.deleteByRecordIdIn(dynamicFormIds);
 
         form.updateForm(dto);
         dto.getDynamicForm().forEach(dynamicForm -> {saveDynamicForm(dynamicForm, form);});
