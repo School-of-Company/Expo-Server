@@ -10,5 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class SmsProperties {
     private String apiKey;
     private String apiSecret;
-    private String fromNumber;
+    private String fromStandardNumber;
+    private String fromTraineeNumber;
 }

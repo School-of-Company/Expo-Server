@@ -60,7 +60,7 @@ public class SendQrServiceImpl implements SendQrService {
             String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
             byte[] qrBytes = createQr(information);
 
-            Message message = createMessage(qrBytes, dto);
+            Message message = createMessage(qrBytes, dto, smsProperties.getFromStandardNumber());
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         } else if (dto.getAuthority() == Authority.ROLE_TRAINEE) {
@@ -72,7 +72,7 @@ public class SendQrServiceImpl implements SendQrService {
             byte[] qrBytes = createQr(information);
 
 
-            Message message = createMessage(qrBytes, dto);
+            Message message = createMessage(qrBytes, dto, smsProperties.getFromTraineeNumber());
 
             response = messageService.sendOne(new SingleMessageSendingRequest(message));
         }
@@ -97,7 +97,7 @@ public class SendQrServiceImpl implements SendQrService {
         return bytes;
     }
 
-    private Message createMessage(byte[] qrBytes, SendQrRequestDto dto) {
+    private Message createMessage(byte[] qrBytes, SendQrRequestDto dto, String phoneNumber) {
         try {
             Path tempFilePath = Files.createTempFile("temp-qr", ".jpg");
             Files.write(tempFilePath, qrBytes);
@@ -111,7 +111,7 @@ public class SendQrServiceImpl implements SendQrService {
             }
 
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(phoneNumber);
             message.setTo(dto.getPhoneNumber());
             message.setText("QR 코드가 포함된 메시지입니다.");
             message.setImageId(imageId);

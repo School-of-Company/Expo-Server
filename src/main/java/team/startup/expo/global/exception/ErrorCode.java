@@ -36,6 +36,8 @@ public enum ErrorCode {
     ADMIN_STATE_PENDING(403, "아직 관리자가 보류 중입니다"),
 
     // training
+    INVALID_TRAINING_SELECTION(400, "연수 선택 개수가 유효하지 않습니다."),
+    REQUIRED_KEYNOTE_OR_TEACHER_MISSING(400, "공통 연수는 필수입니다."),
     NOT_FOUND_TRAINING_PROGRAM(404, "연수 프로그램을 찾지 못했습니다."),
     NOT_FOUND_TRAINING_PROGRAM_USER(404, "연수 프로그램을 참가 중인 유저를 찾지 못 했습니다."),
 

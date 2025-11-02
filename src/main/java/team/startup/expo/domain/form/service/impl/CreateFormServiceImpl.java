@@ -11,6 +11,8 @@ import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.form.repository.DynamicFormRepository;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.form.service.CreateFormService;
+import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
+import team.startup.expo.domain.mongo.repository.DynamicFormJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
@@ -20,24 +22,26 @@ public class CreateFormServiceImpl implements CreateFormService {
     private final FormRepository formRepository;
     private final DynamicFormRepository dynamicFormRepository;
     private final ExpoRepository expoRepository;
+    private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
     public void execute(String expoId, FormRequestDto formRequestDto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        if (formRepository.existsByExpoAndParticipationTypeAndRegistrationType(expo, formRequestDto.getParticipantType(), formRequestDto.getRegistrationType()))
+        if (formRepository.existsByExpoAndParticipationTypeAndApplicationType(expo, formRequestDto.getParticipantType(), formRequestDto.getApplicationType()))
             throw new AlreadyExistFormException();
 
         Form form = saveForm(formRequestDto, expo);
 
-        formRequestDto.getDynamicForm().forEach(dynamicForm -> {saveDynamicForm(dynamicForm, form);});
+        formRequestDto.getDynamicForm().forEach(df -> saveDynamicForm(df, form));
     }
 
     private Form saveForm(FormRequestDto formRequestDto, Expo expo) {
         Form form = Form.builder()
+                .title(formRequestDto.getTitle())
                 .informationText(formRequestDto.getInformationText())
                 .participationType(formRequestDto.getParticipantType())
-                .registrationType(formRequestDto.getRegistrationType())
+                .applicationType(formRequestDto.getApplicationType())
                 .expo(expo)
                 .build();
 
@@ -46,14 +50,19 @@ public class CreateFormServiceImpl implements CreateFormService {
 
     private void saveDynamicForm(FormRequestDto.DynamicFormRequestDto dynamicFormRequestDto, Form form) {
         DynamicForm dynamicForm = DynamicForm.builder()
+                .formId(form.getId())
                 .title(dynamicFormRequestDto.getTitle())
-                .jsonData(dynamicFormRequestDto.getJsonData())
                 .formType(dynamicFormRequestDto.getFormType())
                 .requiredStatus(dynamicFormRequestDto.getRequiredStatus())
-                .otherJson(dynamicFormRequestDto.getOtherJson())
-                .form(form)
                 .build();
+        dynamicForm = dynamicFormRepository.save(dynamicForm);
 
-        dynamicFormRepository.save(dynamicForm);
+        DynamicFormJsonDoc doc = new DynamicFormJsonDoc(
+                null,
+                dynamicForm.getId(),
+                dynamicFormRequestDto.getJsonData(),
+                dynamicFormRequestDto.getOtherJson()
+        );
+        dynamicFormJsonRepository.save(doc);
     }
 }

@@ -17,6 +17,9 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+    mongodb:
+      uri: ${MONGO_URI}
+      auto-index-creation: true
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
@@ -25,7 +28,9 @@ jwt:
 sms:
   apiKey: ${SMS_API_KEY}
   apiSecret: ${SMS_API_SECRET}
-  fromnumber: ${SMS_FROM_NUMBER}
+  fromStandardNumber: ${SMS_FROM_STANDARD_NUMBER}
+  fromTraineeNumber: ${SMS_FROM_TRAINEE_NUMBER}
+
 
 cloud:
   aws:

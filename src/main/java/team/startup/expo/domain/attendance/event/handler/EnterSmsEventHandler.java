@@ -55,7 +55,7 @@ public class EnterSmsEventHandler {
                         "체험 후 꼭 설문에 응답해주세요. ==> https://startup-expo.kr/application/" + expo.getId()
                         + "?formType=survey&userType=STANDARD&applicationType=register&name=" + participant.getName() + "&phoneNumber=" + participant.getPhoneNumber();
 
-                Message message = createMessage(event, information);
+                Message message = createMessage(event, information, smsProperties.getFromStandardNumber());
 
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
             } else if (event.getAuthority() == Authority.ROLE_TRAINEE) {
@@ -65,7 +65,7 @@ public class EnterSmsEventHandler {
                 String information = "박람회 퇴장 문자입니다. \n 박람회 만족도 조사에 참가해주세요. \n https://startup-expo.kr/application/" + expo.getId()
                         + "?formType=survey&userType=TRAINEE&applicationType=register&name=" + trainee.getName() + "&phoneNumber=" + trainee.getPhoneNumber();
 
-                Message message = createMessage(event, information);
+                Message message = createMessage(event, information, smsProperties.getFromTraineeNumber());
 
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
             }
@@ -76,10 +76,10 @@ public class EnterSmsEventHandler {
         return CompletableFuture.completedFuture(response);
     }
 
-    private Message createMessage(EnterSmsEvent event, String information) {
+    private Message createMessage(EnterSmsEvent event, String information, String phoneNumber) {
         try {
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(phoneNumber);
             message.setTo(event.getPhoneNumber());
             message.setText(information);
 

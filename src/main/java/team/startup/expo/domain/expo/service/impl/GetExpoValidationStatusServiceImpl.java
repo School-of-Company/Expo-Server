@@ -7,10 +7,10 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.expo.service.GetExpoValidationStatusService;
 import team.startup.expo.domain.form.entity.Form;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.form.entity.RegistrationType;
 import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.survey.management.entity.Survey;
 import team.startup.expo.domain.survey.management.repository.SurveyRepository;
+import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.util.Collections;
@@ -60,8 +60,8 @@ public class GetExpoValidationStatusServiceImpl implements GetExpoValidationStat
 
             return GetExpoValidationStatusResponseDto.ExpoValidDto.builder()
                     .expoId(expo.getId())
-                    .preStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.PRE))
-                    .siteStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getRegistrationType() == RegistrationType.SITE))
+                    .preStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getApplicationType() == ApplicationType.PRE))
+                    .siteStandardFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.STANDARD && f.getApplicationType() == ApplicationType.FIELD))
                     .traineeFormCreatedStatus(formList.stream().anyMatch(f -> f.getParticipationType() == ParticipationType.TRAINEE))
                     .StandardSurveyCreatedStatus(surveyList.stream().anyMatch(s -> s.getParticipationType() == ParticipationType.STANDARD))
                     .traineeSurveyCreatedStatus(surveyList.stream().anyMatch(s -> s.getParticipationType() == ParticipationType.TRAINEE))

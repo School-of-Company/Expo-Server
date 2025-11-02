@@ -67,33 +67,23 @@ public class SendQrEventHandler {
             if (sendQrEvent.getAuthority() == Authority.ROLE_STANDARD) {
                 StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundParticipantException::new);
-                
                 String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
                 byte[] qrBytes = createQr(information);
-
-                Message message = createMessage(qrBytes, sendQrEvent);
-
+                Message message = createMessage(qrBytes, sendQrEvent, smsProperties.getFromStandardNumber());
                 participant.plusSmsTryTime();
-
                 standardParticipantRepository.save(participant);
-
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
             } else if (sendQrEvent.getAuthority() == Authority.ROLE_TRAINEE) {
                 Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundTraineeException::new);
-
                 String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
-
                 byte[] qrBytes = createQr(information);
-
-                Message message = createMessage(qrBytes, sendQrEvent);
-
+                Message message = createMessage(qrBytes, sendQrEvent, smsProperties.getFromTraineeNumber());
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
             }
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-
         return CompletableFuture.completedFuture(response);
     }
 
@@ -101,38 +91,32 @@ public class SendQrEventHandler {
         byte[] bytes = null;
         try {
             BitMatrix encode = new MultiFormatWriter().encode(information, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-
             MatrixToImageWriter.writeToStream(encode, "JPG", out);
-
             bytes = out.toByteArray();
         } catch (IOException | WriterException e) {
-            log.error(e.getMessage(), e);
         }
-
         return bytes;
     }
 
-    private Message createMessage(byte[] qrBytes, SendQrEvent sendQrEvent) {
+    private Message createMessage(byte[] qrBytes, SendQrEvent sendQrEvent, String phoneNumber) {
         try {
             Path tempFilePath = Files.createTempFile("temp-qr", ".jpg");
             Files.write(tempFilePath, qrBytes);
             File tempFile = tempFilePath.toFile();
-
             String objectUrl = s3Util.qrUpload(tempFile);
-
+            String contactNumber = phoneNumber.equals(smsProperties.getFromStandardNumber()) ? "062-380-4504" : "062-380-4587";
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(phoneNumber);
             message.setTo(sendQrEvent.getPhoneNumber());
-            message.setText("2025 AI·SW체험축전 사전 등록 완료\n" +
-                    "2025 광주광역시교육청 AI·SW체험축전 사전 등록이 완료되었습니다.\n" +
-                    "출입 QR코드 링크: " + "https://s3.startup-expo.kr/" + objectUrl + "\n" +
-                    "☆☆ 행사장 입장 시각: 9시  (문의) ☎062-380-4769");
 
+            message.setText("2025 광주광역시교육청 AI광주미래교육 박람회 사전 등록 완료\n" +
+                    "2025 광주광역시교육청 AI광주미래교육 박람회 사전 등록이 완료되었습니다.\n" +
+                    "출입 QR코드 링크: " + "https://qr.startup-expo.kr/" + objectUrl + "\n" +
+                    "(문의) ☎" + contactNumber);
             return message;
-        } catch (IOException e) {}
-
+        } catch (IOException e) {
+        }
         return null;
     }
 }

@@ -1,27 +1,51 @@
 name: CI
-
 on:
   push:
     branches: ["develop", "main"]
   pull_request:
     branches: ["*"]
-
 jobs:
   CI:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: "17"
           distribution: "temurin"
-
+      
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
+      
       - name: Build with Gradle
         run: ./gradlew clean build -x test
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      
+      - name: Build Docker image
+        run: |
+          docker build -t expo-server .
+      
+      - name: Tag and Push to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: expo-ecr
+        run: |
+          IMAGE_TAG=expo-$(date +%Y%m%d%H%M%S)
+          docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        
+

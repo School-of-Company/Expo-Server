@@ -9,10 +9,8 @@ import team.startup.expo.domain.participant.entity.SchoolLevel;
 @NoArgsConstructor
 public class ApplicationForParticipantRequestDto {
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String phoneNumber;
 
     @NotNull
