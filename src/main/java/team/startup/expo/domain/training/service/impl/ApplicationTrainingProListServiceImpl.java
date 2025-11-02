@@ -61,28 +61,22 @@ public class ApplicationTrainingProListServiceImpl implements ApplicationTrainin
         }
         String s = startedAt.trim();
 
-        // "yyyy-MM-dd HH:mm" 같은 공백 구분을 ISO_LOCAL_DATE_TIME 형태로 보정
         if (s.matches("^\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}(:\\d{2})?$")) {
             s = s.replace(' ', 'T');
         }
 
-        // 1) 날짜만
         try { return LocalDate.parse(s, DateTimeFormatter.ISO_LOCAL_DATE); }
         catch (DateTimeParseException ignored) {}
 
-        // 2) 로컬 날짜시간
         try { return LocalDateTime.parse(s, DateTimeFormatter.ISO_LOCAL_DATE_TIME).toLocalDate(); }
         catch (DateTimeParseException ignored) {}
 
-        // 3) 오프셋 포함
         try { return OffsetDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toLocalDate(); }
         catch (DateTimeParseException ignored) {}
 
-        // 4) 존 포함
         try { return ZonedDateTime.parse(s, DateTimeFormatter.ISO_ZONED_DATE_TIME).toLocalDate(); }
         catch (DateTimeParseException e) {
             throw new IllegalArgumentException("startedAt 포맷이 올바르지 않습니다: " + startedAt);
         }
     }
-}
 }
