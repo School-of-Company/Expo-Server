@@ -128,7 +128,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         }
 
         if (name == null || phone == null) {
-            throw new IllegalStateException("이름 또는 전화번호 추출 실패");
+            throw new IllegalStateException("이름 또는 전화번호, 연수원 아이디 추출 실패");
         }
         return new PreApplicationForTraineeServiceImpl.ParsedInfo(name, phone, trainingId);
     }
@@ -164,6 +164,8 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private record ParsedInfo(String name, String phoneNumber, String trainingId) {}
 
     private boolean isTrainingIdLabel(String norm) {
-        return norm.equals("연수원 아이디") || norm.equals("trainingid") || norm.equals("traineeid") || norm.equals("training");
+        return norm.contains("연수원아이디")
+                || norm.contains("trainingid")
+                || norm.contains("traineeid");
     }
 }
