@@ -28,7 +28,9 @@ jwt:
 sms:
   apiKey: ${SMS_API_KEY}
   apiSecret: ${SMS_API_SECRET}
-  fromnumber: ${SMS_FROM_NUMBER}
+  fromStandardNumber: ${SMS_FROM_STANDARD_NUMBER}
+  fromTraineeNumber: ${SMS_FROM_TRAINEE_NUMBER}
+
 
 cloud:
   aws:

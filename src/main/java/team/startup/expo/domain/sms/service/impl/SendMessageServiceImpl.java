@@ -56,7 +56,7 @@ public class SendMessageServiceImpl implements SendMessageService {
 
         for (Trainee trainee : traineeList) {
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(smsProperties.getFromTraineeNumber());
             message.setTo(trainee.getPhoneNumber());
             message.setText(dto.getTitle() + "\n" + dto.getContent());
 
@@ -76,7 +76,7 @@ public class SendMessageServiceImpl implements SendMessageService {
 
         for (StandardParticipant participant : participantList) {
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(smsProperties.getFromStandardNumber());
             message.setTo(participant.getPhoneNumber());
             message.setText(dto.getTitle() + "\n" + dto.getContent());
 

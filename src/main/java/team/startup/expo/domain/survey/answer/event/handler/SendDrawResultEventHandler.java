@@ -27,7 +27,7 @@ public class SendDrawResultEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<SingleMessageSentResponse> sendDrawResultEventHandler(SendDrawResultEvent event) {
         Message message = new Message();
-        message.setFrom(smsProperties.getFromNumber());
+        message.setFrom(smsProperties.getFromStandardNumber());
         message.setTo(event.getPhoneNumber());
         message.setText("축 당첨! 설문조사 행운의 숫자에 당첨되셨습니다. 선물은 입구 운영본부에서 받아가세요!\n" +
                 event.getDrawNumber() + "번!");

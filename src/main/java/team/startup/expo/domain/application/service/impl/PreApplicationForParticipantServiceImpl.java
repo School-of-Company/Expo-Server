@@ -48,27 +48,29 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
 
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(dto.getPhoneNumber(), expo);
 
+        ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
+
         if (standardParticipant != null) {
             if (standardParticipant.getSmsTryTime() >= 2) {
                 throw new AlreadyApplicationUserException();
             }
         } else {
-            saveParticipant(expo, dto);
+            saveParticipant(expo, dto, parsedInfo);
             expo.plusApplicationPerson();
         }
 
         try {
-            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
+            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, parsedInfo.phoneNumber, Authority.ROLE_STANDARD));
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto) {
+    private void saveParticipant(Expo expo, ApplicationForParticipantRequestDto dto, ParsedInfo parsedInfo) {
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForWrite(dto.getPhoneNumber(), expo)
                 .orElse(StandardParticipant.builder()
-                        .name(dto.getName())
-                        .phoneNumber(dto.getPhoneNumber())
+                        .name(parsedInfo.name)
+                        .phoneNumber(parsedInfo.phoneNumber)
                         .authority(Authority.ROLE_STANDARD)
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
@@ -87,4 +89,77 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
         dynamicJsonDataRepository.save(doc);
     }
 
+    private ParsedInfo extractNameAndPhone(String informationJson) {
+        Map<String, Object> map;
+        try {
+            map = objectMapper.readValue(informationJson, new TypeReference<Map<String, Object>>() {});
+        } catch (Exception e) {
+            throw new IllegalArgumentException("informationJson parse error", e);
+        }
+
+        String name = null;
+        String phone = null;
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String rawKey = entry.getKey();
+            Object val = entry.getValue();
+            if (val == null) continue;
+            String value = String.valueOf(val).trim();
+            if (value.isEmpty()) continue;
+
+            String norm = normalizeLabel(rawKey);
+
+            if (isNameLabel(norm)) {
+                name = value;
+            } else if (isPhoneLabel(norm)) {
+                phone = onlyDigits(value);
+            }
+        }
+
+        if (phone == null) {
+            for (Object v : map.values()) {
+                if (v == null) continue;
+                String digits = onlyDigits(String.valueOf(v));
+                if (digits.matches("^01[016789]\\d{7,8}$")) {
+                    phone = digits;
+                    break;
+                }
+            }
+        }
+
+        if (name == null || phone == null) {
+            throw new IllegalStateException("이름 또는 전화번호 추출 실패");
+        }
+        return new ParsedInfo(name, phone);
+    }
+
+    private String normalizeLabel(String s) {
+        if (s == null) return "";
+        String noParen = s.replaceAll("\\([^)]*\\)", "");
+        String compact = noParen.replaceAll("\\s+", "")
+                                .replaceAll("[^\\p{L}\\p{N}]", "")
+                                .toLowerCase();
+        return compact;
+    }
+
+    private boolean isNameLabel(String norm) {
+        return norm.equals("성명") || norm.equals("이름") || norm.equals("name");
+    }
+
+    private boolean isPhoneLabel(String norm) {
+        return norm.equals("휴대폰번호")
+                || norm.equals("휴대폰")
+                || norm.equals("전화번호")
+                || norm.equals("연락처")
+                || norm.equals("phonenumber")
+                || norm.equals("phone")
+                || norm.equals("mobile");
+    }
+
+    private String onlyDigits(String s) {
+        if (s == null) return null;
+        return s.replaceAll("\\D", "");
+    }
+
+    private record ParsedInfo(String name, String phoneNumber) {}
 }
