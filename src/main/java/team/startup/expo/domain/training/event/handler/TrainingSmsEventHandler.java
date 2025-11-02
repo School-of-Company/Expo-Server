@@ -56,7 +56,11 @@ public class TrainingSmsEventHandler {
                     .collect(Collectors.toList());
 
             boolean hasKeynote = programs.stream()
-                    .anyMatch(p -> containsAny(p.getTitle(), "기조 강연"));
+                    .anyMatch(p -> containsAny(p.getTitle(), "기조 강연", "기조"));
+            boolean hasSpecial = programs.stream()
+                    .anyMatch(p -> containsAny(p.getTitle(), "특별"));
+            boolean hasTeacher = programs.stream()
+                    .anyMatch(p -> containsAny(p.getTitle(), "교사"));
             int electiveLimit = hasKeynote ? 2 : 4;
 
             if (common.isEmpty()) {
@@ -75,30 +79,28 @@ public class TrainingSmsEventHandler {
             included.addAll(common);
             included.addAll(elective);
 
-            long electiveCount = elective.size();
-            long specialCount = included.stream()
-                    .filter(p -> containsAny(p.getTitle(), "특별"))
-                    .count();
-            long teacherCount = included.stream()
-                    .filter(p -> containsAny(p.getTitle(), "교사"))
-                    .count();
-
-            int gi = 0;
-            if (electiveCount == 1) gi = Math.max(gi, 1);
-            else if (electiveCount >= 2) gi = Math.max(gi, 2);
-            if (specialCount >= 1 && specialCount <= 4) gi = Math.max(gi, (int) (2 + specialCount));
-            else if (specialCount > 4) gi = Math.max(gi, 6);
-            if (teacherCount >= 1 && teacherCount <= 4) gi = Math.max(gi, (int) (6 + teacherCount));
-            else if (teacherCount > 4) gi = Math.max(gi, 10);
-
             int totalHours = included.stream()
                     .mapToInt(p -> hoursBetween(p.getStartedAt(), p.getEndedAt()))
                     .sum();
 
+            int electiveCount = elective.size();
+            int clamped = Math.max(1, Math.min(electiveLimit, electiveCount));
+            int gi;
+            if (hasKeynote) {
+                gi = 0 + clamped;
+            } else if (hasSpecial) {
+                gi = 2 + clamped;
+            } else if (hasTeacher) {
+                gi = 6 + clamped;
+            } else {
+                gi = 0 + clamped;
+                gi = clamped;
+            }
+
             String commonLine = common.isEmpty()
                     ? "없음"
                     : common.stream()
-                    .map(p -> String.format("(%s~%s) %s",
+                    .map(p -> String.format("[%s~%s] %s",
                             fmt(p.getStartedAt()),
                             fmt(p.getEndedAt()),
                             p.getTitle()))
@@ -108,7 +110,7 @@ public class TrainingSmsEventHandler {
             for (int i = 0; i < elective.size(); i++) {
                 TrainingProgram p = elective.get(i);
                 electiveLines.append(String.format(
-                        "*선택 %d: (%s~%s) %s%n",
+                        "*선택 %d: [%s~%s] %s%n",
                         i + 1,
                         fmt(p.getStartedAt()),
                         fmt(p.getEndedAt()),
@@ -122,7 +124,7 @@ public class TrainingSmsEventHandler {
                             "%s%n" +
                             "*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
                             "*알찬 연수로 2025 AI광주미래교육 박람회장에서 선생님을 기다리겠습니다. (문의:380-4587)",
-                    gi, totalHours + 1, commonLine, electiveLines.toString().trim()
+                    gi, totalHours, commonLine, electiveLines.toString().trim()
             );
 
             Message message = createMessage(event, smsText);
@@ -157,15 +159,41 @@ public class TrainingSmsEventHandler {
     private static LocalTime parseTime(String s) {
         if (s == null || s.isBlank()) return null;
         String trimmed = s.trim();
-        try { return LocalTime.parse(trimmed, DateTimeFormatter.ofPattern("H:mm")); }
-        catch (DateTimeParseException ignored) {}
-        try { return LocalTime.parse(trimmed, DateTimeFormatter.ofPattern("HH:mm")); }
-        catch (DateTimeParseException ignored) {}
+
         if (trimmed.matches("^\\d{4}$")) {
             String norm = trimmed.substring(0, 2) + ":" + trimmed.substring(2);
             try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
             catch (DateTimeParseException ignored) {}
         }
+
+        try { return LocalTime.parse(trimmed, DateTimeFormatter.ofPattern("H:mm")); }
+        catch (DateTimeParseException ignored) {}
+        try { return LocalTime.parse(trimmed, DateTimeFormatter.ofPattern("HH:mm")); }
+        catch (DateTimeParseException ignored) {}
+
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("(?:T|\\s)?(\\d{1,2}):(\\d{2})")
+                .matcher(trimmed);
+        if (m.find()) {
+            String hh = m.group(1);
+            String mm = m.group(2);
+            String norm = (hh.length() == 1 ? "0" + hh : hh) + ":" + mm;
+            try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
+            catch (DateTimeParseException ignored) {}
+        }
+
+        m = java.util.regex.Pattern
+                .compile("(\\d{1,2})\\s*시\\s*(\\d{1,2})?\\s*분?")
+                .matcher(trimmed);
+        if (m.find()) {
+            String hh = m.group(1);
+            String mm = m.group(2) == null ? "00" : m.group(2);
+            String norm = (hh.length() == 1 ? "0" + hh : hh) + ":" + (mm.length() == 1 ? "0" + mm : mm);
+            try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
+            catch (DateTimeParseException ignored) {}
+        }
+
+        // Fallback: no known pattern
         return null;
     }
 
