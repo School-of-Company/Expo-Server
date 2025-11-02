@@ -16,11 +16,6 @@ import team.startup.expo.domain.training.service.ApplicationTrainingProListServi
 import team.startup.expo.global.annotation.TransactionService;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @TransactionService
@@ -48,35 +43,10 @@ public class ApplicationTrainingProListServiceImpl implements ApplicationTrainin
 
     private void saveTrainingProUser(TrainingProgram trainingProgram, Trainee trainee) {
         trainingProgramUserRepository.save(TrainingProgramUser.builder()
-                .attendanceDate(parseToLocalDate(trainingProgram.getStartedAt()))
+                .attendanceDate(LocalDate.now())
                 .trainingProgram(trainingProgram)
                 .trainee(trainee)
                 .status(false)
                 .build());
-    }
-
-    private LocalDate parseToLocalDate(String startedAt) {
-        if (startedAt == null || startedAt.isBlank()) {
-            throw new IllegalArgumentException("startedAt이 비어있습니다.");
-        }
-        String s = startedAt.trim();
-
-        if (s.matches("^\\d{4}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}(:\\d{2})?$")) {
-            s = s.replace(' ', 'T');
-        }
-
-        try { return LocalDate.parse(s, DateTimeFormatter.ISO_LOCAL_DATE); }
-        catch (DateTimeParseException ignored) {}
-
-        try { return LocalDateTime.parse(s, DateTimeFormatter.ISO_LOCAL_DATE_TIME).toLocalDate(); }
-        catch (DateTimeParseException ignored) {}
-
-        try { return OffsetDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME).toLocalDate(); }
-        catch (DateTimeParseException ignored) {}
-
-        try { return ZonedDateTime.parse(s, DateTimeFormatter.ISO_ZONED_DATE_TIME).toLocalDate(); }
-        catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("startedAt 포맷이 올바르지 않습니다: " + startedAt);
-        }
     }
 }
