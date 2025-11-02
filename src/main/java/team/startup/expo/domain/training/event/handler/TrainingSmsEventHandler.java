@@ -124,7 +124,7 @@ public class TrainingSmsEventHandler {
                             "%s%n" +
                             "*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
                             "*알찬 연수로 2025 AI광주미래교육 박람회장에서 선생님을 기다리겠습니다. (문의:380-4587)",
-                    gi, totalHours, commonLine, electiveLines.toString().trim()
+                    gi, totalHours -1, commonLine, electiveLines.toString().trim()
             );
 
             Message message = createMessage(event, smsText);
