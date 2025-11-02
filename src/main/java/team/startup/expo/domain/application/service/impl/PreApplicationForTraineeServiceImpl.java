@@ -143,13 +143,13 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     }
 
     private boolean isNameLabel(String norm) {
-        return norm.equals("성명") || norm.equals("이름") || norm.equals("name");
+        return norm.contains("성함") || norm.equals("이름") || norm.equals("name");
     }
 
     private boolean isPhoneLabel(String norm) {
         return norm.equals("휴대폰번호")
                 || norm.equals("휴대폰")
-                || norm.equals("전화번호")
+                || norm.contains("전화번호")
                 || norm.equals("연락처")
                 || norm.equals("phonenumber")
                 || norm.equals("phone")
