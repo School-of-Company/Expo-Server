@@ -49,22 +49,23 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
             throw new AlreadyApplicationUserException();
 
-        saveTrainee(dto, expo);
+        ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
+        saveTrainee(dto, expo, parsedInfo);
 
         try {
-            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_TRAINEE));
+            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, parsedInfo.phoneNumber, Authority.ROLE_TRAINEE));
         } catch (Exception e) {
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo) {
+    private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo, PreApplicationForTraineeServiceImpl.ParsedInfo parsedInfo) {
         Trainee trainee = traineeRepository.findByPhoneNumberAndExpoForWrite(dto.getPhoneNumber(), expo)
                 .orElse(Trainee.builder()
-                        .trainingId(dto.getTrainingId())
-                        .phoneNumber(dto.getPhoneNumber())
+                        .trainingId(parsedInfo.trainingId)
+                        .phoneNumber(parsedInfo.phoneNumber)
                         .authority(Authority.ROLE_TRAINEE)
-                        .name(dto.getName())
+                        .name(parsedInfo.name)
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
@@ -79,5 +80,90 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                 dto.getInformationJson()
         );
         dynamicJsonDataRepository.save(doc);
+    }
+
+    private PreApplicationForTraineeServiceImpl.ParsedInfo extractNameAndPhone(String informationJson) {
+        Map<String, Object> map;
+        try {
+            map = objectMapper.readValue(informationJson, new TypeReference<Map<String, Object>>() {});
+        } catch (Exception e) {
+            throw new IllegalArgumentException("informationJson parse error", e);
+        }
+
+        String name = null;
+        String phone = null;
+        String trainingId = null;
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String rawKey = entry.getKey();
+            Object val = entry.getValue();
+            if (val == null) continue;
+            String value = String.valueOf(val).trim();
+            if (value.isEmpty()) continue;
+
+            String norm = normalizeLabel(rawKey);
+
+            if (isNameLabel(norm)) {
+                name = value;
+            } else if (isPhoneLabel(norm)) {
+                phone = onlyDigits(value);
+            } else if (isTrainingIdLabel(norm)) {
+                trainingId = value;
+            }
+        }
+
+        if (phone == null) {
+            for (Object v : map.values()) {
+                if (v == null) continue;
+                String digits = onlyDigits(String.valueOf(v));
+                if (digits.matches("^01[016789]\\d{7,8}$")) {
+                    phone = digits;
+                    break;
+                }
+            }
+        }
+
+        if (trainingId == null) {
+            trainingId = "";
+        }
+
+        if (name == null || phone == null) {
+            throw new IllegalStateException("이름 또는 전화번호 추출 실패");
+        }
+        return new PreApplicationForTraineeServiceImpl.ParsedInfo(name, phone, trainingId);
+    }
+
+    private String normalizeLabel(String s) {
+        if (s == null) return "";
+        String noParen = s.replaceAll("\\([^)]*\\)", "");
+        String compact = noParen.replaceAll("\\s+", "")
+                .replaceAll("[^\\p{L}\\p{N}]", "")
+                .toLowerCase();
+        return compact;
+    }
+
+    private boolean isNameLabel(String norm) {
+        return norm.equals("성명") || norm.equals("이름") || norm.equals("name");
+    }
+
+    private boolean isPhoneLabel(String norm) {
+        return norm.equals("휴대폰번호")
+                || norm.equals("휴대폰")
+                || norm.equals("전화번호")
+                || norm.equals("연락처")
+                || norm.equals("phonenumber")
+                || norm.equals("phone")
+                || norm.equals("mobile");
+    }
+
+    private String onlyDigits(String s) {
+        if (s == null) return null;
+        return s.replaceAll("\\D", "");
+    }
+
+    private record ParsedInfo(String name, String phoneNumber, String trainingId) {}
+
+    private boolean isTrainingIdLabel(String norm) {
+        return norm.equals("연수원 아이디") || norm.equals("trainingid") || norm.equals("traineeid") || norm.equals("training");
     }
 }

@@ -8,13 +8,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ApplicationForTraineeRequestDto {
 
-    @NotNull
     private String trainingId;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String phoneNumber;
 
     @NotNull
