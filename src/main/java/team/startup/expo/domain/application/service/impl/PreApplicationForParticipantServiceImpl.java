@@ -46,9 +46,9 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(dto.getPhoneNumber(), expo);
-
         ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
+
+        StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(parsedInfo.phoneNumber, expo);
 
         if (standardParticipant != null) {
             if (standardParticipant.getSmsTryTime() >= 2) {
