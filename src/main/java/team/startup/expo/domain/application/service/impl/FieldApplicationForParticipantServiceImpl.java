@@ -53,7 +53,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
             expo.plusApplicationPerson();
         }
 
-
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
         } catch (Exception e) {
