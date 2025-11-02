@@ -127,7 +127,7 @@ public class SendQrEventHandler {
             message.setTo(sendQrEvent.getPhoneNumber());
             message.setText("2025 AI·SW체험축전 사전 등록 완료\n" +
                     "2025 광주광역시교육청 AI·SW체험축전 사전 등록이 완료되었습니다.\n" +
-                    "출입 QR코드 링크: " + "https://qr.startup-expo.kr/" + objectUrl + "\n" +
+                    "출입 QR코드 링크: " + "https://s3.startup-expo.kr/" + objectUrl + "\n" +
                     "☆☆ 행사장 입장 시각: 9시  (문의) ☎062-380-4769");
 
             return message;
