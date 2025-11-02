@@ -48,7 +48,3 @@ jobs:
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          git commit -m "Update image tag to ${{ steps.ecr-push.outputs.image_tag }}"
-          git remote set-url origin https://git:${{ secrets.DEVOPS_GITHUB_TOKEN }}@github.com/School-of-Company/Expo-DevOps-V2.git
-          git push origin main
