@@ -105,6 +105,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/training/list/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.POST, "/training/application/{trainingPro_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/training/application/list").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/training/application/list/trainee/{expo_id}").permitAll()
 
                                 // standard
                                 .requestMatchers(HttpMethod.POST, "/standard/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
