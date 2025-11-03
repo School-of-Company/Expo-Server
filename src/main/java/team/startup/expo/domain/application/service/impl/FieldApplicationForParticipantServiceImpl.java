@@ -1,5 +1,7 @@
 package team.startup.expo.domain.application.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.time.LocalDateTime;
 import java.util.Map;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.mongo.entity.OwnerType;
@@ -70,6 +72,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .smsTryTime(0)
                         .expo(expo)
+                        .applicationDate(LocalDateTime.now())
                         .build());
 
         standardParticipantRepository.save(standardParticipant);

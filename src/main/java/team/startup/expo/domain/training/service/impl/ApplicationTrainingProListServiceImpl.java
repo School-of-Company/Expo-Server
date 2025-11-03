@@ -43,10 +43,14 @@ public class ApplicationTrainingProListServiceImpl implements ApplicationTrainin
 
     private void saveTrainingProUser(TrainingProgram trainingProgram, Trainee trainee) {
         trainingProgramUserRepository.save(TrainingProgramUser.builder()
-                .attendanceDate(LocalDate.now())
+                .attendanceDate(parseDate(trainingProgram.getStartedAt()))
                 .trainingProgram(trainingProgram)
                 .trainee(trainee)
                 .status(false)
                 .build());
+    }
+
+    private LocalDate parseDate(String dateTimeStr) {
+        return LocalDate.parse(dateTimeStr.substring(0, 10)); // "yyyy-MM-dd"
     }
 }

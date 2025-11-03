@@ -12,6 +12,8 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -51,6 +53,9 @@ public class StandardParticipant {
 
     @Column(nullable = false)
     private Integer smsTryTime;
+
+    @Column(nullable = false)
+    private LocalDateTime applicationDate;
 
     public void plusSmsTryTime() {
         smsTryTime++;

@@ -25,6 +25,7 @@ import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @TransactionService
@@ -76,6 +77,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .smsTryTime(0)
+                        .applicationDate(LocalDateTime.now())
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
