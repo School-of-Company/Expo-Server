@@ -48,11 +48,11 @@ public class TrainingSmsEventHandler {
             List<TrainingProgram> programs = event.getTrainingPrograms();
 
             List<TrainingProgram> common = programs.stream()
-                    .filter(p -> containsAny(p.getTitle(), "강연", "교사"))
+                    .filter(p -> containsAny(p.getTitle(), "강연", "릴레이"))
                     .collect(Collectors.toList());
 
             List<TrainingProgram> electiveAll = programs.stream()
-                    .filter(p -> !containsAny(p.getTitle(), "강연", "교사"))
+                    .filter(p -> !containsAny(p.getTitle(), "강연", "릴레이"))
                     .collect(Collectors.toList());
 
             boolean hasKeynote = programs.stream()
@@ -60,7 +60,7 @@ public class TrainingSmsEventHandler {
             boolean hasSpecial = programs.stream()
                     .anyMatch(p -> containsAny(p.getTitle(), "특별"));
             boolean hasTeacher = programs.stream()
-                    .anyMatch(p -> containsAny(p.getTitle(), "교사"));
+                    .anyMatch(p -> containsAny(p.getTitle(), "릴레이"));
             int electiveLimit = hasKeynote ? 2 : 4;
 
             if (common.isEmpty()) {
