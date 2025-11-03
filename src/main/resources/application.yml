@@ -37,6 +37,8 @@ cloud:
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
+      instance-profile: false
+      use-default-aws-credentials-chain: false
     region:
       static: ${AWS_STATIC}
     s3:
@@ -54,3 +56,18 @@ management:
     web:
       exposure:
         include: "*"
+
+server:
+  tomcat:
+    remoteip:
+      remote-ip-header: X-Forwarded-For
+      protocol-header: X-Forwarded-Proto
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 100
+    max-connections: 10000
+    connection-timeout: 20000
+    keep-alive-timeout: 60000
+    max-keep-alive-requests: 100
+  forward-headers-strategy: framework
