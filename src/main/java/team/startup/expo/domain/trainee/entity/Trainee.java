@@ -11,6 +11,8 @@ import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,6 +47,9 @@ public class Trainee {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationType applicationType;
+
+    @Column(nullable = false)
+    private LocalDateTime applicationDate;
 
     @ManyToOne
     @JoinColumn(name = "expo_id")
