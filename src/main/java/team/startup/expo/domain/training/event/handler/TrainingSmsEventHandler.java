@@ -47,20 +47,29 @@ public class TrainingSmsEventHandler {
 
             List<TrainingProgram> programs = event.getTrainingPrograms();
 
-            List<TrainingProgram> common = programs.stream()
-                    .filter(p -> containsAny(p.getTitle(), "강연", "교사"))
+            List<TrainingProgram> keynotes = programs.stream()
+                    .filter(p -> containsAny(p.getTitle(), "기조", "기조 강연"))
                     .collect(Collectors.toList());
+            List<TrainingProgram> specials = programs.stream()
+                    .filter(p -> containsAny(p.getTitle(), "특별"))
+                    .collect(Collectors.toList());
+            List<TrainingProgram> relays = programs.stream()
+                    .filter(p -> containsAny(p.getTitle(), "교사", "릴레이"))
+                    .collect(Collectors.toList());
+
+            List<TrainingProgram> common = new ArrayList<>();
+            common.addAll(keynotes);
+            common.addAll(specials);
+            common.addAll(relays);
 
             List<TrainingProgram> electiveAll = programs.stream()
-                    .filter(p -> !containsAny(p.getTitle(), "강연", "교사"))
+                    .filter(p -> !containsAny(p.getTitle(), "기조", "기조 강연", "특별", "교사", "릴레이"))
                     .collect(Collectors.toList());
 
-            boolean hasKeynote = programs.stream()
-                    .anyMatch(p -> containsAny(p.getTitle(), "기조 강연", "기조"));
-            boolean hasSpecial = programs.stream()
-                    .anyMatch(p -> containsAny(p.getTitle(), "특별"));
-            boolean hasTeacher = programs.stream()
-                    .anyMatch(p -> containsAny(p.getTitle(), "교사"));
+            boolean hasKeynote = !keynotes.isEmpty();
+            boolean hasSpecial = !specials.isEmpty();
+            boolean hasRelay   = !relays.isEmpty();
+
             int electiveLimit = hasKeynote ? 2 : 4;
 
             if (common.isEmpty()) {
@@ -84,18 +93,13 @@ public class TrainingSmsEventHandler {
                     .sum();
 
             int electiveCount = elective.size();
-            int clamped = Math.max(1, Math.min(electiveLimit, electiveCount));
-            int gi;
-            if (hasKeynote) {
-                gi = 0 + clamped;
-            } else if (hasSpecial) {
-                gi = 2 + clamped;
-            } else if (hasTeacher) {
-                gi = 6 + clamped;
-            } else {
-                gi = 0 + clamped;
-                gi = clamped;
-            }
+            int idxForKeynote = Math.max(1, Math.min(2, electiveCount));
+            int idxForOthers  = Math.max(1, Math.min(4, electiveCount));
+
+            List<Integer> giNumbers = new ArrayList<>();
+            if (hasKeynote) giNumbers.add(0 + idxForKeynote);
+            if (hasSpecial) giNumbers.add(2 + idxForOthers);
+            if (hasRelay)   giNumbers.add(6 + idxForOthers);
 
             String commonLine = common.isEmpty()
                     ? "없음"
@@ -118,13 +122,22 @@ public class TrainingSmsEventHandler {
                 ));
             }
 
+            int[] giHours = {2, 3, 2, 3, 4, 5, 2, 3, 4, 5};
+
+            String giPart = giNumbers.stream()
+                    .map(n -> {
+                        int hours = (n >= 1 && n <= 10) ? giHours[n - 1] : Math.max(0, totalHours);
+                        return String.format("%d기(%d시간)", n, hours);
+                    })
+                    .collect(Collectors.joining(", "));
+
             String smsText = String.format(
-                    "선생님은 (%d기(%d시간)) 연수를 신청하셨습니다.%n" +
+                    "선생님은 (%s) 연수를 신청하셨습니다.%n" +
                             "*공통 : %s%n" +
                             "%s%n" +
                             "*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
                             "*알찬 연수로 2025 AI광주미래교육 박람회장에서 선생님을 기다리겠습니다. (문의:380-4587)",
-                    gi, totalHours -1, commonLine, electiveLines.toString().trim()
+                    giPart, commonLine, electiveLines.toString().trim()
             );
 
             Message message = createMessage(event, smsText);
@@ -193,7 +206,6 @@ public class TrainingSmsEventHandler {
             catch (DateTimeParseException ignored) {}
         }
 
-        // Fallback: no known pattern
         return null;
     }
 
