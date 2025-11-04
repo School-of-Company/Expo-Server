@@ -60,9 +60,10 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
         Trainee trainee = saveTrainee(dto, expo, parsedInfo);
 
         List<TrainingProgram> trainingProgramList = trainingProgramRepository.findAllByIdIn(dto.getTrainingProIds());
-        if (trainingProgramUserRepository.existsByTraineeIdAndIdIn(trainee.getId(), dto.getTrainingProIds())) {
+        if (trainingProgramUserRepository.existsByTraineeIdAndIdIn(trainee.getId(), dto.getTrainingProIds()))
             throw new AlreadyApplicationUserException();
-        }
+
+        trainingProgramUserRepository.deleteAllByTraineeId(trainee.getId());
 
         trainingProgramList.forEach(trainingProgram -> {saveTrainingProUser(trainingProgram, trainee);});
 
@@ -83,14 +84,6 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
                         .build());
 
         trainee = traineeRepository.save(trainee);
-
-//        DynamicJsonData doc = new DynamicJsonData(
-//                null,
-//                OwnerType.TRAINEE,
-//                trainee.getId(),
-//                dto.getInformationJson()
-//        );
-//        dynamicJsonDataRepository.save(doc);
 
         Query query = Query.query(
                 Criteria.where("ownerType").is(OwnerType.TRAINEE)
