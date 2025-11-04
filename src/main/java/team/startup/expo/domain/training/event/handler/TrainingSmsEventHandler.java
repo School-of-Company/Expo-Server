@@ -123,7 +123,7 @@ public class TrainingSmsEventHandler {
                     "선생님은 (%s) 연수를 신청하셨습니다.%n%n" +
                             "*공통 : %s%n" +
                             "%s%n" +
-                            "*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
+                            "\n*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
                             "*알찬 연수로 2025 AI광주미래교육 박람회장에서 선생님을 기다리겠습니다. (문의:380-4587)",
                     giPart, commonLine, electiveLines.toString().trim()
             );
