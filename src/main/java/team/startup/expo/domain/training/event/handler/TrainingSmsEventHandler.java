@@ -18,6 +18,7 @@ import team.startup.expo.domain.training.exception.InvalidTrainingSectionExcepti
 import team.startup.expo.domain.training.exception.RequiredKeynoteOrTeacherMissingException;
 import team.startup.expo.global.sms.SmsProperties;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,12 +61,12 @@ public class TrainingSmsEventHandler {
 
             List<TrainingProgram> elective21 = electiveAll.stream()
                     .filter(p -> isOnDay(p, 21))
-                    .sorted(byStartTimeThenTitle())
+                    .sorted(byStartDateTimeThenTitle())
                     .collect(Collectors.toList());
 
             List<TrainingProgram> elective22 = electiveAll.stream()
                     .filter(p -> isOnDay(p, 22))
-                    .sorted(byStartTimeThenTitle())
+                    .sorted(byStartDateTimeThenTitle())
                     .collect(Collectors.toList());
 
             if (elective21.size() > 2) throw new InvalidTrainingSectionException();
@@ -85,11 +86,11 @@ public class TrainingSmsEventHandler {
 
             if (hasEssential21 && c21 > 0) {
                 int idx = clamp(c21, 1, 2);
-                giNumbers.add(idx);
+                giNumbers.add(idx);           // 1~2기
             }
             if (hasEssential22 && c22 > 0) {
                 int idx = clamp(c22, 1, 4);
-                giNumbers.add(2 + idx);
+                giNumbers.add(2 + idx);       // 3~6기
             }
 
             int[] giHours = {2, 3, 2, 3, 4, 5, 2, 3, 4, 5};
@@ -104,7 +105,7 @@ public class TrainingSmsEventHandler {
                     .collect(Collectors.joining(", "));
 
             String commonLine = essential.stream()
-                    .sorted(byStartTimeThenTitle())
+                    .sorted(byStartDateTimeThenTitle())
                     .map(p -> String.format("[%s] %s", fmtRange(p.getStartedAt(), p.getEndedAt()), p.getTitle()))
                     .collect(Collectors.joining(", "));
 
@@ -141,10 +142,25 @@ public class TrainingSmsEventHandler {
         }
     }
 
-    private static Comparator<TrainingProgram> byStartTimeThenTitle() {
+    private static Comparator<TrainingProgram> byStartDateTimeThenTitle() {
         return Comparator
-                .comparing((TrainingProgram p) -> parseTime(p.getStartedAt()), Comparator.nullsLast(Comparator.naturalOrder()))
+                .comparing(TrainingSmsEventHandler::parseDateTimeSafe, Comparator.nullsLast(Comparator.naturalOrder()))
                 .thenComparing(TrainingProgram::getTitle, Comparator.nullsLast(String::compareTo));
+    }
+
+    private static LocalDateTime parseDateTimeSafe(TrainingProgram p) {
+        LocalDateTime ldt = parseDateTime(p.getStartedAt());
+        if (ldt != null) return ldt;
+        LocalDate d = parseDate(p.getStartedAt());
+        LocalTime t = parseTime(p.getStartedAt());
+        if (d != null && t != null) return LocalDateTime.of(d, t);
+        if (d != null) return LocalDateTime.of(d, LocalTime.MIDNIGHT);
+        if (t != null) {
+            LocalDate d2 = parseDate(p.getEndedAt());
+            if (d2 != null) return LocalDateTime.of(d2, t);
+            return LocalDateTime.of(LocalDate.of(1970,1,1), t);
+        }
+        return null;
     }
 
     private static int clamp(int v, int min, int max) {
@@ -194,6 +210,15 @@ public class TrainingSmsEventHandler {
             try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
             catch (DateTimeParseException ignored) {}
         }
+        return null;
+    }
+
+    private static LocalDateTime parseDateTime(String s) {
+        if (s == null || s.isBlank()) return null;
+        String t = s.trim();
+        try {
+            return LocalDateTime.parse(t, java.time.format.DateTimeFormatter.ISO_DATE_TIME);
+        } catch (DateTimeParseException ignored) {}
         return null;
     }
 
