@@ -1,6 +1,7 @@
 package team.startup.expo.domain.training.event.handler;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
 import net.nurigo.sdk.message.service.DefaultMessageService;
@@ -15,18 +16,20 @@ import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.event.TrainingSmsEvent;
 import team.startup.expo.domain.training.exception.InvalidTrainingSectionException;
 import team.startup.expo.domain.training.exception.RequiredKeynoteOrTeacherMissingException;
-import team.startup.expo.global.exception.ErrorCode;
-import team.startup.expo.global.exception.GlobalException;
 import team.startup.expo.global.sms.SmsProperties;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class TrainingSmsEventHandler {
@@ -40,7 +43,6 @@ public class TrainingSmsEventHandler {
     @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void sendTrainingSmsHandler(TrainingSmsEvent event) {
-
         try {
             Expo expo = expoRepository.findById(event.getExpoId())
                     .orElseThrow(NotFoundExpoException::new);
@@ -70,81 +72,98 @@ public class TrainingSmsEventHandler {
             boolean hasSpecial = !specials.isEmpty();
             boolean hasRelay   = !relays.isEmpty();
 
-            int electiveLimit = hasKeynote ? 2 : 4;
+            if (common.isEmpty()) throw new RequiredKeynoteOrTeacherMissingException();
+            if (hasSpecial && hasRelay) throw new InvalidTrainingSectionException();
 
-            if (common.isEmpty()) {
-                throw new RequiredKeynoteOrTeacherMissingException();
-            }
-
-            if (electiveAll.size() > electiveLimit) {
-                throw new InvalidTrainingSectionException();
-            }
-
-            List<TrainingProgram> elective = electiveAll.stream()
-                    .limit(electiveLimit)
+            List<TrainingProgram> elective21 = electiveAll.stream()
+                    .filter(p -> isOnDay(p, 21))
+                    .sorted(byStartTimeThenTitle())
+                    .collect(Collectors.toList());
+            List<TrainingProgram> elective22 = electiveAll.stream()
+                    .filter(p -> isOnDay(p, 22))
+                    .sorted(byStartTimeThenTitle())
                     .collect(Collectors.toList());
 
-            List<TrainingProgram> included = new ArrayList<>();
-            included.addAll(common);
-            included.addAll(elective);
+            if (hasKeynote && elective21.size() > 2) throw new InvalidTrainingSectionException();
+            boolean has22Group = hasSpecial || hasRelay;
+            if (has22Group && elective22.size() > 4) throw new InvalidTrainingSectionException();
 
-            int totalHours = included.stream()
-                    .mapToInt(p -> hoursBetween(p.getStartedAt(), p.getEndedAt()))
-                    .sum();
-
-            int electiveCount = elective.size();
-            int idxForKeynote = Math.max(1, Math.min(2, electiveCount));
-            int idxForOthers  = Math.max(1, Math.min(4, electiveCount));
+            List<TrainingProgram> elective = new ArrayList<>();
+            if (hasKeynote) elective.addAll(elective21.stream().limit(2).toList());
+            else            elective.addAll(elective21);
+            if (has22Group) elective.addAll(elective22.stream().limit(4).toList());
+            else            elective.addAll(elective22);
 
             List<Integer> giNumbers = new ArrayList<>();
-            if (hasKeynote) giNumbers.add(0 + idxForKeynote);
-            if (hasSpecial) giNumbers.add(2 + idxForOthers);
-            if (hasRelay)   giNumbers.add(6 + idxForOthers);
+            int electiveCount21 = elective21.size();
+            int electiveCount22 = elective22.size();
 
+            if (hasKeynote && electiveCount21 > 0) {
+                int idx = clamp(electiveCount21, 1, 2);
+                giNumbers.add(0 + idx);
+            }
+            if (hasSpecial && electiveCount22 > 0) {
+                int idx = clamp(electiveCount22, 1, 4);
+                giNumbers.add(2 + idx);
+            } else if (hasRelay && electiveCount22 > 0) {
+                int idx = clamp(electiveCount22, 1, 4);
+                giNumbers.add(6 + idx);
+            }
+
+            // 표시 문자열ㅌ
             String commonLine = common.isEmpty()
                     ? "없음"
                     : common.stream()
-                    .map(p -> String.format("[%s~%s] %s",
-                            fmt(p.getStartedAt()),
-                            fmt(p.getEndedAt()),
-                            p.getTitle()))
+                    .sorted(byStartTimeThenTitle())
+                    .map(p -> String.format("[%s] %s", fmtRange(p.getStartedAt(), p.getEndedAt()), p.getTitle()))
                     .collect(Collectors.joining(", "));
 
             StringBuilder electiveLines = new StringBuilder();
             for (int i = 0; i < elective.size(); i++) {
                 TrainingProgram p = elective.get(i);
                 electiveLines.append(String.format(
-                        "*선택 %d: [%s~%s] %s%n",
+                        "*선택 %d: [%s] %s%n",
                         i + 1,
-                        fmt(p.getStartedAt()),
-                        fmt(p.getEndedAt()),
+                        fmtRange(p.getStartedAt(), p.getEndedAt()),
                         p.getTitle()
                 ));
             }
 
             int[] giHours = {2, 3, 2, 3, 4, 5, 2, 3, 4, 5};
-
             String giPart = giNumbers.stream()
                     .map(n -> {
-                        int hours = (n >= 1 && n <= 10) ? giHours[n - 1] : Math.max(0, totalHours);
+                        int hours = (n >= 1 && n <= 10) ? giHours[n - 1] : 0;
                         return String.format("%d기(%d시간)", n, hours);
                     })
                     .collect(Collectors.joining(", "));
 
             String smsText = String.format(
-                    "선생님은 (%s) 연수를 신청하셨습니다.%n" +
+                    "선생님은 (%s) 연수를 신청하셨습니다.%n\n" +
                             "*공통 : %s%n" +
                             "%s%n" +
-                            "*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
+                            "\n*이수 조건 : 신청 시수의 80%% 이상 수강%n" +
                             "*알찬 연수로 2025 AI광주미래교육 박람회장에서 선생님을 기다리겠습니다. (문의:380-4587)",
                     giPart, commonLine, electiveLines.toString().trim()
             );
 
             Message message = createMessage(event, smsText);
             messageService.sendOne(new SingleMessageSendingRequest(message));
+
+        } catch (RequiredKeynoteOrTeacherMissingException | InvalidTrainingSectionException e) {
+            log.warn("[TrainingSms] business rule violation: {}", e.toString());
         } catch (Exception e) {
-            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+            log.error("[TrainingSms] unexpected error", e);
         }
+    }
+
+    private static Comparator<TrainingProgram> byStartTimeThenTitle() {
+        return Comparator
+                .comparing((TrainingProgram p) -> parseTime(p.getStartedAt()), Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(TrainingProgram::getTitle, Comparator.nullsLast(String::compareTo));
+    }
+
+    private static int clamp(int v, int min, int max) {
+        return Math.max(min, Math.min(max, v));
     }
 
     private static boolean containsAny(String target, String... keywords) {
@@ -155,9 +174,15 @@ public class TrainingSmsEventHandler {
         return false;
     }
 
-    private static String fmt(String timeStr) {
-        LocalTime t = parseTime(timeStr);
-        return t == null ? "--:--" : TIME_FMT.format(t);
+    private static String fmtRange(String startStr, String endStr) {
+        LocalTime a = parseTime(startStr);
+        LocalTime b = parseTime(endStr);
+        if (a == null && b == null) return "--:--~--:--";
+        if (a == null) return "--:--~" + TIME_FMT.format(b);
+        if (b == null) return TIME_FMT.format(a) + "~--:--";
+        LocalTime s = a.isBefore(b) ? a : b;
+        LocalTime e = a.isBefore(b) ? b : a;
+        return TIME_FMT.format(s) + "~" + TIME_FMT.format(e);
     }
 
     private static int hoursBetween(String startStr, String endStr) {
@@ -173,7 +198,12 @@ public class TrainingSmsEventHandler {
         if (s == null || s.isBlank()) return null;
         String trimmed = s.trim();
 
-        if (trimmed.matches("^\\d{4}$")) {
+        try {
+            LocalDateTime ldt = LocalDateTime.parse(trimmed, java.time.format.DateTimeFormatter.ISO_DATE_TIME);
+            return ldt.toLocalTime();
+        } catch (DateTimeParseException ignored) {}
+
+        if (trimmed.matches("^\\d{4}$")) { // 0930 → 09:30
             String norm = trimmed.substring(0, 2) + ":" + trimmed.substring(2);
             try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
             catch (DateTimeParseException ignored) {}
@@ -200,12 +230,47 @@ public class TrainingSmsEventHandler {
                 .matcher(trimmed);
         if (m.find()) {
             String hh = m.group(1);
-            String mm = m.group(2) == null ? "00" : m.group(2);
+            String mm = (m.group(2) == null) ? "00" : m.group(2);
             String norm = (hh.length() == 1 ? "0" + hh : hh) + ":" + (mm.length() == 1 ? "0" + mm : mm);
             try { return LocalTime.parse(norm, DateTimeFormatter.ofPattern("HH:mm")); }
             catch (DateTimeParseException ignored) {}
         }
 
+        return null;
+    }
+
+    private static boolean isOnDay(TrainingProgram p, int dayOfMonth) {
+        LocalDate d = extractDate(p);
+        return d != null && d.getDayOfMonth() == dayOfMonth;
+    }
+
+    private static LocalDate extractDate(TrainingProgram p) {
+        LocalDate d = parseDate(p.getStartedAt());
+        if (d != null) return d;
+        return parseDate(p.getEndedAt());
+    }
+
+    private static LocalDate parseDate(String s) {
+        if (s == null || s.isBlank()) return null;
+        String trimmed = s.trim();
+
+        try {
+            return LocalDate.parse(trimmed, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE);
+        } catch (DateTimeParseException ignored) {}
+
+        try {
+            LocalDateTime ldt = LocalDateTime.parse(trimmed, java.time.format.DateTimeFormatter.ISO_DATE_TIME);
+            return ldt.toLocalDate();
+        } catch (DateTimeParseException ignored) {}
+
+        java.util.regex.Matcher m = java.util.regex.Pattern
+                .compile("(\\d{4})[-/.](\\d{2})[-/.](\\d{2})")
+                .matcher(trimmed);
+        if (m.find()) {
+            String norm = m.group(1) + "-" + m.group(2) + "-" + m.group(3);
+            try { return LocalDate.parse(norm, java.time.format.DateTimeFormatter.ISO_LOCAL_DATE); }
+            catch (DateTimeParseException ignored) {}
+        }
         return null;
     }
 

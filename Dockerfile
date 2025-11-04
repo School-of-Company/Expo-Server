@@ -1,5 +1,5 @@
 # Build stage
-FROM gradle:jdk17-alpine AS build
+FROM gradle:8.10.2-jdk17-alpine AS build
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 
 # Run Stage
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
