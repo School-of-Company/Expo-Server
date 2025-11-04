@@ -11,7 +11,7 @@ RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 
 # Run Stage
-FROM openjdk:17-slim
+FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
