@@ -19,6 +19,7 @@ import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
+import team.startup.expo.domain.training.entity.Category;
 import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.entity.TrainingProgramUser;
 import team.startup.expo.domain.training.event.TrainingSmsEvent;
@@ -59,7 +60,28 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
 
         Trainee trainee = saveTrainee(dto, expo, parsedInfo);
 
+        Map<Long, Integer> programParticipantCountMap = trainingProgramUserRepository.countTrainingProgramUserByTrainingProIdIn(dto.getTrainingProIds());
+
         List<TrainingProgram> trainingProgramList = trainingProgramRepository.findAllByIdIn(dto.getTrainingProIds());
+        Map<Long, TrainingProgram> programById = trainingProgramList.stream()
+                .collect(java.util.stream.Collectors.toMap(TrainingProgram::getId, java.util.function.Function.identity()));
+
+        List<String> fullProgramTitles = new java.util.ArrayList<>();
+        for (Long programId : dto.getTrainingProIds()) {
+            int count = programParticipantCountMap.getOrDefault(programId, 0);
+            TrainingProgram program = programById.get(programId);
+            int limit = (program.getCategory() == Category.ESSENTIAL) ? 200 : 25;
+            if (count >= limit) {
+                fullProgramTitles.add(program.getTitle());
+            }
+        }
+
+        if (!fullProgramTitles.isEmpty()) {
+            throw new IllegalStateException(
+                    String.join(", ", fullProgramTitles) + " 연수 프로그램의 정원이 초과되었습니다."
+            );
+        }
+
         if (trainingProgramUserRepository.existsByTraineeIdAndIdIn(trainee.getId(), dto.getTrainingProIds()))
             throw new AlreadyApplicationUserException();
 
