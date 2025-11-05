@@ -5,25 +5,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
+import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
-import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
-import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.mongo.entity.OwnerType;
 import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
+import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
-import team.startup.expo.global.exception.ErrorCode;
-import team.startup.expo.global.exception.GlobalException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -47,9 +44,6 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
 
-//        if (standardParticipantRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo) || traineeRepository.existsByPhoneNumberAndExpo(dto.getPhoneNumber(), expo))
-//            throw new AlreadyApplicationUserException();
-
         ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
 
         if (traineeRepository.existsByTrainingIdAndExpo(parsedInfo.trainingId, expo) || traineeRepository.existsByPhoneNumberAndExpo(parsedInfo.phoneNumber, expo)) {
@@ -57,12 +51,6 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
         }
 
         saveTrainee(dto, expo, parsedInfo);
-
-//        try {
-//            applicationEventPublisher.publishEvent(new SendQrEvent(expoId, parsedInfo.phoneNumber, Authority.ROLE_TRAINEE));
-//        } catch (Exception e) {
-//            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
-//        }
     }
 
     private void saveTrainee(ApplicationForTraineeRequestDto dto, Expo expo, PreApplicationForTraineeServiceImpl.ParsedInfo parsedInfo) {
