@@ -19,6 +19,7 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @TransactionService
@@ -63,6 +64,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
                 .personalInformationStatus(dto.getPersonalInformationStatus())
                 .smsTryTime(0)
                 .expo(expo)
+                .applicationDate(LocalDateTime.now())
                 .build();
 
         standardParticipantRepository.save(standardParticipant);
