@@ -1,5 +1,6 @@
 package team.startup.expo.domain.training.presentation.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,6 @@ public class ApplicationTrainingProListAndTraineeRequestDto {
     @NotNull
     private Boolean personalInformationStatus;
 
-    @NotNull
+    @NotEmpty
     private List<Long> trainingProIds;
 }
