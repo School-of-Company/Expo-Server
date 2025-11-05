@@ -47,5 +47,33 @@ jobs:
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker tag expo-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          
+      - name: Checkout DevOps Repository
+        uses: actions/checkout@v3
+        with:
+          repository: School-of-Company/Expo-DevOps-V2
+          token: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
+          path: devops-repo
+      
+      - name: Update values.yaml
+        run: |
+          cd devops-repo
+          IMAGE_TAG=${{ steps.ecr-push.outputs.image_tag }}
+          ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY=expo-ecr
+          
+          sed -i "s/tag: .*/tag: $IMAGE_TAG/" chart/values/values.yaml
+          
+          cat chart/values/values.yaml
+      
+      - name: Commit and Push to DevOps Repository
+        run: |
+          cd devops-repo
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add chart/values/values.yaml
+          git commit -m "Update image tag to ${{ steps.ecr-push.outputs.image_tag }}"
+          git remote set-url origin https://git:${{ secrets.DEVOPS_GITHUB_TOKEN }}@github.com/School-of-Company/Expo-DevOps-V2.git
+          git push origin main
         
 
