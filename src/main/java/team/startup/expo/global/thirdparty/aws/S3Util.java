@@ -31,7 +31,7 @@ public class S3Util {
 
     private final AmazonS3 amazonS3;
 
-    private static final String IMAGE = "image/";
+    private static final String IMAGE = "img/";
     private static final String QR = "qr/";
 
     public String upload(MultipartFile image) {
