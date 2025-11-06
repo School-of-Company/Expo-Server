@@ -17,9 +17,17 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+      timeout: 5000ms
+        lettuce:
+          pool:
+            max-active: 20
+            max-idle: 10
+            min-idle: 5
+          shutdown-timeout: 2000ms
     mongodb:
       uri: ${MONGO_URI}
-      auto-index-creation: true
+      database: ${MONGO_NAME}
+      ca-file-path: classpath:certification/global-bundle.pem
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
@@ -71,3 +79,7 @@ server:
     keep-alive-timeout: 60000
     max-keep-alive-requests: 100
   forward-headers-strategy: framework
+
+app:
+  ssl:
+    ca-file-path: classpath:certification/global-bundle.pem
