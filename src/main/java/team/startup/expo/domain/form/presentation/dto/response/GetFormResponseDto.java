@@ -8,6 +8,7 @@ import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,8 @@ public class GetFormResponseDto {
     private String informationText;
     private ParticipationType participantType;
     private ApplicationType applicationType;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
     private List<GetFormResponseDto.DynamicFormRequestDto> dynamicForm;
 
     @Getter
