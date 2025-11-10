@@ -17,4 +17,5 @@ public interface TrainingProgramUserRepository extends JpaRepository<TrainingPro
     void deleteByTrainingProgram(TrainingProgram trainingProgram);
     boolean existsByTraineeIdAndIdIn(Long traineeId, List<Long> ids);
     void deleteAllByTraineeId(Long traineeId);
+    List<TrainingProgramUser> findAllByTraineeIdIn(List<Long> traineeIds);
 }

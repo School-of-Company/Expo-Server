@@ -14,8 +14,8 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -116,7 +116,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
                 .setOnInsert("ownerType", OwnerType.TRAINEE)
                 .setOnInsert("ownerId", trainee.getId());
 
-        mongoTemplate.upsert(query, update, DynamicJsonDataRepository.class);
+        mongoTemplate.upsert(query, update, DynamicJsonData.class);
 
         return trainee;
     }
