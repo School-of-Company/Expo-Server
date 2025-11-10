@@ -8,6 +8,7 @@ import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,12 @@ public class FormRequestDto {
 
     @NotNull
     private ApplicationType applicationType;
+
+    @NotNull
+    private LocalDateTime startDate;
+
+    @NotNull
+    private LocalDateTime endDate;
 
     @Getter
     @NoArgsConstructor
