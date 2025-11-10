@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -22,6 +23,19 @@ public class DateUtil {
 
             return !now.before(start) && !now.after(end);
         } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean dateTimeComparison(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime now = LocalDateTime.now();
+
+            return (now.isAfter(startDateTime) || now.isEqual(startDateTime)) &&
+                    (now.isBefore(endDateTime) || now.isEqual(endDateTime));
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
