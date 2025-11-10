@@ -68,6 +68,8 @@ public class GetFormServiceImpl implements GetFormService {
                 .participantType(form.getParticipationType())
                 .applicationType(form.getApplicationType())
                 .dynamicForm(dynamicFormRequestDtoList)
+                .startDate(form.getStartDate())
+                .endDate(form.getEndDate())
                 .build();
     }
 }
