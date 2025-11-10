@@ -70,6 +70,7 @@ public enum ErrorCode {
     // form
     ALREADY_EXIST_FORM(409, "이미 폼이 존재합니다."),
     NOT_FOUND_FORM(404, "폼을 찾을 수 없습니다."),
+    OUT_OF_REGISTRATION_PERIOD(400, "사전 등록 기간이 아닙니다."),
 
     // survey
     ALREADY_EXIST_SURVEY(409, "이미 설문조사 폼이 존재합니다."),
