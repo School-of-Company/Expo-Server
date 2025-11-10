@@ -12,6 +12,11 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.entity.Form;
+import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.exception.NotFoundFormException;
+import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
+import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.mongo.entity.OwnerType;
 import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
@@ -31,6 +36,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
+    private final FormRepository formRepository;
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
@@ -43,6 +49,12 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
+
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, ParticipationType.TRAINEE, ApplicationType.PRE)
+                .orElseThrow(NotFoundFormException::new);
+
+        if (!dateUtil.dateTimeComparison(form.getStartDate(), form.getEndDate()))
+            throw new OutOfRegistrationPeriodException();
 
         ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
 

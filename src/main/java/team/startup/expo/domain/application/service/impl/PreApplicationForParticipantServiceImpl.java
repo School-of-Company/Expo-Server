@@ -12,6 +12,11 @@ import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
 import team.startup.expo.domain.application.service.PreApplicationForParticipantService;
+import team.startup.expo.domain.form.entity.Form;
+import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.exception.NotFoundFormException;
+import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
+import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.application.event.SendQrEvent;
@@ -39,6 +44,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
     private final DateUtil dateUtil;
     private final DynamicJsonDataRepository dynamicJsonDataRepository;
     private final ObjectMapper objectMapper;
+    private final FormRepository formRepository;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -46,6 +52,12 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
+
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, ParticipationType.STANDARD, ApplicationType.PRE)
+                .orElseThrow(NotFoundFormException::new);
+
+        if (!dateUtil.dateTimeComparison(form.getStartDate(), form.getEndDate()))
+            throw new OutOfRegistrationPeriodException();
 
         ParsedInfo parsedInfo = extractNameAndPhone(dto.getInformationJson());
 
