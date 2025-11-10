@@ -43,6 +43,8 @@ public class CreateFormServiceImpl implements CreateFormService {
                 .participationType(formRequestDto.getParticipantType())
                 .applicationType(formRequestDto.getApplicationType())
                 .expo(expo)
+                .startDate(formRequestDto.getStartDate())
+                .endDate(formRequestDto.getEndDate())
                 .build();
 
         return formRepository.save(form);

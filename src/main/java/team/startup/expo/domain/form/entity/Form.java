@@ -11,6 +11,8 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.form.presentation.dto.request.FormRequestDto;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,6 +39,12 @@ public class Form {
     @Enumerated(EnumType.STRING)
     private ApplicationType applicationType;
 
+    @Column(nullable = false)
+    private LocalDateTime startDate;
+
+    @Column(nullable = false)
+    private LocalDateTime endDate;
+
     @ManyToOne
     @JoinColumn(name = "expo_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -46,5 +54,7 @@ public class Form {
         this.title = dto.getTitle();
         this.informationText = dto.getInformationText();
         this.participationType = dto.getParticipantType();
+        this.startDate = dto.getStartDate();
+        this.endDate = dto.getEndDate();
     }
 }
