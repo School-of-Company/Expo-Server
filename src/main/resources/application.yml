@@ -12,6 +12,10 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+  jackson:
+    time-zone: Asia/Seoul
+    mvc:
+      timezone: Asia/Seoul
 
   data:
     redis:

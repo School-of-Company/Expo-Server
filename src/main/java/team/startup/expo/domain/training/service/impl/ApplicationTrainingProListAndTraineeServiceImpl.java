@@ -14,6 +14,11 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
+import team.startup.expo.domain.form.entity.Form;
+import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.exception.NotFoundFormException;
+import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
+import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.mongo.entity.OwnerType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -47,6 +52,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
     private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final MongoTemplate mongoTemplate;
+    private final FormRepository formRepository;
 
     @Override
     public void execute(String expoId, ApplicationTrainingProListAndTraineeRequestDto dto) {
@@ -55,6 +61,12 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
+
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, ParticipationType.TRAINEE, ApplicationType.PRE)
+                .orElseThrow(NotFoundFormException::new);
+
+        if (!dateUtil.dateTimeComparison(form.getStartDate(), form.getEndDate()))
+            throw new OutOfRegistrationPeriodException();
 
         ParsedInfo parsedInfo = extractNameAndPhoneAndTrainingId(dto.getInformationJson());
 
@@ -70,7 +82,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
         for (Long programId : dto.getTrainingProIds()) {
             int count = programParticipantCountMap.getOrDefault(programId, 0);
             TrainingProgram program = programById.get(programId);
-            int limit = (program.getCategory() == Category.ESSENTIAL) ? 200 : 25;
+            int limit = (program.getCategory() == Category.ESSENTIAL) ? 99999: 25;
             if (count >= limit) {
                 fullProgramTitles.add(program.getTitle());
             }
