@@ -124,7 +124,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
                         .and("ownerId").is(trainee.getId())
         );
         Update update = new Update()
-                .set("json", dto.getInformationJson())
+                .set("answers", dto.getInformationJson())
                 .setOnInsert("ownerType", OwnerType.TRAINEE)
                 .setOnInsert("ownerId", trainee.getId());
 
