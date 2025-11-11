@@ -14,8 +14,8 @@ spring:
     show-sql: true
   jackson:
     time-zone: Asia/Seoul
-    mvc:
-      timezone: Asia/Seoul
+  mvc:
+    timezone: Asia/Seoul
 
   data:
     redis:
