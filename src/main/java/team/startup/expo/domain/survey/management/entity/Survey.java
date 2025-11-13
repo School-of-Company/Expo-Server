@@ -36,6 +36,9 @@ public class Survey {
 
     private Integer totalAnswers;
 
+    @Column(nullable = false)
+    private String title;
+
     public void update(String informationText) {
         this.informationText = informationText;
     }
