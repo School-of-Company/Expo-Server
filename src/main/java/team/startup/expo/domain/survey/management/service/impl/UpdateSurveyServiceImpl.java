@@ -19,7 +19,7 @@ import team.startup.expo.global.annotation.TransactionService;
 
 @TransactionService
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "Survey")
+//@CacheConfig(cacheNames = "Survey")
 public class UpdateSurveyServiceImpl implements UpdateSurveyService {
 
     private final SurveyRepository surveyRepository;
@@ -27,7 +27,7 @@ public class UpdateSurveyServiceImpl implements UpdateSurveyService {
     private final ExpoRepository expoRepository;
     private final DynamicSurveyJsonRepository dynamicSurveyJsonRepository;
 
-    @CacheEvict(key = "#expoId + '_' + #dto.participationType", cacheManager = "cacheManager")
+//    @CacheEvict(key = "#expoId + '_' + #dto.participationType", cacheManager = "cacheManager")
     public void execute(String expoId, SurveyRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
