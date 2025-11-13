@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "Survey")
+//@CacheConfig(cacheNames = "Survey")
 public class GetSurveyServiceImpl implements GetSurveyService {
 
     private final SurveyRepository surveyRepository;
@@ -32,7 +32,7 @@ public class GetSurveyServiceImpl implements GetSurveyService {
     private final ExpoRepository expoRepository;
     private final DynamicSurveyJsonRepository dynamicSurveyJsonRepository;
 
-    @Cacheable(key = "#expoId + '_' + #participationType", cacheManager = "cacheManager")
+//    @Cacheable(key = "#expoId + '_' + #participationType", cacheManager = "cacheManager")
     public SurveyResponseDto execute(String expoId, ParticipationType participationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
