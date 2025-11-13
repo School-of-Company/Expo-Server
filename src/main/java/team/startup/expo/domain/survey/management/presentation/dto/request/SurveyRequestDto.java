@@ -19,6 +19,9 @@ public class SurveyRequestDto {
     @NotNull
     private String informationText;
 
+    @NotNull
+    private String title;
+
     @Valid
     @NotNull
     private List<DynamicSurveyRequestDto> dynamicSurveyRequestDto;

@@ -17,6 +17,7 @@ import java.util.Map;
 public class SurveyResponseDto {
     private String informationText;
     private ParticipationType participationType;
+    private String title;
     private List<DynamicSurveyResponseDto> dynamicSurveyResponseDto;
 
     @Getter

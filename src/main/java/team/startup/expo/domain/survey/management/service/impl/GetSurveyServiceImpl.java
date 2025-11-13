@@ -63,6 +63,7 @@ public class GetSurveyServiceImpl implements GetSurveyService {
         return SurveyResponseDto.builder()
                 .informationText(survey.getInformationText())
                 .participationType(participationType)
+                .title(survey.getTitle())
                 .dynamicSurveyResponseDto(dynamicSurveyResponseDto)
                 .build();
     }

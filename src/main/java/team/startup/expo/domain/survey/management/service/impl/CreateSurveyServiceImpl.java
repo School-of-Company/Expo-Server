@@ -42,6 +42,7 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
                 .informationText(dto.getInformationText())
                 .expo(expo)
                 .totalAnswers(0)
+                .title(dto.getTitle())
                 .build();
 
         return surveyRepository.save(survey);
