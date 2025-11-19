@@ -83,6 +83,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/excel/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/excel/standard/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/excel/program/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/excel/trainee/{trainee_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // auth
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
@@ -134,7 +135,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/application/pre-standard/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/application/field/{expo_id}").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/application/field/standard/{expo_id}").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/application/field/temporary/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.POST, "/application/field/temporary/{expo_id}").permitAll()
 
                                 // form
                                 .requestMatchers(HttpMethod.POST, "/form/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
