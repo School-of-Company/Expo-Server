@@ -83,6 +83,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/excel/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/excel/standard/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
                                 .requestMatchers(HttpMethod.GET, "/excel/program/{expo_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
+                                .requestMatchers(HttpMethod.GET, "/excel/trainee/{trainee_id}").hasAnyAuthority(Authority.ROLE_ADMIN.name())
 
                                 // auth
                                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
