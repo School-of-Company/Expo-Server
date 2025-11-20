@@ -76,11 +76,11 @@ public class StandardSurveyAnswerServiceImpl implements StandardSurveyAnswerServ
 
         int nowNumber = survey.getTotalAnswers();
 
-        for (Draw draw : Draw.values()) {
-            if (draw.getNumber().equals(nowNumber)) {
-                applicationEventPublisher.publishEvent(
-                        new SendDrawResultEvent(standardParticipant.getPhoneNumber(),draw.getNumber()));
-            }
-        }
+//        for (Draw draw : Draw.values()) {
+//            if (draw.getNumber().equals(nowNumber)) {
+//                applicationEventPublisher.publishEvent(
+//                        new SendDrawResultEvent(standardParticipant.getPhoneNumber(),draw.getNumber()));
+//            }
+//        }
     }
 }
