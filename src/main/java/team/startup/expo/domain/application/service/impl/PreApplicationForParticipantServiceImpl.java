@@ -85,7 +85,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                         .name(parsedInfo.name)
                         .phoneNumber(parsedInfo.phoneNumber)
                         .authority(Authority.ROLE_STANDARD)
-                        .applicationType(ApplicationType.PRE)
+                        .applicationType(ApplicationType.FIELD)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .smsTryTime(0)
