@@ -5,5 +5,5 @@ import team.startup.expo.domain.form.presentation.dto.response.GetFormResponseDt
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 public interface GetFormService {
-    GetFormResponseDto execute(String expoId, ParticipationType participationType, ApplicationType applicationType);
+    GetFormResponseDto execute(String expoId, ParticipationType participationType);
 }
