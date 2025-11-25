@@ -33,12 +33,12 @@ public class GetFormServiceImpl implements GetFormService {
     private final DynamicFormRepository dynamicFormRepository;
     private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
-    @Cacheable(key = "#expoId + '_' + #participationType", cacheManager = "cacheManager")
-    public GetFormResponseDto execute(String expoId, ParticipationType participationType) {
+    @Cacheable(key = "#expoId + '_' + #participationType + '_' + #applicationType", cacheManager = "cacheManager")
+    public GetFormResponseDto execute(String expoId, ParticipationType participationType, ApplicationType applicationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        Form form = formRepository.findByExpoAndParticipationType(expo, participationType)
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, participationType, applicationType)
                 .orElseThrow(NotFoundFormException::new);
 
         List<DynamicForm> dynamicFormList = dynamicFormRepository.findByFormId(form.getId());
