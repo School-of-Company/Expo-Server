@@ -56,6 +56,9 @@ public class CreateFormServiceImpl implements CreateFormService {
                 .title(dynamicFormRequestDto.getTitle())
                 .formType(dynamicFormRequestDto.getFormType())
                 .requiredStatus(dynamicFormRequestDto.getRequiredStatus())
+                .otherJson(dynamicFormRequestDto.getOtherJson())
+                .dynamicFormType(dynamicFormRequestDto.getDynamicFormType())
+                .form(form)
                 .build();
         dynamicForm = dynamicFormRepository.save(dynamicForm);
 

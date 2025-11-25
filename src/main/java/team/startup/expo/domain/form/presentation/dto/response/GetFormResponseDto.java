@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.startup.expo.domain.form.entity.DynamicFormType;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -35,5 +35,6 @@ public class GetFormResponseDto {
         private String jsonData;
         private Boolean requiredStatus;
         private String otherJson;
+        private DynamicFormType dynamicFormType;
     }
 }
