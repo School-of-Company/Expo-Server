@@ -1,7 +1,7 @@
 package team.startup.expo.domain.form.presentation.dto.request;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.form.entity.DynamicFormType;
@@ -11,7 +11,6 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @NoArgsConstructor
