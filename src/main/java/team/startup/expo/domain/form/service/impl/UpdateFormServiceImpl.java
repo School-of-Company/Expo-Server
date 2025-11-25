@@ -50,6 +50,9 @@ public class UpdateFormServiceImpl implements UpdateFormService {
                 .title(dto.getTitle())
                 .formType(dto.getFormType())
                 .requiredStatus(dto.getRequiredStatus())
+                .otherJson(dto.getOtherJson())
+                .dynamicFormType(dto.getDynamicFormType())
+                .form(form)
                 .build();
         updateDynamicForm = dynamicFormRepository.save(updateDynamicForm);
 

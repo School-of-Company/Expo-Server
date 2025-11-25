@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.startup.expo.domain.form.entity.DynamicFormType;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -46,11 +47,14 @@ public class FormRequestDto {
         private FormType formType;
 
         @NotNull
-        private Map<String, Object> jsonData;
+        private String jsonData;
 
         @NotNull
         private Boolean requiredStatus;
 
-        private Map<String, Object> otherJson;
+        private String otherJson;
+
+        @NotNull
+        private DynamicFormType dynamicFormType;
     }
 }
