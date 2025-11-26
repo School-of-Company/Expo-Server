@@ -1,30 +1,25 @@
 package team.startup.expo.domain.application.service.impl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.time.LocalDateTime;
-import java.util.Map;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.event.SendQrEvent;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
+import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
+
+import java.time.LocalDateTime;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -34,8 +29,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
-    private final ObjectMapper objectMapper;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -67,7 +60,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .orElse(StandardParticipant.builder()
                         .name(dto.getName())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_STANDARD)
+                        .informationJson(dto.getInformationJson())
                         .applicationType(ApplicationType.FIELD)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .smsTryTime(0)
@@ -76,13 +69,5 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
-        String answers = dto.getInformationJson();
-        DynamicJsonData doc = new DynamicJsonData(
-                null,
-                OwnerType.STANDARD_PARTICIPANT,
-                standardParticipant.getId(),
-                answers
-        );
-        dynamicJsonDataRepository.save(doc);
     }
 }
