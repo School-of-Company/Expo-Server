@@ -6,10 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Table(name = "tb_dynamic_form")
 public class DynamicForm {
@@ -40,12 +43,12 @@ public class DynamicForm {
     @Transient
     private DynamicFormJsonDoc formJson;
 
-    @Builder
-    private DynamicForm(Long id, Long formId, String title, FormType formType, Boolean requiredStatus) {
-        this.id = id;
-        this.formId = formId;
-        this.title = title;
-        this.formType = formType;
-        this.requiredStatus = requiredStatus;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DynamicFormType dynamicFormType;
+
+    @JoinColumn(name = "form_id")
+    @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Form form;
 }

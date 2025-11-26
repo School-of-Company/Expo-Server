@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
-//@CacheConfig(cacheNames = "Form")
+@CacheConfig(cacheNames = "Form")
 public class GetFormServiceImpl implements GetFormService {
 
     private final FormRepository formRepository;
@@ -33,7 +33,7 @@ public class GetFormServiceImpl implements GetFormService {
     private final DynamicFormRepository dynamicFormRepository;
     private final DynamicFormJsonRepository dynamicFormJsonRepository;
 
-//    @Cacheable(key = "#expoId + '_' + #participationType + '-' + #registrationType", cacheManager = "cacheManager")
+    @Cacheable(key = "#expoId + '_' + #participationType + '_' + #applicationType", cacheManager = "cacheManager")
     public GetFormResponseDto execute(String expoId, ParticipationType participationType, ApplicationType applicationType) {
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);

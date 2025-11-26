@@ -12,6 +12,15 @@ import java.util.List;
 public class ApplicationTrainingProListAndTraineeRequestDto {
 
     @NotNull
+    private String trainingId;
+
+    @NotNull
+    private String phoneNumber;
+
+    @NotNull
+    private String name;
+
+    @NotNull
     private String informationJson;
 
     @NotNull

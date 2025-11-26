@@ -36,9 +36,13 @@ public class FormController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/{expo_id}/{participationType}")
-    public ResponseEntity<Void> deleteForm(@PathVariable("expo_id") String expoId, @PathVariable ParticipationType participationType) {
-        deleteFormService.execute(expoId, participationType);
+    @DeleteMapping("/{expo_id}/{participationType}/{applicationType}")
+    public ResponseEntity<Void> deleteForm(
+            @PathVariable("expo_id") String expoId,
+            @PathVariable ParticipationType participationType,
+            @PathVariable ApplicationType applicationType
+    ) {
+        deleteFormService.execute(expoId, participationType, applicationType);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
