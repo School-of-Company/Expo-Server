@@ -32,7 +32,7 @@ services:
       - monitoring-network
 
   postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: expo-postgres
     restart: always
     environment:
