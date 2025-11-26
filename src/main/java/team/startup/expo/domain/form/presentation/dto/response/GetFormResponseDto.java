@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.form.entity.DynamicFormType;
 import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -23,18 +22,17 @@ public class GetFormResponseDto {
     private ApplicationType applicationType;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private List<GetFormResponseDto.DynamicFormRequestDto> dynamicForm;
+    private List<DynamicFormResponseDto> dynamicForm;
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DynamicFormRequestDto {
+    public static class DynamicFormResponseDto {
         private String title;
         private FormType formType;
         private String jsonData;
         private Boolean requiredStatus;
         private String otherJson;
-        private DynamicFormType dynamicFormType;
     }
 }
