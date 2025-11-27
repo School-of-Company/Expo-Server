@@ -29,7 +29,6 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)

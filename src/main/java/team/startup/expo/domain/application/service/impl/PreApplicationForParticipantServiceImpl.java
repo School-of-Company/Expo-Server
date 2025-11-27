@@ -16,9 +16,6 @@ import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
 import team.startup.expo.domain.form.repository.FormRepository;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -37,7 +34,6 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
     private final FormRepository formRepository;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
