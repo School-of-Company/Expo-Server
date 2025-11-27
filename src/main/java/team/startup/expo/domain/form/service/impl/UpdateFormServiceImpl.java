@@ -55,6 +55,5 @@ public class UpdateFormServiceImpl implements UpdateFormService {
                 .jsonData(dto.getJsonData())
                 .otherJson(dto.getOtherJson())
                 .build());
-
     }
 }

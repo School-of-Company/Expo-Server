@@ -29,6 +29,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DateUtil dateUtil;
+    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -57,6 +58,7 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                         .phoneNumber(dto.getPhoneNumber())
                         .name(dto.getName())
                         .informationJson(dto.getInformationJson())
+                        .name(dto.getName())
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
