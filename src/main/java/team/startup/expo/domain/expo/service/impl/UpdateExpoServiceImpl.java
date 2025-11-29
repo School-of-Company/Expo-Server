@@ -16,7 +16,9 @@ import team.startup.expo.global.annotation.TransactionService;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -39,44 +41,40 @@ public class UpdateExpoServiceImpl implements UpdateExpoService {
     private void updateStandardPrograms(Expo expo, UpdateExpoRequestDto dto) {
         List<StandardProgram> existingPrograms = standardProgramRepository.findByExpo(expo);
 
-        Set<Long> incomingIds = new HashSet<>();
-        for (UpdateStandardProRequestDto standardDto : dto.getUpdateStandardProRequestDto()) {
-            if (standardDto.getId() != null) {
-                incomingIds.add(standardDto.getId());
-            }
-            saveStandardPro(standardDto, expo);
-        }
+        Set<Long> incomingIds = dto.getUpdateStandardProRequestDto().stream()
+                .map(UpdateStandardProRequestDto::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        for (StandardProgram program : existingPrograms) {
-            Long id = program.getId();
-            if (id == null) {
-                continue;
-            }
-            if (!incomingIds.contains(id)) {
-                standardProgramRepository.delete(program);
-            }
+        dto.getUpdateStandardProRequestDto()
+                .forEach(standardDto -> saveStandardPro(standardDto, expo));
+
+        List<StandardProgram> toDelete = existingPrograms.stream()
+                .filter(program -> program.getId() != null && !incomingIds.contains(program.getId()))
+                .toList();
+
+        if (!toDelete.isEmpty()) {
+            standardProgramRepository.deleteAllInBatch(toDelete);
         }
     }
 
     private void updateTrainingPrograms(Expo expo, UpdateExpoRequestDto dto) {
         List<TrainingProgram> existingPrograms = trainingProgramRepository.findByExpo(expo);
 
-        Set<Long> incomingIds = new HashSet<>();
-        for (UpdateTrainingProRequestDto trainingDto : dto.getUpdateTrainingProRequestDto()) {
-            if (trainingDto.getId() != null) {
-                incomingIds.add(trainingDto.getId());
-            }
-            saveTrainingPro(trainingDto, expo);
-        }
+        Set<Long> incomingIds = dto.getUpdateTrainingProRequestDto().stream()
+                .map(UpdateTrainingProRequestDto::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
-        for (TrainingProgram program : existingPrograms) {
-            Long id = program.getId();
-            if (id == null) {
-                continue;
-            }
-            if (!incomingIds.contains(id)) {
-                trainingProgramRepository.delete(program);
-            }
+        dto.getUpdateTrainingProRequestDto()
+                .forEach(trainingDto -> saveTrainingPro(trainingDto, expo));
+
+        List<TrainingProgram> toDelete = existingPrograms.stream()
+                .filter(program -> program.getId() != null && !incomingIds.contains(program.getId()))
+                .toList();
+
+        if (!toDelete.isEmpty()) {
+            trainingProgramRepository.deleteAllInBatch(toDelete);
         }
     }
 
