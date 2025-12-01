@@ -1,22 +1,17 @@
 package team.startup.expo.domain.application.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.event.SendQrEvent;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
+import team.startup.expo.domain.application.service.FieldApplicationForTraineeService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
-import team.startup.expo.domain.application.service.FieldApplicationForTraineeService;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.application.event.SendQrEvent;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -26,7 +21,6 @@ import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -37,8 +31,6 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
     private final StandardParticipantRepository standardParticipantRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
-    private final ObjectMapper objectMapper;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -64,8 +56,8 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
                 .orElse(Trainee.builder()
                         .trainingId(dto.getTrainingId())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_TRAINEE)
                         .name(dto.getName())
+                        .informationJson(dto.getInformationJson())
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
@@ -73,13 +65,5 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
                         .build());
 
         traineeRepository.save(trainee);
-
-        DynamicJsonData doc = new DynamicJsonData(
-                null,
-                OwnerType.TRAINEE,
-                trainee.getId(),
-                dto.getInformationJson()
-        );
-        dynamicJsonDataRepository.save(doc);
     }
 }

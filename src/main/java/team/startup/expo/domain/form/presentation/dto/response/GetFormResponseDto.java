@@ -23,13 +23,13 @@ public class GetFormResponseDto {
     private ApplicationType applicationType;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private List<GetFormResponseDto.DynamicFormRequestDto> dynamicForm;
+    private List<DynamicFormResponseDto> dynamicForm;
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class DynamicFormRequestDto {
+    public static class DynamicFormResponseDto {
         private String title;
         private FormType formType;
         private String jsonData;

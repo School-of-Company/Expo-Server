@@ -5,11 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import team.startup.expo.domain.admin.entity.Authority;
+import org.hibernate.type.SqlTypes;
 import team.startup.expo.domain.expo.entity.Expo;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 
 import java.time.LocalDateTime;
@@ -32,14 +32,11 @@ public class StandardParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
-    @Transient
-    private DynamicJsonData participantJson;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private String informationJson;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Authority authority;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean personalInformationStatus;
 
     @Enumerated(EnumType.STRING)

@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.mongo.entity.DynamicSurveyJsonDoc;
-import team.startup.expo.domain.mongo.repository.DynamicSurveyJsonRepository;
+import team.startup.expo.domain.json.entity.DynamicJson;
+import team.startup.expo.domain.json.entity.DynamicJsonType;
+import team.startup.expo.domain.json.repository.DynamicJsonRepository;
 import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
 import team.startup.expo.domain.survey.management.entity.Survey;
 import team.startup.expo.domain.survey.management.exception.AlreadyExistSurveyException;
@@ -22,7 +23,7 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
     private final SurveyRepository surveyRepository;
     private final DynamicSurveyRepository dynamicSurveyRepository;
     private final ExpoRepository expoRepository;
-    private final DynamicSurveyJsonRepository dynamicSurveyJsonRepository;
+    private final DynamicJsonRepository dynamicJsonRepository;
 
     public void execute(String expoId, SurveyRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -49,20 +50,18 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
     }
 
     private void saveDynamicSurvey(SurveyRequestDto.DynamicSurveyRequestDto dto, Survey survey) {
-        DynamicSurvey dynamicSurvey = DynamicSurvey.builder()
-                .surveyId(survey.getId())
+        DynamicSurvey dynamicSurvey = dynamicSurveyRepository.save(DynamicSurvey.builder()
+                .survey(survey)
                 .title(dto.getTitle())
                 .formType(dto.getFormType())
                 .requiredStatus(dto.getRequiredStatus())
-                .build();
-        dynamicSurvey = dynamicSurveyRepository.save(dynamicSurvey);
+                .build());
 
-        DynamicSurveyJsonDoc doc = new DynamicSurveyJsonDoc(
-                null,
-                dynamicSurvey.getId(),
-                dto.getJsonData(),
-                dto.getOtherJson()
-        );
-        dynamicSurveyJsonRepository.save(doc);
+        dynamicJsonRepository.save(DynamicJson.builder()
+                .dynamicJsonType(DynamicJsonType.SURVEY)
+                .recordId(dynamicSurvey.getId())
+                .jsonData(dto.getJsonData())
+                .otherJson(dto.getOtherJson())
+                .build());
     }
 }

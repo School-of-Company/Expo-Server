@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: ${DB_DRIVER_CLASS}
-    url: jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:expo}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:expo}
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:12345}
   jpa:
@@ -28,10 +28,6 @@ spring:
           max-idle: 10
           min-idle: 5
         shutdown-timeout: 2000ms
-    mongodb:
-      uri: ${MONGO_URI}
-      database: ${MONGO_NAME}
-      ca-file-path: classpath:certification/global-bundle.pem
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}

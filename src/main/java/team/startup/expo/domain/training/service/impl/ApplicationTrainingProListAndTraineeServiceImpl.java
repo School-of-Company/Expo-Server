@@ -1,14 +1,7 @@
 package team.startup.expo.domain.training.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
@@ -19,8 +12,6 @@ import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
 import team.startup.expo.domain.form.repository.FormRepository;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -49,9 +40,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
     private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
     private final DateUtil dateUtil;
-    private final ObjectMapper objectMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final MongoTemplate mongoTemplate;
     private final FormRepository formRepository;
 
     @Override
@@ -107,7 +96,7 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
                 .orElse(Trainee.builder()
                         .trainingId(dto.getTrainingId())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_TRAINEE)
+                        .informationJson(dto.getInformationJson())
                         .name(dto.getName())
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
@@ -116,18 +105,6 @@ public class ApplicationTrainingProListAndTraineeServiceImpl implements Applicat
                         .build());
 
         trainee = traineeRepository.save(trainee);
-
-        Query query = Query.query(
-                Criteria.where("ownerType").is(OwnerType.TRAINEE)
-                        .and("ownerId").is(trainee.getId())
-        );
-        Update update = new Update()
-                .set("answers", dto.getInformationJson())
-                .setOnInsert("ownerType", OwnerType.TRAINEE)
-                .setOnInsert("ownerId", trainee.getId());
-
-        mongoTemplate.upsert(query, update, DynamicJsonData.class);
-
         return trainee;
     }
 

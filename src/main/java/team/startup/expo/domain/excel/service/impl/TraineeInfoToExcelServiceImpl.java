@@ -11,20 +11,14 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.training.entity.Category;
+import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.entity.TrainingProgramUser;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
@@ -50,8 +44,6 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
     private final TraineeRepository traineeRepository;
     private final ExpoRepository expoRepository;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
-    private final MongoTemplate mongoTemplate;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
 
     @Override
@@ -62,11 +54,20 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
             List<Trainee> traineeList = traineeRepository.findByExpo(expo);
 
+            if (traineeList.isEmpty()) {
+                throw new RuntimeException("연수자가 존재하지 않습니다.");
+            }
+
             List<Long> traineeIds = traineeList.stream()
                     .map(Trainee::getId)
                     .collect(Collectors.toList());
 
-            Map<Long, Map<String, String>> dynamicDataMap = loadDynamicAnswersBatch(traineeIds);
+            Map<Long, Map<String, String>> dynamicDataMap = new HashMap<>();
+            for (Trainee trainee : traineeList) {
+                Map<String, String> parsed = parseJson(trainee.getInformationJson());
+                dynamicDataMap.put(trainee.getId(), parsed);
+            }
+
             Map<Long, List<TrainingProgramUser>> programUserMap = loadTrainingProgramUsersBatch(traineeIds);
 
             Workbook workbook = createWorkbook(traineeList, dynamicDataMap, programUserMap);
@@ -121,8 +122,8 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
     private List<String> createHeaders(Set<String> dynamicKeys) {
         List<String> headers = new ArrayList<>(List.of("이름", "연수원아이디", "전화번호", "신청방식"));
         headers.addAll(dynamicKeys);
-        headers.add("공통 연수");
-        headers.add("선택 연수");
+        headers.add("공통 강연");
+        headers.add("선택 강연");
         return headers;
     }
 
@@ -148,23 +149,53 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             Row row = sheet.createRow(rowCount++);
 
             int cellIndex = 0;
-            row.createCell(cellIndex++).setCellValue(safe(trainee.getName()));
-            row.createCell(cellIndex++).setCellValue(safe(trainee.getTrainingId()));
-            row.createCell(cellIndex++).setCellValue(safe(trainee.getPhoneNumber()));
-            row.createCell(cellIndex++).setCellValue(safe(trainee.getApplicationType().toString()));
+            Cell c0 = row.createCell(cellIndex++);
+            c0.setCellValue(safe(trainee.getName()));
+            c0.setCellStyle(bodyStyle);
+
+            Cell c1 = row.createCell(cellIndex++);
+            c1.setCellValue(safe(trainee.getTrainingId()));
+            c1.setCellStyle(bodyStyle);
+
+            Cell c2 = row.createCell(cellIndex++);
+            c2.setCellValue(safe(trainee.getPhoneNumber()));
+            c2.setCellStyle(bodyStyle);
+
+            Cell c3 = row.createCell(cellIndex++);
+            c3.setCellValue(safe(trainee.getApplicationType().getKoreanName()));
+            c3.setCellStyle(bodyStyle);
 
             Map<String, String> jsonMap = dynamicDataMap.getOrDefault(trainee.getId(), Collections.emptyMap());
             for (String key : dynamicKeys) {
                 String value = jsonMap.getOrDefault(key, "");
-                row.createCell(cellIndex++).setCellValue(safe(value));
+                Cell cell = row.createCell(cellIndex++);
+                cell.setCellValue(safe(value));
+                cell.setCellStyle(bodyStyle);
             }
 
             List<TrainingProgramUser> programs = programUserMap.getOrDefault(trainee.getId(), Collections.emptyList());
-            String commonTitles = extractProgramTitles(programs, Category.ESSENTIAL);
-            String selectiveTitles = extractProgramTitles(programs, null);
 
-            row.createCell(cellIndex++).setCellValue(safe(commonTitles));
-            row.createCell(cellIndex++).setCellValue(safe(selectiveTitles));
+            String commonTitles = programs.stream()
+                    .filter(tpu -> tpu.getTrainingProgram() != null &&
+                            tpu.getTrainingProgram().getCategory() == Category.ESSENTIAL)
+                    .map(tpu -> tpu.getTrainingProgram().getTitle())
+                    .distinct()
+                    .collect(Collectors.joining(", "));
+
+            String selectiveTitles = programs.stream()
+                    .filter(tpu -> tpu.getTrainingProgram() != null &&
+                            tpu.getTrainingProgram().getCategory() != Category.ESSENTIAL)
+                    .map(tpu -> tpu.getTrainingProgram().getTitle())
+                    .distinct()
+                    .collect(Collectors.joining(", "));
+
+            Cell commonCell = row.createCell(cellIndex++);
+            commonCell.setCellValue(safe(commonTitles));
+            commonCell.setCellStyle(bodyStyle);
+
+            Cell selectiveCell = row.createCell(cellIndex++);
+            selectiveCell.setCellValue(safe(selectiveTitles));
+            selectiveCell.setCellStyle(bodyStyle);
         }
     }
 
@@ -174,73 +205,22 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
                 .filter(tpu -> filterCategory == null
                         ? tpu.getTrainingProgram().getCategory() != Category.ESSENTIAL
                         : tpu.getTrainingProgram().getCategory() == filterCategory)
-                .map(tpu -> tpu.getTrainingProgram().getTitle())
+                .map(TrainingProgramUser::getTrainingProgram)
+                .map(TrainingProgram::getTitle)
                 .filter(Objects::nonNull)
                 .map(TraineeInfoToExcelServiceImpl::safe)
                 .collect(Collectors.joining(", "));
     }
 
-    private Map<Long, Map<String, String>> loadDynamicAnswersBatch(List<Long> ownerIds) {
-        if (ownerIds.isEmpty()) {
+    private Map<Long, List<TrainingProgramUser>> loadTrainingProgramUsersBatch(List<Long> traineeIds) {
+        if (traineeIds.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        try {
-            List<DynamicJsonData> dataList = dynamicJsonDataRepository
-                    .findByOwnerTypeAndOwnerIdIn(OwnerType.TRAINEE, ownerIds);
+        List<TrainingProgramUser> allPrograms = trainingProgramUserRepository.findAllByTraineeIdIn(traineeIds);
 
-            Map<Long, Map<String, String>> result = dataList.stream()
-                    .filter(data -> data.getAnswers() != null && !data.getAnswers().isBlank())
-                    .collect(Collectors.toMap(
-                            DynamicJsonData::getOwnerId,
-                            data -> parseJson(data.getAnswers())
-                    ));
-
-            Set<Long> foundIds = result.keySet();
-            List<Long> missingIds = ownerIds.stream()
-                    .filter(id -> !foundIds.contains(id))
-                    .collect(Collectors.toList());
-
-            if (!missingIds.isEmpty()) {
-                Map<Long, Map<String, String>> fallbackData = loadFromMongoTemplateBatch(missingIds);
-                result.putAll(fallbackData);
-            }
-
-            return result;
-        } catch (Exception e) {
-            log.error("동적 데이터 조회 중 오류 발생", e);
-            return Collections.emptyMap();
-        }
-    }
-
-    private Map<Long, Map<String, String>> loadFromMongoTemplateBatch(List<Long> ownerIds) {
-        Criteria ownerTypeCriteria = new Criteria().orOperator(
-                Criteria.where("ownerType").is(OwnerType.TRAINEE),
-                Criteria.where("ownerType").is(OwnerType.TRAINEE.name())
-        );
-
-        Query query = new Query(new Criteria().andOperator(
-                ownerTypeCriteria,
-                Criteria.where("ownerId").in(ownerIds)
-        ));
-
-        List<Document> documents = mongoTemplate.find(query, Document.class, "dynamic_json_data");
-
-        if (documents.isEmpty()) {
-            documents = mongoTemplate.find(query, Document.class, "dynamicJsonDataRepository");
-        }
-
-        return documents.stream()
-                .collect(Collectors.toMap(
-                        doc -> doc.getLong("ownerId"),
-                        doc -> {
-                            String raw = (doc.get("answers") instanceof String)
-                                    ? (String) doc.get("answers")
-                                    : (String) doc.get("json");
-                            return parseJson(raw);
-                        },
-                        (a, b) -> a
-                ));
+        return allPrograms.stream()
+                .collect(Collectors.groupingBy(tpu -> tpu.getTrainee().getId()));
     }
 
     private Map<String, String> parseJson(String json) {
@@ -253,17 +233,6 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
             log.warn("JSON 파싱 실패: {}", json, e);
             return Collections.emptyMap();
         }
-    }
-
-    private Map<Long, List<TrainingProgramUser>> loadTrainingProgramUsersBatch(List<Long> traineeIds) {
-        if (traineeIds.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        List<TrainingProgramUser> allPrograms = trainingProgramUserRepository.findAllByTraineeIdIn(traineeIds);
-
-        return allPrograms.stream()
-                .collect(Collectors.groupingBy(tpu -> tpu.getTrainee().getId()));
     }
 
     private XSSFCellStyle createHeaderStyle(Workbook workbook) {
@@ -308,7 +277,10 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
     private static String safe(String s) {
         if (s == null) return "";
-        String cleaned = s.replaceAll("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]", "");
+        String cleaned = s
+                .replace("\r", "")
+                .replace("\n", "")
+                .replaceAll("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]", "");
         if (cleaned.length() > EXCEL_CELL_MAX_LEN) {
             cleaned = cleaned.substring(0, EXCEL_CELL_MAX_LEN);
         }

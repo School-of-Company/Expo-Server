@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.type.SqlTypes;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 
 @Entity
@@ -21,7 +23,8 @@ public class StandardParticipantSurveyAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(nullable = false, columnDefinition = "jsonb")
     private String answerJson;
 
     @ManyToOne
@@ -29,6 +32,6 @@ public class StandardParticipantSurveyAnswer {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private StandardParticipant standardParticipant;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(nullable = false)
     private Boolean personalInformationStatus;
 }

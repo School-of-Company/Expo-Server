@@ -1,10 +1,6 @@
 package team.startup.expo.domain.application.service.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationForTraineeRequestDto;
 import team.startup.expo.domain.application.service.PreApplicationForTraineeService;
@@ -17,10 +13,6 @@ import team.startup.expo.domain.form.entity.ParticipationType;
 import team.startup.expo.domain.form.exception.NotFoundFormException;
 import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
 import team.startup.expo.domain.form.repository.FormRepository;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
-import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.domain.trainee.entity.Trainee;
 import team.startup.expo.domain.trainee.repository.TraineeRepository;
@@ -28,7 +20,6 @@ import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -38,7 +29,6 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
     private final ExpoRepository expoRepository;
     private final FormRepository formRepository;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -65,7 +55,8 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                 .orElse(Trainee.builder()
                         .trainingId(dto.getTrainingId())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_TRAINEE)
+                        .name(dto.getName())
+                        .informationJson(dto.getInformationJson())
                         .name(dto.getName())
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
@@ -74,13 +65,5 @@ public class PreApplicationForTraineeServiceImpl implements PreApplicationForTra
                         .build());
 
         traineeRepository.save(trainee);
-
-        DynamicJsonData doc = new DynamicJsonData(
-                null,
-                OwnerType.TRAINEE,
-                trainee.getId(),
-                dto.getInformationJson()
-        );
-        dynamicJsonDataRepository.save(doc);
     }
 }

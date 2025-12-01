@@ -1,8 +1,6 @@
 package team.startup.expo.domain.application.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationTemporaryQrRequestDto;
 import team.startup.expo.domain.application.presentation.dto.response.ApplicationTemporaryQrResponseDto;
 import team.startup.expo.domain.application.service.FieldApplicationTemporaryQrService;
@@ -10,9 +8,6 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
@@ -29,8 +24,6 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
     private final ExpoRepository expoRepository;
     private final StandardParticipantRepository standardParticipantRepository;
     private final DateUtil dateUtil;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
-    private final ObjectMapper objectMapper;
 
     public ApplicationTemporaryQrResponseDto execute(String expoId, ApplicationTemporaryQrRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -59,7 +52,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
         StandardParticipant standardParticipant = StandardParticipant.builder()
                 .name(dto.getName())
                 .phoneNumber(phoneNumber)
-                .authority(Authority.ROLE_STANDARD)
+                .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())
                 .smsTryTime(0)
@@ -68,15 +61,6 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
                 .build();
 
         standardParticipantRepository.save(standardParticipant);
-
-        String answers = dto.getInformationJson();
-        DynamicJsonData doc = new DynamicJsonData(
-                null,
-                OwnerType.STANDARD_PARTICIPANT,
-                standardParticipant.getId(),
-                answers
-        );
-        dynamicJsonDataRepository.save(doc);
 
         return standardParticipant;
     }

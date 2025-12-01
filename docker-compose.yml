@@ -20,22 +20,6 @@ services:
     networks:
       - monitoring-network
 
-  mysql:
-    image: mysql:latest
-    container_name: expo-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: expo
-      MYSQL_USER: expo
-      MYSQL_PASSWORD: expo1234
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - monitoring-network
-
   redis:
     image: redis:latest
     container_name: expo-redis
@@ -47,15 +31,18 @@ services:
     networks:
       - monitoring-network
 
-  mongodb:
-    image: mongo:latest
-    container_name: expo-mongodb
+  postgres:
+    image: postgres:17
+    container_name: expo-postgres
     restart: always
-    environment: {}
+    environment:
+      POSTGRES_DB: expo
+      POSTGRES_USER: expo
+      POSTGRES_PASSWORD: expo1234
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongodb_data:/data/db
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - monitoring-network
 
@@ -66,4 +53,4 @@ networks:
 volumes:
   mysql_data:
   redis_data:
-  mongodb_data:
+  postgres_data:

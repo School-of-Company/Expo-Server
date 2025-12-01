@@ -11,14 +11,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import team.startup.expo.domain.excel.service.TraineeAttendanceToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
-import team.startup.expo.domain.mongo.entity.DynamicJsonData;
-import team.startup.expo.domain.mongo.entity.OwnerType;
-import team.startup.expo.domain.mongo.repository.DynamicJsonDataRepository;
+import team.startup.expo.domain.trainee.entity.Trainee;
+import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.entity.TrainingProgramUser;
 import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
-import team.startup.expo.domain.trainee.entity.Trainee;
-import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.io.IOException;
@@ -28,6 +25,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.containsAny;
+
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
 @Service
@@ -35,7 +34,6 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final TraineeRepository traineeRepository;
-    private final DynamicJsonDataRepository dynamicJsonDataRepository;
     private final TrainingProgramUserRepository trainingProgramUserRepository;
 
     @Override
@@ -48,9 +46,6 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd.(E)", Locale.KOREAN);
         DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("MM.dd.(E)", Locale.KOREAN);
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        LocalDate startedDay = LocalDate.parse(expo.getStartedDay());
-        LocalDate finishedDay = LocalDate.parse(expo.getFinishedDay());
 
         List<TrainingProgramUser> appliedPrograms = trainingProgramUserRepository.findByTrainee(trainee);
 
@@ -132,15 +127,10 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
         String traineeName = trainee.getName();
         String trainingId = trainee.getTrainingId();
         try {
-            DynamicJsonData infoDoc = dynamicJsonDataRepository
-                    .findByOwnerTypeAndOwnerId(OwnerType.TRAINEE, trainee.getId())
-                    .orElse(null);
-            if (infoDoc != null && infoDoc.getAnswers() != null && !infoDoc.getAnswers().isBlank()) {
+            String infoJson = trainee.getInformationJson(); // 여기서 jsonb 컬럼 사용
+            if (infoJson != null && !infoJson.isBlank()) {
                 @SuppressWarnings("unchecked")
-                Map<String, Object> parsed = OBJECT_MAPPER.readValue(
-                        infoDoc.getAnswers(),
-                        Map.class
-                );
+                Map<String, Object> parsed = OBJECT_MAPPER.readValue(infoJson, Map.class);
                 schoolName = Optional.ofNullable((String) parsed.get("학교명"))
                         .orElseGet(() -> Optional.ofNullable((String) parsed.get("소속")).orElse("학교명"));
                 traineeName = Optional.ofNullable((String) parsed.get("이름")).orElse(traineeName);
@@ -323,8 +313,8 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
                 String keynoteTitle = keynoteProgram == null ? "기조강연" : keynoteProgram.getTitle();
                 String keynoteTime = keynoteProgram == null
                         ? "(시간)"
-                        : "(" + formatTime(keynoteProgram.getStartedAt(), timeFormatter)
-                        + "~" + formatTime(keynoteProgram.getEndedAt(), timeFormatter) + ")";
+                        : "(" + formatTime(LocalDateTime.parse(keynoteProgram.getStartedAt()), timeFormatter)
+                        + "~" + formatTime(LocalDateTime.parse(keynoteProgram.getEndedAt()), timeFormatter) + ")";
                 Cell commonProgramCell = programRow.createCell(pCol++);
                 commonProgramCell.setCellValue(keynoteTitle + "\n" + keynoteTime);
                 commonProgramCell.setCellStyle(programCellStyle);
@@ -334,8 +324,8 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
                     if (i < elective.size()) {
                         TrainingProgram p = elective.get(i);
                         String title = p.getTitle();
-                        String time = "(" + formatTime(p.getStartedAt(), timeFormatter)
-                                + "~" + formatTime(p.getEndedAt(), timeFormatter) + ")";
+                        String time = "(" + formatTime(LocalDateTime.parse(p.getStartedAt()), timeFormatter)
+                                + "~" + formatTime(LocalDateTime.parse(p.getEndedAt()), timeFormatter) + ")";
                         c.setCellValue(title + "\n" + time);
                     } else {
                         c.setCellValue("");
@@ -403,16 +393,7 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
         }
     }
 
-    private String formatTime(String dateTimeString, DateTimeFormatter formatter) {
-        if (dateTimeString == null || dateTimeString.isBlank()) return "";
-        return LocalDateTime.parse(dateTimeString).format(formatter);
-    }
-
-    private static boolean containsAny(String target, String... keywords) {
-        if (target == null) return false;
-        for (String k : keywords) {
-            if (k != null && target.contains(k)) return true;
-        }
-        return false;
+    private String formatTime(LocalDateTime dateTime, DateTimeFormatter formatter) {
+        return dateTime.format(formatter);
     }
 }

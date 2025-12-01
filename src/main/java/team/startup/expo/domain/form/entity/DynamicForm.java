@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.mongo.entity.DynamicFormJsonDoc;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -22,13 +21,7 @@ public class DynamicForm {
     private Long id;
 
     @Column(nullable = false)
-    private Long formId;
-
-    @Column(nullable = false)
     private String title;
-
-    @Transient
-    private String jsonData;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -36,12 +29,6 @@ public class DynamicForm {
 
     @Column(nullable = false)
     private Boolean requiredStatus;
-
-    @Transient
-    private String otherJson;
-
-    @Transient
-    private DynamicFormJsonDoc formJson;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
