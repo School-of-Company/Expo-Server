@@ -1,10 +1,10 @@
 package team.startup.expo.domain.participant.repository.custom.impl;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.presentation.dto.response.GetParticipantInfoResponseDto;
 import team.startup.expo.domain.participant.presentation.dto.response.ParticipantResponseDto;
 import team.startup.expo.domain.participant.repository.custom.ParticipantCustomRepository;
@@ -12,7 +12,6 @@ import team.startup.expo.domain.participant.repository.custom.ParticipantCustomR
 import java.time.LocalDate;
 import java.util.List;
 
-import static team.startup.expo.domain.expo.entity.QExpo.expo;
 import static team.startup.expo.domain.participant.entity.QStandardParticipant.standardParticipant;
 import static team.startup.expo.domain.participant.entity.QStandardParticipantParticipation.standardParticipantParticipation;
 
@@ -26,7 +25,7 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
         int size = pageable.getPageSize();
 
         Long totalElement = queryFactory
-                .select(standardParticipant.count())
+                .select(standardParticipant.id.count())
                 .from(standardParticipant)
                 .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
                 .where(
@@ -37,8 +36,15 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
 
         int totalPage = (int) ((totalElement + size - 1) / size);
 
-        List<StandardParticipant> participants = queryFactory
-                .selectFrom(standardParticipant)
+        List<GetParticipantInfoResponseDto> participants = queryFactory
+                .select(Projections.constructor(
+                        GetParticipantInfoResponseDto.class,
+                        standardParticipant.id,
+                        standardParticipant.name,
+                        standardParticipant.personalInformationStatus,
+                        standardParticipant.phoneNumber
+                ))
+                .from(standardParticipant)
                 .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
                 .where(
                         standardParticipant.expo.id.eq(expoId)
@@ -48,21 +54,12 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
                 .limit(size)
                 .fetch();
 
-        List<GetParticipantInfoResponseDto> getParticipantInfoResponseDto = participants.stream()
-                .map(participant -> GetParticipantInfoResponseDto.builder()
-                        .id(participant.getId())
-                        .name(participant.getName())
-                        .informationStatus(participant.getPersonalInformationStatus())
-                        .phoneNumber(participant.getPhoneNumber())
-                        .build())
-                .toList();
-
         return ParticipantResponseDto.builder()
                 .info(ParticipantResponseDto.Info.builder()
                         .totalPage(totalPage)
                         .totalElement(totalElement.intValue())
                         .build())
-                .participants(getParticipantInfoResponseDto)
+                .participants(participants)
                 .build();
 
     }
