@@ -7,11 +7,17 @@ spring:
   jpa:
     hibernate:
       dialect: ${DB_DIALECT}
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      encoding: UTF-8
+      continue-on-error: false
   jackson:
     time-zone: Asia/Seoul
   mvc:
