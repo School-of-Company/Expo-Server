@@ -41,8 +41,8 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
                         GetParticipantInfoResponseDto.class,
                         standardParticipant.id,
                         standardParticipant.name,
-                        standardParticipant.personalInformationStatus,
-                        standardParticipant.phoneNumber
+                        standardParticipant.phoneNumber,
+                        standardParticipant.personalInformationStatus
                 ))
                 .from(standardParticipant)
                 .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
