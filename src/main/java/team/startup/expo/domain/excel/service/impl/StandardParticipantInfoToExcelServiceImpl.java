@@ -5,7 +5,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
@@ -54,7 +54,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
 
     @Override
     public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
-        try (Workbook workbook = new XSSFWorkbook()) {
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(500)) {
+            workbook.setCompressTempFiles(true);
             Expo expo = expoRepository.findById(expoId)
                     .orElseThrow(NotFoundExpoException::new);
 
@@ -193,6 +194,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             try (ServletOutputStream outputStream = res.getOutputStream()) {
                 workbook.write(outputStream);
                 outputStream.flush();
+            } finally {
+                workbook.dispose();
             }
         } catch (Exception e) {
             throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage(), e);

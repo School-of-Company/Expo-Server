@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
@@ -70,7 +70,7 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
 
             Map<Long, List<TrainingProgramUser>> programUserMap = loadTrainingProgramUsersBatch(traineeIds);
 
-            Workbook workbook = createWorkbook(traineeList, dynamicDataMap, programUserMap);
+            SXSSFWorkbook workbook = createWorkbook(traineeList, dynamicDataMap, programUserMap);
 
             writeToResponse(res, workbook);
 
@@ -83,12 +83,13 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
         }
     }
 
-    private Workbook createWorkbook(
+    private SXSSFWorkbook createWorkbook(
             List<Trainee> traineeList,
             Map<Long, Map<String, String>> dynamicDataMap,
             Map<Long, List<TrainingProgramUser>> programUserMap
     ) {
-        Workbook workbook = new XSSFWorkbook();
+        SXSSFWorkbook workbook = new SXSSFWorkbook(500);
+        workbook.setCompressTempFiles(true);
         Sheet sheet = workbook.createSheet("사전 교원연수자 정보");
         sheet.setDefaultColumnWidth(DEFAULT_COLUMN_WIDTH);
 
@@ -261,16 +262,18 @@ public class TraineeInfoToExcelServiceImpl implements TraineeInfoToExcelService 
         style.setBorderRight(BorderStyle.THIN);
     }
 
-    private void writeToResponse(HttpServletResponse res, Workbook workbook) throws IOException {
+    private void writeToResponse(HttpServletResponse res, SXSSFWorkbook workbook) throws IOException {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         String fileName = "교원연수자_정보_" + timestamp;
 
         res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
+        res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
 
         try (ServletOutputStream outputStream = res.getOutputStream()) {
             workbook.write(outputStream);
+            outputStream.flush();
         } finally {
+            workbook.dispose();
             workbook.close();
         }
     }

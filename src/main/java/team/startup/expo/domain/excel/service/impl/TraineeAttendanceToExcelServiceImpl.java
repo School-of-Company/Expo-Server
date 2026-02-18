@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Service;
 import team.startup.expo.domain.excel.service.TraineeAttendanceToExcelService;
 import team.startup.expo.domain.expo.entity.Expo;
@@ -127,7 +127,7 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
         String traineeName = trainee.getName();
         String trainingId = trainee.getTrainingId();
         try {
-            String infoJson = trainee.getInformationJson(); // 여기서 jsonb 컬럼 사용
+            String infoJson = trainee.getInformationJson();
             if (infoJson != null && !infoJson.isBlank()) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> parsed = OBJECT_MAPPER.readValue(infoJson, Map.class);
@@ -139,7 +139,8 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
         } catch (Exception e) {
         }
 
-        try (Workbook workbook = new XSSFWorkbook()) {
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(200)) {
+            workbook.setCompressTempFiles(true);
             Sheet sheet = workbook.createSheet("출석부");
             sheet.setDefaultColumnWidth(14);
 
@@ -382,11 +383,13 @@ public class TraineeAttendanceToExcelServiceImpl implements TraineeAttendanceToE
 
             String fileName = "Trainee_Attendance_" + trainee.getName();
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
+            res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
 
             try (ServletOutputStream outputStream = res.getOutputStream()) {
                 workbook.write(outputStream);
                 outputStream.flush();
+            } finally {
+                workbook.dispose();
             }
         } catch (IOException e) {
             throw new RuntimeException("출석부 엑셀 생성 중 오류 발생", e);
