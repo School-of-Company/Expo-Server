@@ -4,9 +4,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
 import team.startup.expo.domain.excel.service.ProgramParticipantInfoToExcelService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
@@ -27,23 +25,22 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
     private final StandardProgramRepository standardProgramRepository;
 
     public void execute(String expoId, Long programId, HttpServletResponse res) {
-        try (Workbook workbook = new XSSFWorkbook()) {
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(500)) {
+            workbook.setCompressTempFiles(true);
+
             StandardProgram standardProgram = standardProgramRepository.findByIdAndExpoId(programId, expoId)
                     .orElseThrow(NotFoundStandardProgramException::new);
 
             List<StandardProgramUser> standardProgramUsers = standardProgramUserRepository.findByStandardProgram(standardProgram);
-            List<StandardParticipant> standardParticipants = standardProgramUsers.stream()
-                    .map(StandardProgramUser::getStandardParticipant)
-                    .toList();
 
             Sheet sheet = workbook.createSheet("프로그램 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
-            XSSFFont headerFont = (XSSFFont) workbook.createFont();
+            Font headerFont = workbook.createFont();
             headerFont.setBold(true);
-            headerFont.setColor((short) IndexedColors.WHITE.getIndex());
+            headerFont.setColor(IndexedColors.WHITE.getIndex());
 
-            XSSFCellStyle headerStyle = (XSSFCellStyle) workbook.createCellStyle();
+            CellStyle headerStyle = workbook.createCellStyle();
             headerStyle.setFillForegroundColor(IndexedColors.BLACK.getIndex());
             headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             headerStyle.setBorderTop(BorderStyle.THIN);
@@ -52,7 +49,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             headerStyle.setBorderRight(BorderStyle.THIN);
             headerStyle.setFont(headerFont);
 
-            XSSFCellStyle bodyStyle = (XSSFCellStyle) workbook.createCellStyle();
+            CellStyle bodyStyle = workbook.createCellStyle();
             bodyStyle.setBorderTop(BorderStyle.THIN);
             bodyStyle.setBorderBottom(BorderStyle.THIN);
             bodyStyle.setBorderLeft(BorderStyle.THIN);
@@ -72,14 +69,28 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
 
             int rowCount = 1;
             int rank = 1;
-            for (StandardParticipant participant : standardParticipants) {
+            for (StandardProgramUser spu : standardProgramUsers) {
+                StandardParticipant participant = spu.getStandardParticipant();
+
                 Row row = sheet.createRow(rowCount++);
 
                 int cellIndex = 0;
-                row.createCell(cellIndex++).setCellValue(rank++); // 순위
-                row.createCell(cellIndex++).setCellValue(participant.getName());
-                row.createCell(cellIndex++).setCellValue(participant.getPhoneNumber());
-                row.createCell(cellIndex++).setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
+
+                Cell rankCell = row.createCell(cellIndex++);
+                rankCell.setCellValue(rank++);
+                rankCell.setCellStyle(bodyStyle);
+
+                Cell nameCell = row.createCell(cellIndex++);
+                nameCell.setCellValue(participant.getName());
+                nameCell.setCellStyle(bodyStyle);
+
+                Cell phoneCell = row.createCell(cellIndex++);
+                phoneCell.setCellValue(participant.getPhoneNumber());
+                phoneCell.setCellStyle(bodyStyle);
+
+                Cell consentCell = row.createCell(cellIndex++);
+                consentCell.setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
+                consentCell.setCellStyle(bodyStyle);
 
                 for (int i = 0; i < 3; i++) {
                     Cell c = row.createCell(cellIndex++);
@@ -90,11 +101,13 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
 
             String fileName = "Program_Participant_Information";
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            res.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".xlsx");
+            res.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + ".xlsx\"");
 
             try (ServletOutputStream outputStream = res.getOutputStream()) {
                 workbook.write(outputStream);
                 outputStream.flush();
+            } finally {
+                workbook.dispose();
             }
         } catch (Exception e) {
             throw new RuntimeException("엑셀 파일 생성 중 오류 발생", e);
