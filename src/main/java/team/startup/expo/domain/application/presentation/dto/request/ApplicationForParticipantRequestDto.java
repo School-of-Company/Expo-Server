@@ -3,7 +3,6 @@ package team.startup.expo.domain.application.presentation.dto.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.startup.expo.domain.participant.entity.SchoolLevel;
 
 @Getter
 @NoArgsConstructor

@@ -9,4 +9,5 @@ import java.util.List;
 public interface TrainingProgramRepository extends JpaRepository<TrainingProgram, Long> {
     void deleteByExpo(Expo expo);
     List<TrainingProgram> findByExpo(Expo expo);
+    List<TrainingProgram> findAllByIdIn(List<Long> ids);
 }

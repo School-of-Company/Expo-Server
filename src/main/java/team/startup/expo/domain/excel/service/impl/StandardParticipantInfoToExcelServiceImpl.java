@@ -1,29 +1,35 @@
 package team.startup.expo.domain.excel.service.impl;
 
+import jakarta.servlet.ServletOutputStream;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import team.startup.expo.domain.expo.entity.Expo;
+import team.startup.expo.domain.expo.exception.NotFoundExpoException;
+import team.startup.expo.domain.participant.entity.StandardParticipant;
+import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFColor;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import team.startup.expo.domain.excel.service.StandardParticipantInfoToExcelService;
-import team.startup.expo.domain.expo.entity.Expo;
-import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.survey.answer.entity.StandardParticipantSurveyAnswer;
 import team.startup.expo.domain.survey.answer.repository.StandardParticipantSurveyAnswerRepository;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @ReadOnlyTransactionService
 @RequiredArgsConstructor
@@ -48,7 +54,8 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
 
     @Override
     public void execute(String expoId, HttpServletResponse res) throws JsonProcessingException {
-        try {
+        try (SXSSFWorkbook workbook = new SXSSFWorkbook(500)) {
+            workbook.setCompressTempFiles(true);
             Expo expo = expoRepository.findById(expoId)
                     .orElseThrow(NotFoundExpoException::new);
 
@@ -69,7 +76,6 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 participantSurveyAnswerMap.put(answer.getStandardParticipant().getId(), answer);
             }
 
-            Workbook workbook = new XSSFWorkbook();
             Sheet sheet = workbook.createSheet("박람회 참가자 정보");
             sheet.setDefaultColumnWidth(20);
 
@@ -97,22 +103,23 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             StandardParticipant firstParticipant = standardParticipantList.get(0);
 
             Set<String> infoDynamicKeys = new LinkedHashSet<>();
-            String infoHeaderJson = firstParticipant.getInformationJson();
-            if (infoHeaderJson != null) {
-                String sanitizedInfoHeaderJson = sanitizeJson(infoHeaderJson);
-                Map<String, String> infoHeaderJsonMap = objectMapper.readValue(sanitizedInfoHeaderJson, Map.class);
-                infoDynamicKeys.addAll(infoHeaderJsonMap.keySet());
+            if (firstParticipant.getInformationJson() != null) {
+                try {
+                    String sanitizedInfoHeaderJson = sanitizeJson(firstParticipant.getInformationJson());
+                    Map infoHeaderMap = objectMapper.readValue(sanitizedInfoHeaderJson, Map.class);
+                    infoDynamicKeys.addAll(infoHeaderMap.keySet());
+                } catch (Exception ignored) {}
             }
 
             Set<String> surveyDynamicKeys = new LinkedHashSet<>();
-
             for (StandardParticipant participant : standardParticipantList) {
                 StandardParticipantSurveyAnswer answer = participantSurveyAnswerMap.get(participant.getId());
                 if (answer != null && answer.getAnswerJson() != null) {
-                    String sanitizedSurveyHeaderJson = sanitizeJson(answer.getAnswerJson());
-                    Map<String, String> surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
-                    surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
-                    break;
+                    try {
+                        String sanitizedSurveyHeaderJson = sanitizeJson(answer.getAnswerJson());
+                        Map surveyHeaderJsonMap = objectMapper.readValue(sanitizedSurveyHeaderJson, Map.class);
+                        surveyDynamicKeys.addAll(surveyHeaderJsonMap.keySet());
+                    } catch (Exception ignored) {}
                 }
             }
 
@@ -140,39 +147,41 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
                 phoneCell.setCellStyle(bodyStyle);
 
                 Cell consentCell = row.createCell(cellIndex++);
-                consentCell.setCellValue(participant.getPersonalInformationStatus() ? "동의" : "미동의");
+                consentCell.setCellValue(Boolean.TRUE.equals(participant.getPersonalInformationStatus()) ? "동의" : "미동의");
                 consentCell.setCellStyle(bodyStyle);
 
                 Cell applyTypeCell = row.createCell(cellIndex++);
-                switch (participant.getApplicationType()) {
-                    case PRE -> applyTypeCell.setCellValue("사전신청");
-                    case FIELD -> applyTypeCell.setCellValue("현장신청");
-                }
+                applyTypeCell.setCellValue(participant.getApplicationType().getKoreanName());
                 applyTypeCell.setCellStyle(bodyStyle);
 
-                Map<String, String> infoJsonMap = new HashMap<>();
-                String escapedInfoJson = participant.getInformationJson();
-                if (escapedInfoJson != null) {
-                    String sanitizedInfoJson = sanitizeJson(escapedInfoJson);
-                    infoJsonMap = objectMapper.readValue(sanitizedInfoJson, Map.class);
+                Map infoJsonMap = new HashMap();
+                if (participant.getInformationJson() != null) {
+                    try {
+                        String sanitizedInfoJson = sanitizeJson(participant.getInformationJson());
+                        infoJsonMap = objectMapper.readValue(sanitizedInfoJson, Map.class);
+                    } catch (Exception ignored) {}
                 }
 
                 for (String key : infoDynamicKeys) {
+                    Object v = infoJsonMap.containsKey(key) ? infoJsonMap.get(key) : "";
                     Cell cell = row.createCell(cellIndex++);
-                    cell.setCellValue(infoJsonMap.getOrDefault(key, ""));
+                    cell.setCellValue(v != null ? String.valueOf(v) : "");
                     cell.setCellStyle(bodyStyle);
                 }
 
-                Map<String, String> answerJsonMap = new HashMap<>();
+                Map answerJsonMap = new HashMap();
                 StandardParticipantSurveyAnswer surveyAnswer = participantSurveyAnswerMap.get(participant.getId());
                 if (surveyAnswer != null && surveyAnswer.getAnswerJson() != null) {
-                    String sanitizedAnswerJson = sanitizeJson(surveyAnswer.getAnswerJson());
-                    answerJsonMap = objectMapper.readValue(sanitizedAnswerJson, Map.class);
+                    try {
+                        String sanitizedAnswerJson = sanitizeJson(surveyAnswer.getAnswerJson());
+                        answerJsonMap = objectMapper.readValue(sanitizedAnswerJson, Map.class);
+                    } catch (Exception ignored) {}
                 }
 
                 for (String key : surveyDynamicKeys) {
+                    Object v = answerJsonMap.containsKey(key) ? answerJsonMap.get(key) : "";
                     Cell cell = row.createCell(cellIndex++);
-                    cell.setCellValue(answerJsonMap.getOrDefault(key, ""));
+                    cell.setCellValue(v != null ? String.valueOf(v) : "");
                     cell.setCellStyle(bodyStyle);
                 }
             }
@@ -182,11 +191,12 @@ public class StandardParticipantInfoToExcelServiceImpl implements StandardPartic
             res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             res.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + fileName);
 
-            ServletOutputStream outputStream = res.getOutputStream();
-            workbook.write(outputStream);
-            workbook.close();
-            outputStream.flush();
-            outputStream.close();
+            try (ServletOutputStream outputStream = res.getOutputStream()) {
+                workbook.write(outputStream);
+                outputStream.flush();
+            } finally {
+                workbook.dispose();
+            }
         } catch (Exception e) {
             throw new RuntimeException("엑셀 파일 생성 중 오류 발생: " + e.getMessage(), e);
         }

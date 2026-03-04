@@ -8,6 +8,7 @@ import team.startup.expo.domain.form.entity.FormType;
 import team.startup.expo.domain.form.entity.ParticipationType;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @AllArgsConstructor
@@ -16,6 +17,7 @@ import java.util.List;
 public class SurveyResponseDto {
     private String informationText;
     private ParticipationType participationType;
+    private String title;
     private List<DynamicSurveyResponseDto> dynamicSurveyResponseDto;
 
     @Getter

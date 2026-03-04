@@ -2,7 +2,6 @@ package team.startup.expo.domain.attendance.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
-import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramUserException;
 import team.startup.expo.domain.attendance.presentation.dto.request.ScanStandardProRequestDto;
 import team.startup.expo.domain.attendance.service.ScanStandardProByQrCodeService;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;

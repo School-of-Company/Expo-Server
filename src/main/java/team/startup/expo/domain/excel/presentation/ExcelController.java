@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import team.startup.expo.domain.excel.service.ProgramParticipantInfoToExcelService;
 import team.startup.expo.domain.excel.service.StandardParticipantInfoToExcelService;
+import team.startup.expo.domain.excel.service.TraineeAttendanceToExcelService;
 import team.startup.expo.domain.excel.service.TraineeInfoToExcelService;
 
 @RestController
@@ -17,6 +18,7 @@ public class ExcelController {
     private final TraineeInfoToExcelService traineeInfoToExcelService;
     private final StandardParticipantInfoToExcelService standardParticipantInfoToExcelService;
     private final ProgramParticipantInfoToExcelService programParticipantInfoToExcelService;
+    private final TraineeAttendanceToExcelService traineeAttendanceToExcelService;
 
     @GetMapping("/{expo_id}")
     public ResponseEntity<Void> traineeInfoToExcel(
@@ -43,6 +45,15 @@ public class ExcelController {
         HttpServletResponse res
     ) throws JsonProcessingException {
         programParticipantInfoToExcelService.execute(expoId, programId, res);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/trainee/{trainee_id}")
+    public ResponseEntity<Void> traineeAttendanceToExcel(
+            @PathVariable("trainee_id") Long traineeId,
+            HttpServletResponse res
+    ) {
+        traineeAttendanceToExcelService.execute(traineeId, res);
         return ResponseEntity.ok().build();
     }
 }

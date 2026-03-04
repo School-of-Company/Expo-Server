@@ -1,22 +1,39 @@
 spring:
   datasource:
     driver-class-name: ${DB_DRIVER_CLASS}
-    url: jdbc:mysql://${DB_HOST:localhost}:3306/${DB_NAME:expo}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:expo}
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:12345}
   jpa:
     hibernate:
       dialect: ${DB_DIALECT}
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+      encoding: UTF-8
+      continue-on-error: false
+  jackson:
+    time-zone: Asia/Seoul
+  mvc:
+    timezone: Asia/Seoul
 
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 20
+          max-idle: 10
+          min-idle: 5
+        shutdown-timeout: 2000ms
 
 jwt:
   accessSecret: ${JWT_ACCESS_SECRET}
@@ -25,13 +42,17 @@ jwt:
 sms:
   apiKey: ${SMS_API_KEY}
   apiSecret: ${SMS_API_SECRET}
-  fromnumber: ${SMS_FROM_NUMBER}
+  fromStandardNumber: ${SMS_FROM_STANDARD_NUMBER}
+  fromTraineeNumber: ${SMS_FROM_TRAINEE_NUMBER}
+
 
 cloud:
   aws:
     credentials:
       access-key: ${AWS_ACCESS_KEY}
       secret-key: ${AWS_SECRET_KEY}
+      instance-profile: false
+      use-default-aws-credentials-chain: false
     region:
       static: ${AWS_STATIC}
     s3:
@@ -49,3 +70,22 @@ management:
     web:
       exposure:
         include: "*"
+
+server:
+  tomcat:
+    remoteip:
+      remote-ip-header: X-Forwarded-For
+      protocol-header: X-Forwarded-Proto
+    threads:
+      max: 200
+      min-spare: 10
+    accept-count: 100
+    max-connections: 10000
+    connection-timeout: 20000
+    keep-alive-timeout: 60000
+    max-keep-alive-requests: 100
+  forward-headers-strategy: framework
+
+app:
+  ssl:
+    ca-file-path: classpath:certification/global-bundle.pem

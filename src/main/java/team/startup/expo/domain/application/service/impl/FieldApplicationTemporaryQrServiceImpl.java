@@ -1,7 +1,6 @@
 package team.startup.expo.domain.application.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.admin.entity.Authority;
 import team.startup.expo.domain.application.presentation.dto.request.ApplicationTemporaryQrRequestDto;
 import team.startup.expo.domain.application.presentation.dto.response.ApplicationTemporaryQrResponseDto;
 import team.startup.expo.domain.application.service.FieldApplicationTemporaryQrService;
@@ -15,6 +14,7 @@ import team.startup.expo.domain.trainee.entity.ApplicationType;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @TransactionService
@@ -52,15 +52,17 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
         StandardParticipant standardParticipant = StandardParticipant.builder()
                 .name(dto.getName())
                 .phoneNumber(phoneNumber)
-                .authority(Authority.ROLE_STANDARD)
                 .informationJson(dto.getInformationJson())
                 .applicationType(ApplicationType.FIELD)
                 .personalInformationStatus(dto.getPersonalInformationStatus())
                 .smsTryTime(0)
                 .expo(expo)
+                .applicationDate(LocalDateTime.now())
                 .build();
 
-        return standardParticipantRepository.save(standardParticipant);
+        standardParticipantRepository.save(standardParticipant);
+
+        return standardParticipant;
     }
 
     public String generateUniquePhoneNumber() {

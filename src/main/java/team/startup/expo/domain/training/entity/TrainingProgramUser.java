@@ -23,7 +23,7 @@ public class TrainingProgramUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    @Column(nullable = false)
     private Boolean status = false;
 
     @Column(columnDefinition = "VARCHAR(20)")

@@ -31,6 +31,9 @@ public class S3Util {
 
     private final AmazonS3 amazonS3;
 
+    private static final String IMAGE = "img/";
+    private static final String QR = "qr/";
+
     public String upload(MultipartFile image) {
         try {
             List<String> allowedExtensions = List.of("jpg", "jpeg", "png");
@@ -51,7 +54,7 @@ public class S3Util {
             }
 
             String savedFileName = UUID.randomUUID() + "_" + originalFilename;
-            String objectKey = imageBucket + "/" + savedFileName;
+            String objectKey = IMAGE + savedFileName;
 
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(image.getInputStream().available());
@@ -60,7 +63,7 @@ public class S3Util {
 
             String encodedFileName = URLEncoder.encode(savedFileName, StandardCharsets.UTF_8);
 
-            return "https://api.startup-expo.kr/expo-image-bucket-9881/" + encodedFileName;
+            return "https://s3.startup-expo.kr/" + IMAGE + encodedFileName;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -81,7 +84,7 @@ public class S3Util {
             throw new FileExtensionInvalidException();
 
         String savedFileName = UUID.randomUUID() + filename;
-        String objectKey = qrBucket + "/" + savedFileName;
+        String objectKey = QR + savedFileName;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(Files.size(image.toPath()));
@@ -89,7 +92,7 @@ public class S3Util {
 
         amazonS3.putObject(qrBucket, objectKey, new FileInputStream(image), metadata);
 
-        return savedFileName;
+        return QR + savedFileName;
 
     }
 

@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import team.startup.expo.domain.expo.entity.Expo;
 
 @Entity
 @NoArgsConstructor
@@ -24,9 +23,6 @@ public class DynamicForm {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String jsonData;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FormType formType;
@@ -34,8 +30,9 @@ public class DynamicForm {
     @Column(nullable = false)
     private Boolean requiredStatus;
 
-    @Column(columnDefinition = "TEXT")
-    private String otherJson;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DynamicFormType dynamicFormType;
 
     @JoinColumn(name = "form_id")
     @ManyToOne

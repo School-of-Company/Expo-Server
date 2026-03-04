@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import team.startup.expo.domain.admin.entity.Authority;
+import org.hibernate.type.SqlTypes;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -29,14 +32,11 @@ public class StandardParticipant {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String phoneNumber;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String informationJson;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Authority authority;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean personalInformationStatus;
 
     @Enumerated(EnumType.STRING)
@@ -50,6 +50,9 @@ public class StandardParticipant {
 
     @Column(nullable = false)
     private Integer smsTryTime;
+
+    @Column(nullable = false)
+    private LocalDateTime applicationDate;
 
     public void plusSmsTryTime() {
         smsTryTime++;

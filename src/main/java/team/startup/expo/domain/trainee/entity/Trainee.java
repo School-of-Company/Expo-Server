@@ -5,10 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import team.startup.expo.domain.admin.entity.Authority;
+import org.hibernate.type.SqlTypes;
 import team.startup.expo.domain.expo.entity.Expo;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -31,19 +34,19 @@ public class Trainee {
     @Column(nullable = false, columnDefinition = "VARCHAR(15)")
     private String trainingId;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private String informationJson;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Authority authority;
-
-    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     private Boolean personalInformationStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationType applicationType;
+
+    @Column(nullable = false)
+    private LocalDateTime applicationDate;
 
     @ManyToOne
     @JoinColumn(name = "expo_id")

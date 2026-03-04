@@ -7,11 +7,11 @@ import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
 import team.startup.expo.domain.form.entity.ParticipationType;
-import team.startup.expo.domain.survey.management.entity.DynamicSurvey;
 import team.startup.expo.domain.survey.management.entity.Survey;
 import team.startup.expo.domain.survey.management.exception.NotFoundSurveyException;
 import team.startup.expo.domain.survey.management.presentation.dto.response.SurveyResponseDto;
 import team.startup.expo.domain.survey.management.repository.DynamicSurveyRepository;
+import team.startup.expo.domain.survey.management.repository.projection.DynamicSurveyDto;
 import team.startup.expo.domain.survey.management.repository.SurveyRepository;
 import team.startup.expo.domain.survey.management.service.GetSurveyService;
 import team.startup.expo.global.annotation.ReadOnlyTransactionService;
@@ -35,21 +35,22 @@ public class GetSurveyServiceImpl implements GetSurveyService {
         Survey survey = surveyRepository.findByExpoAndParticipationType(expo, participationType)
                 .orElseThrow(NotFoundSurveyException::new);
 
-        List<DynamicSurvey> dynamicSurveyList = dynamicSurveyRepository.findBySurvey(survey);
+        List<DynamicSurveyDto> dynamicSurveyDtos = dynamicSurveyRepository.findAllBySurveyIdWithJson(survey.getId());
 
-        List<SurveyResponseDto.DynamicSurveyResponseDto> dynamicSurveyResponseDto = dynamicSurveyList.stream()
-                .map(dynamicSurvey -> SurveyResponseDto.DynamicSurveyResponseDto.builder()
-                        .title(dynamicSurvey.getTitle())
-                        .jsonData(dynamicSurvey.getJsonData())
-                        .formType(dynamicSurvey.getFormType())
-                        .requiredStatus(dynamicSurvey.getRequiredStatus())
-                        .otherJson(dynamicSurvey.getOtherJson())
-                        .build()
-                ).toList();
+        List<SurveyResponseDto.DynamicSurveyResponseDto> dynamicSurveyResponseDto = dynamicSurveyDtos.stream()
+                .map(dynamicSurveyDto -> SurveyResponseDto.DynamicSurveyResponseDto.builder()
+                        .title(dynamicSurveyDto.title())
+                        .jsonData(dynamicSurveyDto.jsonData())
+                        .formType(dynamicSurveyDto.formType())
+                        .requiredStatus(dynamicSurveyDto.requiredStatus())
+                        .otherJson(dynamicSurveyDto.otherJson())
+                        .build())
+                .toList();
 
         return SurveyResponseDto.builder()
                 .informationText(survey.getInformationText())
                 .participationType(participationType)
+                .title(survey.getTitle())
                 .dynamicSurveyResponseDto(dynamicSurveyResponseDto)
                 .build();
     }

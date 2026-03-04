@@ -31,4 +31,6 @@ public interface TraineeRepository extends JpaRepository<Trainee, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT t FROM Trainee t WHERE t.phoneNumber=:phoneNumber AND t.expo=:expo")
     Optional<Trainee> findByPhoneNumberAndExpoForWrite(String phoneNumber, Expo expo);
+
+    boolean existsByTrainingIdAndExpo(String trainingId, Expo expo);
 }

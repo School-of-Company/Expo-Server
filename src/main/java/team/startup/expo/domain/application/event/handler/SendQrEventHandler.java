@@ -59,41 +59,48 @@ public class SendQrEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<SingleMessageSentResponse> sendQrHandler(SendQrEvent sendQrEvent) {
         SingleMessageSentResponse response = null;
-
         try {
+            log.info("[SendQr] Start: expoId={}, authority={}, phone={}",
+                    sendQrEvent.getExpoId(), sendQrEvent.getAuthority(), sendQrEvent.getPhoneNumber());
             Expo expo = expoRepository.findById(sendQrEvent.getExpoId())
                     .orElseThrow(NotFoundExpoException::new);
 
             if (sendQrEvent.getAuthority() == Authority.ROLE_STANDARD) {
                 StandardParticipant participant = standardParticipantRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundParticipantException::new);
-                
+                log.info("[SendQr] STANDARD participant found: id={}, phone={}",
+                        participant.getId(), participant.getPhoneNumber());
                 String information = "{\"participantId\": " + participant.getId() + ", \"phoneNumber\": \"" + participant.getPhoneNumber() + "\"}";
                 byte[] qrBytes = createQr(information);
-
-                Message message = createMessage(qrBytes, sendQrEvent);
-
+                log.info("[SendQr] QR created for STANDARD: bytes={}",
+                        qrBytes != null ? qrBytes.length : 0);
+                Message message = createMessage(qrBytes, sendQrEvent, smsProperties.getFromStandardNumber());
                 participant.plusSmsTryTime();
-
                 standardParticipantRepository.save(participant);
-
+                log.info("[SendQr] STANDARD smsTryTime updated: id={}, tryTime={}",
+                        participant.getId(), participant.getSmsTryTime());
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
+                log.info("[SendQr] SMS sent (STANDARD): response={}", response);
             } else if (sendQrEvent.getAuthority() == Authority.ROLE_TRAINEE) {
                 Trainee trainee = traineeRepository.findByPhoneNumberAndExpo(sendQrEvent.getPhoneNumber(), expo)
                         .orElseThrow(NotFoundTraineeException::new);
-
+                log.info("[SendQr] TRAINEE found: id={}, phone={}",
+                        trainee.getId(), trainee.getPhoneNumber());
                 String information = "{\"traineeId\": " + trainee.getId() + ", \"phoneNumber\": \"" + trainee.getPhoneNumber() + "\"}";
-
                 byte[] qrBytes = createQr(information);
-
-                Message message = createMessage(qrBytes, sendQrEvent);
-
+                log.info("[SendQr] QR created for TRAINEE: bytes={}",
+                        qrBytes != null ? qrBytes.length : 0);
+                Message message = createMessage(qrBytes, sendQrEvent, smsProperties.getFromTraineeNumber());
                 response = messageService.sendOne(new SingleMessageSendingRequest(message));
+                log.info("[SendQr] SMS sent (TRAINEE): response={}", response);
             }
+            log.info("[SendQr] Completed: expoId={}, authority={}, phone={}, response={}",
+                    sendQrEvent.getExpoId(), sendQrEvent.getAuthority(), sendQrEvent.getPhoneNumber(), response);
         } catch (Exception e) {
+            log.error("[SendQr] Error during sendQrHandler: expoId={}, authority={}, phone={}",
+                    sendQrEvent.getExpoId(), sendQrEvent.getAuthority(), sendQrEvent.getPhoneNumber(), e);
             throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-
         return CompletableFuture.completedFuture(response);
     }
 
@@ -101,38 +108,37 @@ public class SendQrEventHandler {
         byte[] bytes = null;
         try {
             BitMatrix encode = new MultiFormatWriter().encode(information, BarcodeFormat.QR_CODE, WIDTH, HEIGHT);
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-
             MatrixToImageWriter.writeToStream(encode, "JPG", out);
-
             bytes = out.toByteArray();
         } catch (IOException | WriterException e) {
-            log.error(e.getMessage(), e);
+            log.error("[SendQr] QR generation failed: payload={}", information, e);
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-
         return bytes;
     }
 
-    private Message createMessage(byte[] qrBytes, SendQrEvent sendQrEvent) {
+    private Message createMessage(byte[] qrBytes, SendQrEvent sendQrEvent, String phoneNumber) {
         try {
+            log.info("[SendQr] Preparing SMS message for phone={}", sendQrEvent.getPhoneNumber());
             Path tempFilePath = Files.createTempFile("temp-qr", ".jpg");
             Files.write(tempFilePath, qrBytes);
             File tempFile = tempFilePath.toFile();
-
             String objectUrl = s3Util.qrUpload(tempFile);
-
+            log.info("[SendQr] Uploaded QR to S3: objectUrl={}", objectUrl);
+            String contactNumber = phoneNumber.equals(smsProperties.getFromStandardNumber()) ? "062-380-4504" : "062-380-4587";
             Message message = new Message();
-            message.setFrom(smsProperties.getFromNumber());
+            message.setFrom(phoneNumber);
             message.setTo(sendQrEvent.getPhoneNumber());
-            message.setText("2025 AI·SW체험축전 사전 등록 완료\n" +
-                    "2025 광주광역시교육청 AI·SW체험축전 사전 등록이 완료되었습니다.\n" +
-                    "출입 QR코드 링크: " + "https://qr.startup-expo.kr/" + objectUrl + "\n" +
-                    "☆☆ 행사장 입장 시각: 9시  (문의) ☎062-380-4769");
 
+            message.setText(
+                    "2025 광주광역시교육청 AI광주미래교육 박람회 현장 등록이 완료되었습니다.\n" +
+                    "출입 QR코드 링크: " + "https://s3.startup-expo.kr/" + objectUrl + "\n" +
+                    "(문의) ☎" + contactNumber);
             return message;
-        } catch (IOException e) {}
-
-        return null;
+        } catch (IOException e) {
+            log.error("[SendQr] Failed to build SMS message for phone={}", sendQrEvent.getPhoneNumber(), e);
+            throw new GlobalException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 }

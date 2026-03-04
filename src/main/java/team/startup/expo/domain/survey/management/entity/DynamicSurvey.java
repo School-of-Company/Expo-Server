@@ -24,9 +24,6 @@ public class DynamicSurvey {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String jsonData;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private FormType formType;
@@ -34,11 +31,8 @@ public class DynamicSurvey {
     @Column(nullable = false)
     private Boolean requiredStatus;
 
-    @Column(columnDefinition = "TEXT")
-    private String otherJson;
-
-    @ManyToOne
     @JoinColumn(name = "survey_id")
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Survey survey;
 }

@@ -59,6 +59,8 @@ public class UpdateExpoRequestDto {
                 .finishedDay(String.valueOf(finishedDay))
                 .location(location)
                 .coverImage(coverImage)
+                .applicationPerson(expo.getApplicationPerson())
+                .yesterdayApplicationPerson(expo.getYesterdayApplicationPerson())
                 .x(x)
                 .y(y)
                 .build();

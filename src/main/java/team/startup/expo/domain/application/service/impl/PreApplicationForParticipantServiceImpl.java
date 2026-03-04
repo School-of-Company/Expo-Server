@@ -3,22 +3,28 @@ package team.startup.expo.domain.application.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.event.SendQrEvent;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
+import team.startup.expo.domain.application.service.PreApplicationForParticipantService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.application.service.PreApplicationForParticipantService;
+import team.startup.expo.domain.form.entity.Form;
+import team.startup.expo.domain.form.entity.ParticipationType;
+import team.startup.expo.domain.form.exception.NotFoundFormException;
+import team.startup.expo.domain.form.exception.OutOfRegistrationPeriodException;
+import team.startup.expo.domain.form.repository.FormRepository;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
-import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
+
+import java.time.LocalDateTime;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -26,9 +32,9 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
 
     private final ExpoRepository expoRepository;
     private final StandardParticipantRepository standardParticipantRepository;
-    private final TraineeRepository traineeRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final DateUtil dateUtil;
+    private final FormRepository formRepository;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -36,6 +42,12 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
             throw new NotInProgressExpoException();
+
+        Form form = formRepository.findByExpoAndParticipationTypeAndApplicationType(expo, ParticipationType.STANDARD, ApplicationType.PRE)
+                .orElseThrow(NotFoundFormException::new);
+
+        if (!dateUtil.dateTimeComparison(form.getStartDate(), form.getEndDate()))
+            throw new OutOfRegistrationPeriodException();
 
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpoForNullCheck(dto.getPhoneNumber(), expo);
 
@@ -60,12 +72,12 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
                 .orElse(StandardParticipant.builder()
                         .name(dto.getName())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_STANDARD)
                         .informationJson(dto.getInformationJson())
                         .applicationType(ApplicationType.PRE)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .expo(expo)
                         .smsTryTime(0)
+                        .applicationDate(LocalDateTime.now())
                         .build());
 
         standardParticipantRepository.save(standardParticipant);

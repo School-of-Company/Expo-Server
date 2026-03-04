@@ -3,22 +3,23 @@ package team.startup.expo.domain.application.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import team.startup.expo.domain.admin.entity.Authority;
+import team.startup.expo.domain.application.event.SendQrEvent;
+import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
+import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
+import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.expo.entity.Expo;
 import team.startup.expo.domain.expo.exception.NotFoundExpoException;
 import team.startup.expo.domain.expo.exception.NotInProgressExpoException;
 import team.startup.expo.domain.expo.repository.ExpoRepository;
-import team.startup.expo.domain.application.exception.AlreadyApplicationUserException;
-import team.startup.expo.domain.application.presentation.dto.request.ApplicationForParticipantRequestDto;
-import team.startup.expo.domain.application.service.FieldApplicationForParticipantService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.participant.repository.StandardParticipantRepository;
-import team.startup.expo.domain.application.event.SendQrEvent;
 import team.startup.expo.domain.trainee.entity.ApplicationType;
-import team.startup.expo.domain.trainee.repository.TraineeRepository;
 import team.startup.expo.global.annotation.TransactionService;
 import team.startup.expo.global.date.DateUtil;
 import team.startup.expo.global.exception.ErrorCode;
 import team.startup.expo.global.exception.GlobalException;
+
+import java.time.LocalDateTime;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -47,7 +48,6 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
             expo.plusApplicationPerson();
         }
 
-
         try {
             applicationEventPublisher.publishEvent(new SendQrEvent(expoId, dto.getPhoneNumber(), Authority.ROLE_STANDARD));
         } catch (Exception e) {
@@ -60,12 +60,12 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
                 .orElse(StandardParticipant.builder()
                         .name(dto.getName())
                         .phoneNumber(dto.getPhoneNumber())
-                        .authority(Authority.ROLE_STANDARD)
                         .informationJson(dto.getInformationJson())
                         .applicationType(ApplicationType.FIELD)
                         .personalInformationStatus(dto.getPersonalInformationStatus())
                         .smsTryTime(0)
                         .expo(expo)
+                        .applicationDate(LocalDateTime.now())
                         .build());
 
         standardParticipantRepository.save(standardParticipant);
