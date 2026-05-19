@@ -1,0 +1,102 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew *)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git fetch*)",
+      "Bash(git rev-parse*)",
+      "Bash(git ls-remote*)",
+      "Bash(git push origin*)",
+      "Bash(git push -u origin*)",
+      "Bash(gh issue*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr create*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh api*)",
+      "Bash(find*)",
+      "Bash(grep*)",
+      "Bash(ls*)",
+      "Bash(cat*)",
+      "Bash(jq*)",
+      "Bash(wc*)",
+      "Bash(chmod*)",
+      "Bash(docker compose up*)",
+      "Bash(docker compose ps*)",
+      "Bash(docker compose logs*)",
+      "Bash(docker-compose up*)",
+      "Bash(docker-compose ps*)",
+      "Bash(docker-compose logs*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push --force-with-lease*)",
+      "Bash(git push -f*)",
+      "Bash(git push * main)",
+      "Bash(git push * master)",
+      "Bash(git push * develop)",
+      "Bash(git reset --hard*)",
+      "Bash(rm -rf*)",
+      "Bash(docker compose down -v*)",
+      "Bash(docker compose down --volumes*)",
+      "Bash(docker-compose down -v*)",
+      "Bash(docker-compose down --volumes*)",
+      "Bash(gh api * --method DELETE*)",
+      "Bash(gh api * --method PATCH*)",
+      "Bash(gh api * --method PUT*)",
+      "Bash(gh api * -X DELETE*)",
+      "Bash(gh api * -X PATCH*)",
+      "Bash(gh api * -X PUT*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/preToolUse.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/postToolUse.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/postToolUse.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/onStop.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
