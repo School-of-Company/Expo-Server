@@ -43,12 +43,11 @@ Do not use this skill for local self-review before creating a PR.
    - **Explained**: `의도한 구현입니다. <reason>`
    - **Declined / Out of Scope**: `<reason> 이유로 반영하지 않겠습니다.`
 
-   Post each reply using the comment's `in_reply_to_id`:
+   Post each reply using the comment's ID:
    ```bash
-   gh api repos/:owner/:repo/pulls/<pr-number>/comments \
+   gh api repos/:owner/:repo/pulls/<pr-number>/comments/<comment-id>/replies \
      --method POST \
-     -f body="<reply>" \
-     -f in_reply_to="<comment-id>"
+     -f body="<reply>"
    ```
 8. Summarize the response:
    ```md
