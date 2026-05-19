@@ -22,7 +22,7 @@ fi
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 LOG_DIR="$CWD/.claude/.logs"
 mkdir -p "$LOG_DIR"
-echo "[$TIMESTAMP] $COMMAND" >> "$LOG_DIR/command.log"
+printf "[%s] %s\n" "$TIMESTAMP" "$COMMAND" >> "$LOG_DIR/command.log"
 
 # Regex-based dangerous command blocking
 BLOCKED_REGEX=(
@@ -63,7 +63,7 @@ if echo "$COMMAND" | grep -qE '(^|[;&|{}[:space:]])git[[:space:]]+push'; then
 fi
 
 # Block push to protected remote branches (including HEAD:branch syntax)
-if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*([[:space:]]|:)(main|master|develop|HEAD:(main|master|develop))([[:space:]]|:|$)'; then
+if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*([[:space:]]|:)(main|master|develop)([[:space:]]|$)'; then
     echo "[Hook] Blocked: pushing to protected branch is forbidden." >&2
     exit 2
 fi
