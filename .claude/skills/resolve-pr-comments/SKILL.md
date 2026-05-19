@@ -37,7 +37,20 @@ Do not use this skill for local self-review before creating a PR.
    ./gradlew compileJava
    ./gradlew test --tests "<RelatedTestClass>"
    ```
-7. Summarize the response:
+7. Reply to each comment on GitHub with the outcome:
+   - **Applied**: `<commit-hash>에서 반영했습니다.` (get hash with `git rev-parse --short HEAD`)
+   - **Already Resolved**: `현재 코드에 이미 반영되어 있습니다. (<evidence>)`
+   - **Explained**: `의도한 구현입니다. <reason>`
+   - **Declined / Out of Scope**: `<reason> 이유로 반영하지 않겠습니다.`
+
+   Post each reply using the comment's `in_reply_to_id`:
+   ```bash
+   gh api repos/:owner/:repo/pulls/<pr-number>/comments \
+     --method POST \
+     -f body="<reply>" \
+     -f in_reply_to="<comment-id>"
+   ```
+8. Summarize the response:
    ```md
    ## PR Review Comment Resolution
 
