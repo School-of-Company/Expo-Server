@@ -59,4 +59,18 @@ EOF
 ## After Commit
 
 Run `git log --oneline -3` to confirm the commit landed correctly.
+
+## Push (explicit request only)
+
 Do NOT push unless the user explicitly asks.
+
+When asked to push:
+```bash
+git rev-parse --abbrev-ref HEAD
+```
+Then push with the literal branch name returned above:
+```bash
+git push origin <literal-branch-name>
+```
+
+Do not combine push with other commands (`&&`, `;`). Do not push to `main`, `master`, or `develop`.
