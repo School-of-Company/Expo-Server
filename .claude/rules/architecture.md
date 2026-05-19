@@ -49,5 +49,5 @@ Controller → Service (interface) → Repository
   - Domains with external IDs (e.g., Expo) may use `String` or other types — preserve the existing type and repository method signature
 - **Repository ID type must match the existing entity ID type.** Do not create new repositories with `Long` ID by default. For Expo-like domains that use external string IDs, preserve `String` ID signatures.
 - Associations: `@ManyToOne(fetch = FetchType.LAZY)` by default (EAGER is forbidden)
-- Use `@Builder` + `@NoArgsConstructor(access = PROTECTED)` together
+- Use `@Builder` + `@NoArgsConstructor(access = PROTECTED)` + `@AllArgsConstructor` together
 - Mutate state through domain methods, not setters

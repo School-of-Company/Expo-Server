@@ -63,7 +63,7 @@ if echo "$COMMAND" | grep -qE '(^|[;&|{}[:space:]])git[[:space:]]+push'; then
 fi
 
 # Block push to protected remote branches (including HEAD:branch syntax)
-if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*([[:space:]]|^)(main|master|develop|HEAD:(main|master|develop))([[:space:]]|:|$)'; then
+if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*([[:space:]]|:)(main|master|develop|HEAD:(main|master|develop))([[:space:]]|:|$)'; then
     echo "[Hook] Blocked: pushing to protected branch is forbidden." >&2
     exit 2
 fi
