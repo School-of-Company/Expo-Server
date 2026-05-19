@@ -37,7 +37,12 @@ Do not use this skill for local self-review before creating a PR.
    ./gradlew compileJava
    ./gradlew test --tests "<RelatedTestClass>"
    ```
-7. Reply to each comment on GitHub with the outcome:
+7. Push the branch so the commit is reachable on GitHub **before** posting reply links:
+   ```bash
+   git rev-parse --abbrev-ref HEAD   # confirm branch name
+   git push origin <branch-name>
+   ```
+8. Reply to each comment on GitHub with the outcome:
    - **Applied**: `[<commit-hash>](https://github.com/<owner>/<repo>/commit/<full-hash>)에서 반영했습니다.`
      ```bash
      HASH=$(git rev-parse --short HEAD)
@@ -55,7 +60,7 @@ Do not use this skill for local self-review before creating a PR.
      --method POST \
      -f body="<reply>"
    ```
-8. Summarize the response:
+9. Summarize the response:
    ```md
    ## PR Review Comment Resolution
 
