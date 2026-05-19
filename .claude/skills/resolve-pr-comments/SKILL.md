@@ -38,7 +38,13 @@ Do not use this skill for local self-review before creating a PR.
    ./gradlew test --tests "<RelatedTestClass>"
    ```
 7. Reply to each comment on GitHub with the outcome:
-   - **Applied**: `<commit-hash>에서 반영했습니다.` (get hash with `git rev-parse --short HEAD`)
+   - **Applied**: `[<commit-hash>](https://github.com/<owner>/<repo>/commit/<full-hash>)에서 반영했습니다.`
+     ```bash
+     HASH=$(git rev-parse --short HEAD)
+     FULL=$(git rev-parse HEAD)
+     REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+     # body: "[${HASH}](https://github.com/${REPO}/commit/${FULL})에서 반영했습니다."
+     ```
    - **Already Resolved**: `현재 코드에 이미 반영되어 있습니다. (<evidence>)`
    - **Explained**: `의도한 구현입니다. <reason>`
    - **Declined / Out of Scope**: `<reason> 이유로 반영하지 않겠습니다.`
