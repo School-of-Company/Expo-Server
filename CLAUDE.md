@@ -43,6 +43,7 @@ Match your task to an agent + skill before starting:
 | Bug fix | `fix-agent` | `fix-bug` |
 | Test writing | `test-agent` | `write-test` |
 | Refactoring | `refactor-agent` | `refactor-safely` |
+| Commit | — | `commit` |
 | PR creation | `pr-agent` | `write-pr` |
 | Local diff review before PR | `review-agent` | `review-local-diff` |
 | PR review comments | `feedback-agent` | `resolve-pr-comments` |
@@ -70,6 +71,7 @@ Hooks block most of these automatically — some require discipline:
 - Do NOT use `System.out.println()` — use `@Slf4j`
 - Do NOT hardcode secrets or env vars
 - Do NOT commit `settings.local.json`, `.env`, `.claude/.logs/`
+- Do NOT commit unless the user explicitly asks — use the `commit` skill when asked
 - Do not add obvious comments. Add comments only for non-obvious domain constraints.
 
 Do not manually enforce formatting. Use Gradle verification commands instead.
