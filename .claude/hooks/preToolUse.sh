@@ -56,17 +56,14 @@ fi
 # Block compound git push commands FIRST — before any further push validation.
 # Push inside ;, &&, ||, or {} bypasses branch safety validation entirely.
 if echo "$COMMAND" | grep -qE '(^|[;&|{}[:space:]])git[[:space:]]+push'; then
-    if echo "$COMMAND" | grep -qE '[;&|{}]'; then
+    if [[ "$COMMAND" == *$'\n'* ]] || echo "$COMMAND" | grep -qE '[;&|{}]'; then
         echo "[Hook] git push must be executed as a standalone command. First run: git rev-parse --abbrev-ref HEAD, then push with the literal branch name." >&2
         exit 2
     fi
 fi
 
 # Block push to protected remote branches (including HEAD:branch syntax)
-# NOTE: This regex is intentionally conservative — it may block commands where
-# "main", "master", or "develop" appears in a remote name or message.
-# If a safe command is blocked, run it manually after explicit user confirmation.
-if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*(main|master|develop|HEAD:(main|master|develop))'; then
+if echo "$COMMAND" | grep -qE 'git[[:space:]]+push.*([[:space:]]|^)(main|master|develop|HEAD:(main|master|develop))([[:space:]]|:|$)'; then
     echo "[Hook] Blocked: pushing to protected branch is forbidden." >&2
     exit 2
 fi
