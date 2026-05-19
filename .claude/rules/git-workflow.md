@@ -44,8 +44,14 @@ Examples:
 
 ## gh CLI Usage
 
-Use `gh api` for read-only queries only (PR comments, review comments, issue comments).
-Do not use `gh api` for mutating requests (creating, deleting, merging).
+Allowed:
+- `gh api` GET — read-only queries (PR info, comments, review comments)
+- `gh api --method POST` — creating comments or replies on PRs/issues
+- `gh pr create`, `gh pr view`, `gh pr list`, `gh pr checks`
+
+Forbidden:
+- `gh api --method PATCH` / `PUT` — modifying existing resources
+- `gh api --method DELETE` — deleting resources
 
 ## Push Policy
 

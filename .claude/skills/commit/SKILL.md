@@ -40,15 +40,7 @@ Only stage files that are directly related to the current work. If unrelated fil
 type :: 한국어 설명
 ```
 
-| type | usage |
-|------|-------|
-| `add` | new feature |
-| `update` | modify existing feature |
-| `fix` | bug fix |
-| `refactor` | structural improvement, no behavior change |
-| `test` | add or update tests |
-| `docs` | documentation |
-| `chore` | build or config changes |
+See `.claude/rules/git-workflow.md` for the full type list.
 
 Rules:
 - Under 70 characters

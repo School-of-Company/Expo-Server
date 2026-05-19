@@ -37,7 +37,7 @@ BLOCKED_REGEX=(
     'docker-compose[[:space:]]+down.+(-v|--volumes)'
     'curl[[:space:]].*\|[[:space:]]*(ba)?sh'
     'wget[[:space:]].*\|[[:space:]]*(ba)?sh'
-    'gh[[:space:]]+api.*(--method|-X)[[:space:]]+(POST|PATCH|PUT|DELETE)'
+    'gh[[:space:]]+api.*(--method|-X)[[:space:]]+(PATCH|PUT|DELETE)'
 )
 
 for pattern in "${BLOCKED_REGEX[@]}"; do
