@@ -38,3 +38,8 @@ out/
 
 ### prometheus ###
 prometheus.yml
+
+# Claude Code harness — local only, never commit
+.claude/settings.local.json
+.claude/.logs/
+.claude/command.log
