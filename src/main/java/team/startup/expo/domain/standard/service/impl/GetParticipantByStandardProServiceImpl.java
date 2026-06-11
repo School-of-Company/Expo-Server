@@ -18,8 +18,9 @@ public class GetParticipantByStandardProServiceImpl implements GetParticipantByS
     private final StandardProgramUserRepository standardProgramUserRepository;
 
     public List<GetStandardProParticipantResponseDto> execute(Long standardProId) {
-        standardProgramRepository.findById(standardProId)
-                .orElseThrow(NotFoundStandardProgramException::new);
+        if (!standardProgramRepository.existsById(standardProId)) {
+            throw new NotFoundStandardProgramException();
+        }
 
         return standardProgramUserRepository.findByStandardProgramIdWithFetch(standardProId).stream()
                 .map(standardProgramUser ->

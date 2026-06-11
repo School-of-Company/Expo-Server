@@ -18,8 +18,9 @@ public class GetTraineeByTrainingProServiceImpl implements GetTraineeByTrainingP
     private final TrainingProgramRepository trainingProgramRepository;
 
     public List<GetTrainingProTraineeResponseDto> execute(Long trainingProId) {
-        trainingProgramRepository.findById(trainingProId)
-                .orElseThrow(NotFoundTrainingProgramException::new);
+        if (!trainingProgramRepository.existsById(trainingProId)) {
+            throw new NotFoundTrainingProgramException();
+        }
 
         return trainingProgramUserRepository.findByTrainingProgramIdWithFetch(trainingProId).stream()
                 .map(trainingProgramUser -> GetTrainingProTraineeResponseDto.builder()

@@ -8,7 +8,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
 import team.startup.expo.domain.excel.service.ProgramParticipantInfoToExcelService;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
-import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
@@ -28,7 +27,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
         try (SXSSFWorkbook workbook = new SXSSFWorkbook(500)) {
             workbook.setCompressTempFiles(true);
 
-            StandardProgram standardProgram = standardProgramRepository.findByIdAndExpoId(programId, expoId)
+            standardProgramRepository.findByIdAndExpoId(programId, expoId)
                     .orElseThrow(NotFoundStandardProgramException::new);
 
             List<StandardProgramUser> standardProgramUsers = standardProgramUserRepository.findByStandardProgramIdWithFetch(programId);
