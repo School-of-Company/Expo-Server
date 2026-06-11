@@ -2,7 +2,6 @@ package team.startup.expo.domain.standard.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import team.startup.expo.domain.attendance.exception.NotFoundStandardProgramException;
-import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.presentation.dto.response.GetStandardProParticipantResponseDto;
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
@@ -19,10 +18,10 @@ public class GetParticipantByStandardProServiceImpl implements GetParticipantByS
     private final StandardProgramUserRepository standardProgramUserRepository;
 
     public List<GetStandardProParticipantResponseDto> execute(Long standardProId) {
-        StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
+        standardProgramRepository.findById(standardProId)
                 .orElseThrow(NotFoundStandardProgramException::new);
 
-        return standardProgramUserRepository.findByStandardProgram(standardProgram).stream()
+        return standardProgramUserRepository.findByStandardProgramIdWithFetch(standardProId).stream()
                 .map(standardProgramUser ->
                     GetStandardProParticipantResponseDto.builder()
                             .id(standardProgramUser.getId())
