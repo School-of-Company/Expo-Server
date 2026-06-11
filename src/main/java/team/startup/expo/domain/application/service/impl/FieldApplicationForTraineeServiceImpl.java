@@ -33,7 +33,7 @@ public class FieldApplicationForTraineeServiceImpl implements FieldApplicationFo
     private final DateUtil dateUtil;
 
     public void execute(String expoId, ApplicationForTraineeRequestDto dto) {
-        Expo expo = expoRepository.findById(expoId)
+        Expo expo = expoRepository.findByIdWithLock(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
