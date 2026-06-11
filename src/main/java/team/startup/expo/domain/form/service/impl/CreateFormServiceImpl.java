@@ -16,6 +16,9 @@ import team.startup.expo.domain.json.entity.DynamicJsonType;
 import team.startup.expo.domain.json.repository.DynamicJsonRepository;
 import team.startup.expo.global.annotation.TransactionService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @TransactionService
 @RequiredArgsConstructor
 public class CreateFormServiceImpl implements CreateFormService {
@@ -34,7 +37,7 @@ public class CreateFormServiceImpl implements CreateFormService {
 
         Form form = saveForm(formRequestDto, expo);
 
-        formRequestDto.getDynamicForm().forEach(df -> saveDynamicForm(df, form));
+        saveDynamicForms(formRequestDto.getDynamicForm(), form);
     }
 
     private Form saveForm(FormRequestDto formRequestDto, Expo expo) {
@@ -51,19 +54,29 @@ public class CreateFormServiceImpl implements CreateFormService {
         return formRepository.save(form);
     }
 
-    private void saveDynamicForm(FormRequestDto.DynamicFormRequestDto dto, Form form) {
-        DynamicForm dynamicForm = dynamicFormRepository.save(DynamicForm.builder()
-                .form(form)
-                .title(dto.getTitle())
-                .formType(dto.getFormType())
-                .requiredStatus(dto.getRequiredStatus())
-                .build());
+    private void saveDynamicForms(List<FormRequestDto.DynamicFormRequestDto> dtos, Form form) {
+        List<DynamicForm> dynamicForms = dtos.stream()
+                .map(dto -> DynamicForm.builder()
+                        .form(form)
+                        .title(dto.getTitle())
+                        .formType(dto.getFormType())
+                        .requiredStatus(dto.getRequiredStatus())
+                        .build())
+                .toList();
 
-        dynamicJsonRepository.save(DynamicJson.builder()
-                .dynamicJsonType(DynamicJsonType.FORM)
-                .recordId(dynamicForm.getId())
-                .jsonData(dto.getJsonData())
-                .otherJson(dto.getOtherJson())
-                .build());
+        List<DynamicForm> savedForms = dynamicFormRepository.saveAll(dynamicForms);
+
+        List<DynamicJson> dynamicJsons = new ArrayList<>();
+        for (int i = 0; i < savedForms.size(); i++) {
+            FormRequestDto.DynamicFormRequestDto dto = dtos.get(i);
+            dynamicJsons.add(DynamicJson.builder()
+                    .dynamicJsonType(DynamicJsonType.FORM)
+                    .recordId(savedForms.get(i).getId())
+                    .jsonData(dto.getJsonData())
+                    .otherJson(dto.getOtherJson())
+                    .build());
+        }
+
+        dynamicJsonRepository.saveAll(dynamicJsons);
     }
 }
