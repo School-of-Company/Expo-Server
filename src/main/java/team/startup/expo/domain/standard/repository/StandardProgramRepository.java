@@ -11,4 +11,5 @@ public interface StandardProgramRepository extends JpaRepository<StandardProgram
     void deleteByExpo(Expo expo);
     List<StandardProgram> findByExpo(Expo expo);
     Optional<StandardProgram> findByIdAndExpoId(Long id, String expoId);
+    List<StandardProgram> findAllByIdIn(List<Long> ids);
 }
