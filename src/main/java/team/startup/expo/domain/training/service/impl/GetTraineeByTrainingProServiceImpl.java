@@ -1,7 +1,6 @@
 package team.startup.expo.domain.training.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import team.startup.expo.domain.training.entity.TrainingProgram;
 import team.startup.expo.domain.training.exception.NotFoundTrainingProgramException;
 import team.startup.expo.domain.training.presentation.dto.response.GetTrainingProTraineeResponseDto;
 import team.startup.expo.domain.training.repository.TrainingProgramRepository;
@@ -19,10 +18,11 @@ public class GetTraineeByTrainingProServiceImpl implements GetTraineeByTrainingP
     private final TrainingProgramRepository trainingProgramRepository;
 
     public List<GetTrainingProTraineeResponseDto> execute(Long trainingProId) {
-        TrainingProgram trainingProgram = trainingProgramRepository.findById(trainingProId)
-                .orElseThrow(NotFoundTrainingProgramException::new);
+        if (!trainingProgramRepository.existsById(trainingProId)) {
+            throw new NotFoundTrainingProgramException();
+        }
 
-        return trainingProgramUserRepository.findByTrainingProgram(trainingProgram).stream()
+        return trainingProgramUserRepository.findByTrainingProgramIdWithFetch(trainingProId).stream()
                 .map(trainingProgramUser -> GetTrainingProTraineeResponseDto.builder()
                         .id(trainingProgramUser.getId())
                         .name(trainingProgramUser.getTrainee().getName())

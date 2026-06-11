@@ -35,7 +35,7 @@ public class TrainingProgramUser {
     @Column(nullable = false)
     private LocalDate attendanceDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainingPro_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private TrainingProgram trainingProgram;
