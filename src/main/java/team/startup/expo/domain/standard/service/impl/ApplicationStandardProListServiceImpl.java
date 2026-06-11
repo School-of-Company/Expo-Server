@@ -35,8 +35,9 @@ public class ApplicationStandardProListServiceImpl implements ApplicationStandar
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundParticipantException::new);
 
-        List<StandardProgram> programs = standardProgramRepository.findAllByIdIn(dto.getStandardProIds());
-        if (programs.size() != dto.getStandardProIds().size())
+        List<Long> distinctIds = dto.getStandardProIds().stream().distinct().toList();
+        List<StandardProgram> programs = standardProgramRepository.findAllByIdIn(distinctIds);
+        if (programs.size() != distinctIds.size())
             throw new NotFoundStandardProgramException();
 
         if (standardProgramUserRepository.existsByStandardParticipantAndStandardProgramIn(standardParticipant, programs))
