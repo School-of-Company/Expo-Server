@@ -35,12 +35,12 @@ public class StandardProgramUser {
     @Column(nullable = false)
     private LocalDate attendanceDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "standardPro_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private StandardProgram standardProgram;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "standard_participant_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private StandardParticipant standardParticipant;
