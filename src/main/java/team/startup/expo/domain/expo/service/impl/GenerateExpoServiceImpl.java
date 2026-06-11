@@ -30,8 +30,26 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
     public GenerateExpoResponseDto execute(GenerateExpoRequestDto dto) {
         Expo expo = saveExpo(dto);
 
-        dto.getAddStandardProRequestDto().forEach(addStandardProRequestDto -> {saveStandardPro(addStandardProRequestDto, expo);});
-        dto.getAddTrainingProRequestDto().forEach(addTrainingProRequestDto -> {saveTrainingPro(addTrainingProRequestDto, expo);});
+        List<StandardProgram> standardPrograms = dto.getAddStandardProRequestDto().stream()
+                .map(req -> StandardProgram.builder()
+                        .title(req.getTitle())
+                        .startedAt(String.valueOf(req.getStartedAt()))
+                        .endedAt(String.valueOf(req.getEndedAt()))
+                        .expo(expo)
+                        .build())
+                .toList();
+        standardProgramRepository.saveAll(standardPrograms);
+
+        List<TrainingProgram> trainingPrograms = dto.getAddTrainingProRequestDto().stream()
+                .map(req -> TrainingProgram.builder()
+                        .title(req.getTitle())
+                        .startedAt(String.valueOf(req.getStartedAt()))
+                        .endedAt(String.valueOf(req.getEndedAt()))
+                        .category(req.getCategory())
+                        .expo(expo)
+                        .build())
+                .toList();
+        trainingProgramRepository.saveAll(trainingPrograms);
 
         return GenerateExpoResponseDto.builder()
                 .expoId(expo.getId())
@@ -58,26 +76,4 @@ public class GenerateExpoServiceImpl implements GenerateExpoService {
         return expo;
     }
 
-    private void saveStandardPro(AddStandardProRequestDto dto, Expo expo) {
-        StandardProgram standardProgram = StandardProgram.builder()
-                .title(dto.getTitle())
-                .startedAt(String.valueOf(dto.getStartedAt()))
-                .endedAt(String.valueOf(dto.getEndedAt()))
-                .expo(expo)
-                .build();
-
-        standardProgramRepository.save(standardProgram);
-    }
-
-    private void saveTrainingPro(AddTrainingProRequestDto dto, Expo expo) {
-        TrainingProgram trainingProgram = TrainingProgram.builder()
-                .title(dto.getTitle())
-                .startedAt(String.valueOf(dto.getStartedAt()))
-                .endedAt(String.valueOf(dto.getEndedAt()))
-                .category(dto.getCategory())
-                .expo(expo)
-                .build();
-
-        trainingProgramRepository.save(trainingProgram);
-    }
 }

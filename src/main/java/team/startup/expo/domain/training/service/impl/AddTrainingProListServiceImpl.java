@@ -23,18 +23,16 @@ public class AddTrainingProListServiceImpl implements AddTrainingProListService 
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        dtos.forEach(dto -> saveTrainingProgram(dto, expo));
-    }
+        List<TrainingProgram> programs = dtos.stream()
+                .map(dto -> TrainingProgram.builder()
+                        .title(dto.getTitle())
+                        .startedAt(String.valueOf(dto.getStartedAt()))
+                        .endedAt(String.valueOf(dto.getEndedAt()))
+                        .category(dto.getCategory())
+                        .expo(expo)
+                        .build())
+                .toList();
 
-    private void saveTrainingProgram(AddTrainingProRequestDto dto, Expo expo) {
-        TrainingProgram trainingProgram = TrainingProgram.builder()
-                .title(dto.getTitle())
-                .startedAt(String.valueOf(dto.getStartedAt()))
-                .endedAt(String.valueOf(dto.getEndedAt()))
-                .category(dto.getCategory())
-                .expo(expo)
-                .build();
-
-        trainingProgramRepository.save(trainingProgram);
+        trainingProgramRepository.saveAll(programs);
     }
 }

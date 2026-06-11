@@ -23,17 +23,15 @@ public class AddStandardProListServiceImpl implements AddStandardProListService 
         Expo expo = expoRepository.findById(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
-        dtos.forEach(dto -> saveStandardProgram(dto, expo));
-    }
+        List<StandardProgram> programs = dtos.stream()
+                .map(dto -> StandardProgram.builder()
+                        .title(dto.getTitle())
+                        .startedAt(String.valueOf(dto.getStartedAt()))
+                        .endedAt(String.valueOf(dto.getEndedAt()))
+                        .expo(expo)
+                        .build())
+                .toList();
 
-    private void saveStandardProgram(AddStandardProRequestDto dto, Expo expo) {
-        StandardProgram standardProgram = StandardProgram.builder()
-                .title(dto.getTitle())
-                .startedAt(String.valueOf(dto.getStartedAt()))
-                .endedAt(String.valueOf(dto.getEndedAt()))
-                .expo(expo)
-                .build();
-
-        standardProgramRepository.save(standardProgram);
+        standardProgramRepository.saveAll(programs);
     }
 }

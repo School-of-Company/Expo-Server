@@ -36,18 +36,18 @@ public class ApplicationTrainingProListServiceImpl implements ApplicationTrainin
             throw new AlreadyApplicationUserException();
         }
 
-        trainingProgramList.forEach(trainingProgram -> {saveTrainingProUser(trainingProgram, trainee);});
+        List<TrainingProgramUser> users = trainingProgramList.stream()
+                .map(trainingProgram -> TrainingProgramUser.builder()
+                        .attendanceDate(parseDate(trainingProgram.getStartedAt()))
+                        .trainingProgram(trainingProgram)
+                        .trainee(trainee)
+                        .status(false)
+                        .build())
+                .toList();
+
+        trainingProgramUserRepository.saveAll(users);
 
         applicationEventPublisher.publishEvent(new TrainingSmsEvent(trainee.getExpo().getId(), trainee.getPhoneNumber(), trainingProgramList));
-    }
-
-    private void saveTrainingProUser(TrainingProgram trainingProgram, Trainee trainee) {
-        trainingProgramUserRepository.save(TrainingProgramUser.builder()
-                .attendanceDate(parseDate(trainingProgram.getStartedAt()))
-                .trainingProgram(trainingProgram)
-                .trainee(trainee)
-                .status(false)
-                .build());
     }
 
     private LocalDate parseDate(String dateTimeStr) {

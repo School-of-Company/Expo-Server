@@ -15,8 +15,9 @@ import team.startup.expo.domain.standard.presentation.dto.request.ApplicationSta
 import team.startup.expo.domain.standard.repository.StandardProgramRepository;
 import team.startup.expo.domain.standard.repository.StandardProgramUserRepository;
 import team.startup.expo.domain.standard.service.ApplicationStandardProListService;
-import team.startup.expo.domain.training.repository.TrainingProgramUserRepository;
 import team.startup.expo.global.annotation.TransactionService;
+
+import java.util.List;
 
 @TransactionService
 @RequiredArgsConstructor
@@ -26,7 +27,6 @@ public class ApplicationStandardProListServiceImpl implements ApplicationStandar
     private final StandardProgramUserRepository standardProgramUserRepository;
     private final StandardParticipantRepository standardParticipantRepository;
     private final ExpoRepository expoRepository;
-    private final TrainingProgramUserRepository trainingProgramUserRepository;
 
     public void execute(String expoId, ApplicationStandardProListRequestDto dto) {
         Expo expo = expoRepository.findById(expoId)
@@ -35,22 +35,22 @@ public class ApplicationStandardProListServiceImpl implements ApplicationStandar
         StandardParticipant standardParticipant = standardParticipantRepository.findByPhoneNumberAndExpo(dto.getPhoneNumber(), expo)
                 .orElseThrow(NotFoundParticipantException::new);
 
-        dto.getStandardProIds().forEach(standardProId -> {saveStandardProUser(standardParticipant, standardProId);});
-    }
+        List<Long> distinctIds = dto.getStandardProIds().stream().distinct().toList();
+        List<StandardProgram> programs = standardProgramRepository.findAllByIdIn(distinctIds);
+        if (programs.size() != distinctIds.size())
+            throw new NotFoundStandardProgramException();
 
-    private void saveStandardProUser(StandardParticipant standardParticipant, Long standardProId) {
-        StandardProgram standardProgram = standardProgramRepository.findById(standardProId)
-                .orElseThrow(NotFoundStandardProgramException::new);
-
-        if (standardProgramUserRepository.existsByStandardParticipantAndStandardProgram(standardParticipant, standardProgram))
+        if (standardProgramUserRepository.existsByStandardParticipantAndStandardProgramIn(standardParticipant, programs))
             throw new AlreadyApplicationUserException();
 
-        StandardProgramUser standardProgramUser = StandardProgramUser.builder()
-                .status(false)
-                .standardParticipant(standardParticipant)
-                .standardProgram(standardProgram)
-                .build();
+        List<StandardProgramUser> users = programs.stream()
+                .map(program -> StandardProgramUser.builder()
+                        .status(false)
+                        .standardParticipant(standardParticipant)
+                        .standardProgram(program)
+                        .build())
+                .toList();
 
-        standardProgramUserRepository.save(standardProgramUser);
+        standardProgramUserRepository.saveAll(users);
     }
 }

@@ -23,4 +23,6 @@ public interface StandardProgramUserRepository extends JpaRepository<StandardPro
     List<StandardProgramUser> findByStandardProgram(StandardProgram standardProgram);
 
     Boolean existsByStandardParticipantAndStandardProgram(StandardParticipant standardParticipant, StandardProgram standardProgram);
+
+    Boolean existsByStandardParticipantAndStandardProgramIn(StandardParticipant standardParticipant, List<StandardProgram> standardPrograms);
 }
