@@ -31,7 +31,7 @@ public class ProgramParticipantInfoToExcelServiceImpl implements ProgramParticip
             StandardProgram standardProgram = standardProgramRepository.findByIdAndExpoId(programId, expoId)
                     .orElseThrow(NotFoundStandardProgramException::new);
 
-            List<StandardProgramUser> standardProgramUsers = standardProgramUserRepository.findByStandardProgram(standardProgram);
+            List<StandardProgramUser> standardProgramUsers = standardProgramUserRepository.findByStandardProgramIdWithFetch(programId);
 
             Sheet sheet = workbook.createSheet("프로그램 참가자 정보");
             sheet.setDefaultColumnWidth(20);
