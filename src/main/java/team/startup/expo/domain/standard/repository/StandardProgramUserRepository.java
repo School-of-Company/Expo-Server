@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import team.startup.expo.domain.participant.entity.StandardParticipant;
 import team.startup.expo.domain.standard.entity.StandardProgram;
 import team.startup.expo.domain.standard.entity.StandardProgramUser;
+import team.startup.expo.domain.standard.repository.custom.StandardProgramUserCustomRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface StandardProgramUserRepository extends JpaRepository<StandardProgramUser, Long> {
+public interface StandardProgramUserRepository extends JpaRepository<StandardProgramUser, Long>, StandardProgramUserCustomRepository {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT spu FROM StandardProgramUser spu WHERE spu.standardProgram=:standardProgram AND spu.standardParticipant=:standardParticipant")
