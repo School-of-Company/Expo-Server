@@ -26,7 +26,7 @@ public class FieldApplicationTemporaryQrServiceImpl implements FieldApplicationT
     private final DateUtil dateUtil;
 
     public ApplicationTemporaryQrResponseDto execute(String expoId, ApplicationTemporaryQrRequestDto dto) {
-        Expo expo = expoRepository.findById(expoId)
+        Expo expo = expoRepository.findByIdWithLock(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
