@@ -31,7 +31,7 @@ public class FieldApplicationForParticipantServiceImpl implements FieldApplicati
     private final DateUtil dateUtil;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
-        Expo expo = expoRepository.findById(expoId)
+        Expo expo = expoRepository.findByIdWithLock(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))

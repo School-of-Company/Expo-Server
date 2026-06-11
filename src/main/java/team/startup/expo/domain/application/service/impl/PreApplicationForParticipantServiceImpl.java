@@ -37,7 +37,7 @@ public class PreApplicationForParticipantServiceImpl implements PreApplicationFo
     private final FormRepository formRepository;
 
     public void execute(String expoId, ApplicationForParticipantRequestDto dto) {
-        Expo expo = expoRepository.findById(expoId)
+        Expo expo = expoRepository.findByIdWithLock(expoId)
                 .orElseThrow(NotFoundExpoException::new);
 
         if (!dateUtil.dateComparison(expo.getStartedDay(), expo.getFinishedDay()))
