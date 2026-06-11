@@ -16,6 +16,9 @@ import team.startup.expo.domain.survey.management.repository.SurveyRepository;
 import team.startup.expo.domain.survey.management.service.CreateSurveyService;
 import team.startup.expo.global.annotation.TransactionService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @TransactionService
 @RequiredArgsConstructor
 public class CreateSurveyServiceImpl implements CreateSurveyService {
@@ -34,7 +37,7 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
 
         Survey survey = saveSurvey(dto, expo);
 
-        dto.getDynamicSurveyRequestDto().forEach(dynamicSurveyRequestDto -> saveDynamicSurvey(dynamicSurveyRequestDto, survey));
+        saveDynamicSurveys(dto.getDynamicSurveyRequestDto(), survey);
     }
 
     private Survey saveSurvey(SurveyRequestDto dto, Expo expo) {
@@ -49,19 +52,29 @@ public class CreateSurveyServiceImpl implements CreateSurveyService {
         return surveyRepository.save(survey);
     }
 
-    private void saveDynamicSurvey(SurveyRequestDto.DynamicSurveyRequestDto dto, Survey survey) {
-        DynamicSurvey dynamicSurvey = dynamicSurveyRepository.save(DynamicSurvey.builder()
-                .survey(survey)
-                .title(dto.getTitle())
-                .formType(dto.getFormType())
-                .requiredStatus(dto.getRequiredStatus())
-                .build());
+    private void saveDynamicSurveys(List<SurveyRequestDto.DynamicSurveyRequestDto> dtos, Survey survey) {
+        List<DynamicSurvey> dynamicSurveys = dtos.stream()
+                .map(dto -> DynamicSurvey.builder()
+                        .survey(survey)
+                        .title(dto.getTitle())
+                        .formType(dto.getFormType())
+                        .requiredStatus(dto.getRequiredStatus())
+                        .build())
+                .toList();
 
-        dynamicJsonRepository.save(DynamicJson.builder()
-                .dynamicJsonType(DynamicJsonType.SURVEY)
-                .recordId(dynamicSurvey.getId())
-                .jsonData(dto.getJsonData())
-                .otherJson(dto.getOtherJson())
-                .build());
+        List<DynamicSurvey> savedSurveys = dynamicSurveyRepository.saveAll(dynamicSurveys);
+
+        List<DynamicJson> dynamicJsons = new ArrayList<>();
+        for (int i = 0; i < savedSurveys.size(); i++) {
+            SurveyRequestDto.DynamicSurveyRequestDto dto = dtos.get(i);
+            dynamicJsons.add(DynamicJson.builder()
+                    .dynamicJsonType(DynamicJsonType.SURVEY)
+                    .recordId(savedSurveys.get(i).getId())
+                    .jsonData(dto.getJsonData())
+                    .otherJson(dto.getOtherJson())
+                    .build());
+        }
+
+        dynamicJsonRepository.saveAll(dynamicJsons);
     }
 }
