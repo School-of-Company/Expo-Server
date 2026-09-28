@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 @Getter
 @Table(
         name = "tb_standard_participant_participation",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"expo_id", "standard_participant_id", "attendance_date"})}
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"expo_id", "standard_participant_id", "attendance_date"})},
+        indexes = {@Index(name = "idx_sp_participation_date_participant_id", columnList = "attendance_date, standard_participant_id")}
 )
 public class StandardParticipantParticipation {
 
