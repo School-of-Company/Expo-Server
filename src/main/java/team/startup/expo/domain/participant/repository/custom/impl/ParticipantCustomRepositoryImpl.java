@@ -1,6 +1,7 @@
 package team.startup.expo.domain.participant.repository.custom.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,19 +25,31 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
     public ParticipantResponseDto searchParticipants(String expoId, Pageable pageable, LocalDate date) {
         int size = pageable.getPageSize();
 
+        BooleanExpression condition = standardParticipant.expo.id.eq(expoId)
+                .and(standardParticipantParticipation.attendanceDate.eq(date));
+
         Long totalElement = queryFactory
                 .select(standardParticipant.id.count())
                 .from(standardParticipant)
                 .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
-                .where(
-                        standardParticipant.expo.id.eq(expoId)
-                                .and(standardParticipantParticipation.attendanceDate.eq(date))
-                )
+                .where(condition)
                 .fetchOne();
 
         int totalPage = (int) ((totalElement + size - 1) / size);
 
-        List<GetParticipantInfoResponseDto> participants = queryFactory
+        List<Long> pagedIds = queryFactory
+                .select(standardParticipant.id)
+                .from(standardParticipant)
+                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
+                .where(condition)
+                .orderBy(standardParticipant.id.asc())
+                .offset(pageable.getOffset())
+                .limit(size)
+                .fetch();
+
+        List<GetParticipantInfoResponseDto> participants = pagedIds.isEmpty()
+                ? List.of()
+                : queryFactory
                 .select(Projections.constructor(
                         GetParticipantInfoResponseDto.class,
                         standardParticipant.id,
@@ -45,13 +58,8 @@ public class ParticipantCustomRepositoryImpl implements ParticipantCustomReposit
                         standardParticipant.personalInformationStatus
                 ))
                 .from(standardParticipant)
-                .join(standardParticipantParticipation).on(standardParticipantParticipation.standardParticipant.eq(standardParticipant))
-                .where(
-                        standardParticipant.expo.id.eq(expoId)
-                                .and(standardParticipantParticipation.attendanceDate.eq(date))
-                )
-                .offset(pageable.getOffset())
-                .limit(size)
+                .where(standardParticipant.id.in(pagedIds))
+                .orderBy(standardParticipant.id.asc())
                 .fetch();
 
         return ParticipantResponseDto.builder()

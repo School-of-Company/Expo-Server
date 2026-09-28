@@ -19,7 +19,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Getter
-@Table(name = "tb_standard_participant")
+@Table(
+        name = "tb_standard_participant",
+        indexes = {@Index(name = "idx_standard_participant_expo_id_id", columnList = "expo_id, id")}
+)
 public class StandardParticipant {
 
     @Id
