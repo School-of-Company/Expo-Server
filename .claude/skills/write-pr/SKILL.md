@@ -58,6 +58,8 @@ matches, attach none — a wrong label is worse than no label, and an undefined 
 - No emojis
 - Max 2500 characters
 - No AI signature: no `🤖 Generated with [Claude Code]…` footer and no `Co-Authored-By` line in the body
+- Describe only what you ran. If the body says tests pass, run the project's test command first (the
+  `verification-before-completion` skill, when installed, is the gate); otherwise say it was not run
 - Wrap all proper nouns and technical identifiers in backticks: class names, method names, annotations, file names, field names, config keys, module names, and agent names.
 
 ## Step 6 — Write Body & Show Preview

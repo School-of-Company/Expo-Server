@@ -7,7 +7,8 @@ allowed-tools: Bash, Read, Glob, Grep, Write, Edit
 # Write Tests
 
 For _running_ tests and diagnosing failures, use the `test` skill. This one is about writing tests that
-didn't exist yet.
+didn't exist yet. To write the test **before** the code, use `tdd`; to prove a claim before reporting it,
+`verification-before-completion`.
 
 ## Step 1 — Match the Project, Don't Impose a Style
 
