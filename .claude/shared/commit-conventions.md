@@ -33,7 +33,10 @@ history is consistent and different, follow it and skip the rest of this section
   - **Say the intent, not the implementation.** The diff already shows what was edited; the subject says
     what is different now. `빈 저장소에서 PR 생성이 500으로 끝나던 문제 해결` over `try/catch 추가`
 - Subject line only (no body) — except for a breaking change, which gets a `BREAKING CHANGE: <설명>` body
-- Never add AI as a co-author
+- Never add AI as a co-author, and never leave a tool's signature behind. Some tools append these on their own,
+  so check the message before committing and delete them:
+  - in a commit message: `Co-Authored-By: Claude … <noreply@anthropic.com>` (any `Co-Authored-By:` naming an AI)
+  - in a PR title or body: `🤖 Generated with [Claude Code](https://claude.com/claude-code)` (any "Generated with" footer)
 
 ## Choosing the Type
 
